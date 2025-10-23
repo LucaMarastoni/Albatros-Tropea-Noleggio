@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escursioni Guidate · Albatros Tropea</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing">
+  <header class="topbar">
+    <a class="topbar__brand" href="index.html" aria-label="Albatros Tropea Noleggio · Home">
+      <img class="brand-logo" src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio">
+      <span class="brand-copy">
+        <strong>Albatros Tropea Noleggio</strong>
+        <small>Gommoni·Escursioni·Esperienze</small>
+      </span>
+    </a>
+    <button class="topbar__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Apri il menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="topbar__nav" id="primaryNav">
+      <a href="index.html#hero">Manifesto</a>
+      <a href="boats.html">Gommone</a>
+      <a href="escursioni.html" aria-current="page">Escursioni</a>
+      <a href="index.html#location">Dove siamo</a>
+      <a href="index.html#cta">Prenota</a>
+    </nav>
+    <div class="topbar__actions">
+      <button class="btn ghost" id="openDemo">Tour demo</button>
+      <a class="btn outline" href="portal.html">Portale</a>
+      <button class="btn primary" id="authTrigger">Accedi</button>
+      <div class="user-menu hidden" id="userMenu">
+        <span class="user-avatar">⛵</span>
+        <div>
+          <span class="user-name" id="userDisplayName"></span>
+          <small>Sessione attiva</small>
+        </div>
+        <button class="btn tiny" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-main">
+    <section class="hero hero--sub">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <div class="hero__headline">
+            <h1>Tre escursioni guidate per scoprire la Costa degli Dei.</h1>
+          </div>
+          <p class="lead">Tre escursioni guidate per grandi e bambini (animali non ammessi) con skipper dedicato, snorkeling e aperitivo tipico. Scegli l’orario che preferisci e prenota online.</p>
+          <div class="hero__actions">
+            <a class="btn primary" href="portal.html">Prenota una escursione</a>
+            <a class="btn outline" href="#overview">Sfoglia gli itinerari</a>
+          </div>
+          <ul class="hero__metrics">
+            <li>
+              <strong>3</strong>
+              <span>Itinerari curati</span>
+            </li>
+            <li>
+              <strong>2-3 h</strong>
+              <span>Durata media</span>
+            </li>
+            <li>
+              <strong>Skipper</strong>
+              <span>Briefing dedicato</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="overview" class="section excursions">
+      <header class="section__header">
+        <p class="eyebrow">Panoramica</p>
+        <h2>Scegli l’escursione che preferisci: mattina, tramonto o esperienza notturna.</h2>
+      </header>
+      <div class="excursions__grid">
+        <article class="excursion-card">
+          <figure>
+            <img src="assets/img/6.jpg" alt="Calette della Baia degli Dei" loading="lazy">
+          </figure>
+          <div class="excursion-card__body">
+            <span class="label">Costa degli Dei Explorer</span>
+            <h3>3h · grandi e bambini · no cani</h3>
+            <p>Dal porto di Tropea alle calette di Capo Vaticano con soste snorkeling e aperitivo tipico.</p>
+            <ul>
+              <li>Include aperitivo tipico e kit snorkeling</li>
+              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+            </ul>
+            <a class="btn tiny outline" href="escursione-baia.html">Vai ai dettagli</a>
+          </div>
+        </article>
+        <article class="excursion-card">
+          <figure>
+            <img src="assets/img/7.jpg" alt="Tramonto a Capo Vaticano" loading="lazy">
+          </figure>
+          <div class="excursion-card__body">
+            <span class="label">Capo Vaticano Sunset Romance</span>
+            <h3>2h · grandi e bambini · no cani</h3>
+            <p>Snorkeling allo Scoglio di Riaci, Grotta degli Innamorati al tramonto e aperitivo romantico.</p>
+            <ul>
+              <li>Include aperitivo tipico e kit snorkeling</li>
+              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+            </ul>
+            <a class="btn tiny outline" href="escursione-sunset.html">Vai ai dettagli</a>
+          </div>
+        </article>
+        <article class="excursion-card">
+          <figure>
+            <img src="assets/img/9.jpg" alt="Costa tra Parghelia Zambrone e Briatico" loading="lazy">
+          </figure>
+          <div class="excursion-card__body">
+            <span class="label">Parghelia · Zambrone · Briatico</span>
+            <h3>3h · grandi e bambini · no cani</h3>
+            <p>Tour privato con tappe tra Vardanello, Michelino, Baia della Tonnara e Paradiso del Sub.</p>
+            <ul>
+              <li>Include aperitivo tipico e kit snorkeling</li>
+              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+            </ul>
+            <a class="btn tiny outline" href="escursione-parghelia.html">Vai ai dettagli</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section finale finale--alt">
+      <div class="finale__content">
+        <p class="eyebrow">Prenotazione immediata</p>
+        <h2>Scegli data e itinerario, conferma online in meno di due minuti.</h2>
+        <p>Il portale mostra disponibilità in tempo reale, consente di aggiungere servizi extra e ricevere riepilogo via email/WhatsApp.</p>
+        <div class="hero__actions">
+          <a class="btn primary" href="portal.html">Prenota adesso</a>
+          <a class="btn outline" href="boats.html">Guarda il gommone</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="footer__logo">
+        <div>
+          <h4>Albatros Tropea Noleggio</h4>
+          <p>Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
+        </div>
+        <p>Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
+      </div>
+      <div class="footer__group">
+        <h4>Contatti rapidi</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Desk operativo</span>
+            <a href="tel:+393715328451">+39 371 53 28 451</a>
+          </li>
+          <li>
+            <span>Email concierge</span>
+            <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
+          </li>
+          <li>
+            <span>WhatsApp crew</span>
+            <a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Operation desk</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Fasce attive</span>
+            <p>Daily concierge · 08:00 - 20:00</p>
+          </li>
+          <li>
+            <span>Linee emergenza</span>
+            <p>Skipper &amp; safety team · 24/7</p>
+          </li>
+          <li>
+            <span>Portale clienti</span>
+            <a href="portal.html">Accedi al controllo prenotazioni</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Social signals</h4>
+        <ul class="footer__social">
+          <li><a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener">TripAdvisor</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
+      <span>Privacy · Cookie policy</span>
+    </div>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

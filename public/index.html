@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tropea Wave Charter · Luxury Sea Experiences in Tropea</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing">
+  <header class="topbar">
+    <a class="topbar__brand" href="index.html" aria-label="Albatros Tropea Noleggio · Home">
+      <img class="brand-logo" src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio">
+      <span class="brand-copy">
+        <strong>Albatros Tropea Noleggio</strong>
+        <small>Gommoni·Escursioni·Esperienze</small>
+      </span>
+    </a>
+    <button class="topbar__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Apri il menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="topbar__nav" id="primaryNav">
+      <a href="index.html#hero" aria-current="page">Manifesto</a>
+      <a href="index.html#boats">Gommone</a>
+      <a href="index.html#escursioni">Escursioni</a>
+      <a href="index.html#location">Dove siamo</a>
+      <a href="index.html#cta">Prenota</a>
+    </nav>
+    <div class="topbar__actions">
+      <button class="btn ghost" id="openDemo">Tour demo</button>
+      <a class="btn outline" href="portal.html">Portale</a>
+      <button class="btn primary" id="authTrigger">Accedi</button>
+      <div class="user-menu hidden" id="userMenu">
+        <span class="user-avatar">⛵</span>
+        <div>
+          <span class="user-name" id="userDisplayName"></span>
+          <small>Sessione attiva</small>
+        </div>
+        <button class="btn tiny" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-main">
+    <section id="hero" class="hero">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <div class="hero__headline">
+            <div class="hero__media">
+              <video src="assets/vid/vid7.mp4" autoplay muted loop playsinline preload="metadata" poster="assets/img/1.jpg" aria-label="Gommone in navigazione lungo la costa di Tropea">
+                Il tuo browser non supporta il video.
+              </video>
+            </div>
+            <h1>Esperienze nautiche sartoriali sulla Costa degli Dei.</h1>
+          </div>
+          <p class="lead">Un solo gommone comfort 40cv curato in ogni dettaglio e tre itinerari dedicati tra Tropea e Capo Vaticano. Prenoti online, arrivi in banchina e parti.</p>
+          <div class="hero__actions">
+            <a class="btn primary" href="boats.html">Scopri il gommone</a>
+            <a class="btn outline" href="escursioni.html">Vedi le escursioni</a>
+          </div>
+          <ul class="hero__metrics">
+            <li>
+              <strong>1</strong>
+              <span>Gommone comfort</span>
+            </li>
+            <li>
+              <strong>3</strong>
+              <span>Itinerari guidati</span>
+            </li>
+            <li>
+              <strong>40cv</strong>
+              <span>Motore Yamaha</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="hero__ticker">
+        <span>Prossime uscite</span>
+        <div class="hero__ticker-scroll" aria-label="Itinerari in partenza">
+          <ul class="hero__ticker-track">
+            <li>Costa degli Dei Explorer · 09:00</li>
+            <li>Capo Vaticano Sunset Romance · 18:00</li>
+            <li>Parghelia · Zambrone · Briatico · 09:30</li>
+          </ul>
+          <ul class="hero__ticker-track" aria-hidden="true">
+            <li>Costa degli Dei Explorer · 09:00</li>
+            <li>Capo Vaticano Sunset Romance · 18:00</li>
+            <li>Parghelia · Zambrone · Briatico · 09:30</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="boats" class="section boats">
+      <header class="section__header">
+        <p class="eyebrow">Gommone 40cv</p>
+        <h2>Un solo mezzo, allestito come un salotto galleggiante per le tue uscite a Tropea.</h2>
+      </header>
+      <div class="boats__grid">
+        <figure class="boats__media">
+          <img src="assets/img/1.jpg" alt="Gommone comfort 40cv in navigazione" loading="lazy">
+        </figure>
+        <div class="boats__details">
+          <h3>Comfort pack incluso</h3>
+          <p>Divani imbottiti, prua trasformabile in solarium, frigorifero soft drink e kit snorkeling. Ogni briefing è gestito dal nostro skipper dedicato.</p>
+          <ul class="boats__specs">
+            <li>Lunghezza 5.5 m · omologato fino a 6 ospiti</li>
+            <li>Motore Yamaha 40cv · patente non necessaria</li>
+            <li>Tendalino XL, impianto audio bluetooth e doccetta</li>
+            <li>Dotazioni di sicurezza 12 miglia e GPS cartografico</li>
+          </ul>
+          <div class="boats__cta">
+            <a class="btn primary" href="boats.html">Scheda completa gommone</a>
+            <a class="btn outline" href="portal.html">Prenota ora</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="escursioni" class="section excursions">
+      <header class="section__header">
+        <p class="eyebrow">Escursioni guidate</p>
+        <h2>Tre itinerari curati per vivere la Costa degli Dei in base ai tuoi ritmi.</h2>
+      </header>
+      <div class="excursions__grid">
+        <article class="excursion-card">
+          <figure>
+            <img src="assets/img/6.jpg" alt="Calette della Costa degli Dei" loading="lazy">
+          </figure>
+          <div class="excursion-card__body">
+            <span class="label">Costa degli Dei Explorer</span>
+            <h3>3h · grandi e bambini · no cani</h3>
+            <p>Partenza dal porto di Tropea, snorkeling allo Scoglio di Riaci e calette finali a Capo Vaticano accessibili solo via mare.</p>
+            <ul>
+              <li>Include aperitivo tipico e kit snorkeling</li>
+              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+            </ul>
+            <a class="btn tiny outline" href="escursione-baia.html">Dettagli escursione</a>
+          </div>
+        </article>
+        <article class="excursion-card">
+          <figure>
+            <img src="assets/img/7.jpg" alt="Tramonto a Capo Vaticano" loading="lazy">
+          </figure>
+          <div class="excursion-card__body">
+            <span class="label">Capo Vaticano Sunset Romance</span>
+            <h3>2h · grandi e bambini · no cani</h3>
+            <p>Snorkeling allo Scoglio di Riaci, Grotta degli Innamorati al tramonto e aperitivo romantico a bordo con musica.</p>
+            <ul>
+              <li>Include aperitivo tipico e kit snorkeling</li>
+              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+            </ul>
+            <a class="btn tiny outline" href="escursione-sunset.html">Dettagli escursione</a>
+          </div>
+        </article>
+        <article class="excursion-card">
+          <figure>
+            <img src="assets/img/9.jpg" alt="Itinerario Parghelia Zambrone Briatico" loading="lazy">
+          </figure>
+          <div class="excursion-card__body">
+            <span class="label">Parghelia · Zambrone · Briatico</span>
+            <h3>3h · grandi e bambini · no cani</h3>
+            <p>Tour privato tra Vardanello, Michelino, Baia della Tonnara e Paradiso del Sub lungo la Costa degli Dei.</p>
+            <ul>
+              <li>Include aperitivo tipico e kit snorkeling</li>
+              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+            </ul>
+            <a class="btn tiny outline" href="escursione-parghelia.html">Dettagli escursione</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="location" class="section location">
+      <div class="location__grid">
+        <div class="location__info">
+          <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="location__logo">
+          <p class="eyebrow">Albatros Tropea Noleggio</p>
+          <h2>Dove siamo</h2>
+          <p>Il nostro hub operativo è affacciato sul porto turistico di Tropea, pronto ad accoglierti per briefing, check-in e supporto equipaggio.</p>
+          <ul class="location__contact">
+            <li>
+              <span>Telefono</span>
+              <a href="tel:+393715328451">+39 371 53 28 451</a>
+            </li>
+            <li>
+              <span>Indirizzo</span>
+              <address>Viale Raf Vallone, 89861 Tropea</address>
+            </li>
+            <li>
+              <span>Email</span>
+              <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
+            </li>
+          </ul>
+        </div>
+        <div class="location__map">
+          <iframe
+            title="Mappa Albatros Tropea Noleggio"
+            src="https://www.google.com/maps?q=38.681702,15.902692&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta" class="section finale">
+      <div class="finale__content">
+        <p class="eyebrow">Prenotazione immediata</p>
+        <h2>Scegli il gommone 40cv o una delle tre escursioni guidate.</h2>
+        <p>Dal portale selezioni data e orario disponibili, aggiungi servizi extra e ricevi conferma istantanea via email e WhatsApp.</p>
+        <div class="hero__actions">
+          <a class="btn primary" href="portal.html">Vai al portale clienti</a>
+          <a class="btn outline" href="escursioni.html">Dettagli escursioni</a>
+        </div>
+      </div>
+      <figure class="finale__visual">
+        <img src="assets/img/14.jpg" alt="Vista aerea della costa con gommone al centro">
+      </figure>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="footer__logo">
+        <div>
+          <h4>Albatros Tropea Noleggio</h4>
+          <p>Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
+        </div>
+        <p>Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
+      </div>
+      <div class="footer__group">
+        <h4>Contatti rapidi</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Desk operativo</span>
+            <a href="tel:+393715328451">+39 371 53 28 451</a>
+          </li>
+          <li>
+            <span>Email concierge</span>
+            <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
+          </li>
+          <li>
+            <span>WhatsApp crew</span>
+            <a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Operation desk</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Fasce attive</span>
+            <p>Daily concierge · 08:00 - 20:00</p>
+          </li>
+          <li>
+            <span>Linee emergenza</span>
+            <p>Skipper &amp; safety team · 24/7</p>
+          </li>
+          <li>
+            <span>Portale clienti</span>
+            <a href="portal.html">Accedi al controllo prenotazioni</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Social signals</h4>
+        <ul class="footer__social">
+          <li><a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener">TripAdvisor</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
+      <span>Privacy · Cookie policy</span>
+    </div>
+  </footer>
+
+  <div class="modal hidden" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-window">
+      <button class="modal-close" type="button" data-close-modal aria-label="Chiudi accesso">&times;</button>
+      <form class="auth-card" id="authCard" novalidate>
+        <header>
+          <h3 id="authModalTitle">Area riservata</h3>
+          <p>Accedi o crea un account per prenotare e gestire le uscite.</p>
+        </header>
+        <div class="tabs">
+          <button type="button" class="tab active" data-tab="login">Accesso</button>
+          <button type="button" class="tab" data-tab="register">Registrati</button>
+        </div>
+        <section data-panel="login" class="tab-panel active">
+          <label>
+            Email
+            <input type="email" id="loginEmail" required placeholder="tuo@email.com">
+          </label>
+          <label>
+            Password
+            <input type="password" id="loginPassword" required placeholder="••••••••">
+          </label>
+          <button type="submit" class="btn primary full" id="loginSubmit">Accedi</button>
+          <p class="form-feedback" id="loginFeedback" aria-live="polite"></p>
+        </section>
+        <section data-panel="register" class="tab-panel">
+          <label>
+            Nome completo
+            <input type="text" id="registerName" required placeholder="Nome Cognome">
+          </label>
+          <label>
+            Email
+            <input type="email" id="registerEmail" required placeholder="tuo@email.com">
+          </label>
+          <label>
+            Telefono
+            <input type="tel" id="registerPhone" placeholder="+39 333 1234567">
+          </label>
+          <label>
+            Password
+            <input type="password" id="registerPassword" required placeholder="Almeno 8 caratteri">
+          </label>
+          <button type="submit" class="btn primary full" id="registerSubmit">Crea account</button>
+          <p class="form-feedback" id="registerFeedback" aria-live="polite"></p>
+        </section>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-window demo-window">
+      <button class="modal-close" type="button" data-close-modal aria-label="Chiudi demo">&times;</button>
+      <article>
+        <h3 id="demoModalTitle">Accesso demo</h3>
+        <p>Accedi come amministratore con le credenziali di default:</p>
+        <pre>email: admin@tropeawavecharter.it
+password: admin123</pre>
+        <p>Ricorda di aggiornare password e utenti prima del go-live.</p>
+        <button class="btn primary" type="button" data-close-modal>Ho capito</button>
+      </article>
+    </div>
+  </div>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

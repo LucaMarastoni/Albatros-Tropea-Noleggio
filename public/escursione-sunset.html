@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capo Vaticano Sunset Romance · Escursione in gommone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing">
+  <header class="topbar">
+    <a class="topbar__brand" href="index.html" aria-label="Albatros Tropea Noleggio · Home">
+      <img class="brand-logo" src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio">
+      <span class="brand-copy">
+        <strong>Albatros Tropea Noleggio</strong>
+        <small>Gommoni·Escursioni·Esperienze</small>
+      </span>
+    </a>
+    <button class="topbar__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Apri il menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="topbar__nav" id="primaryNav">
+      <a href="index.html#hero">Manifesto</a>
+      <a href="index.html#boats">Gommone</a>
+      <a href="escursioni.html">Escursioni</a>
+      <a href="index.html#location">Dove siamo</a>
+      <a href="portal.html">Prenota</a>
+    </nav>
+    <div class="topbar__actions">
+      <button class="btn ghost" id="openDemo">Tour demo</button>
+      <a class="btn outline" href="portal.html">Portale</a>
+      <button class="btn primary" id="authTrigger">Accedi</button>
+      <div class="user-menu hidden" id="userMenu">
+        <span class="user-avatar">⛵</span>
+        <div>
+          <span class="user-name" id="userDisplayName"></span>
+          <small>Sessione attiva</small>
+        </div>
+        <button class="btn tiny" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-main">
+    <section class="hero hero--sub">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <div class="hero__headline">
+            <h1>Capo Vaticano Sunset Romance</h1>
+          </div>
+          <p class="lead">Escursione di 2 ore pensata per coppie e piccoli gruppi (animali non ammessi). Snorkeling allo Scoglio di Riaci, Grotta degli Innamorati al tramonto e aperitivo romantico con musica.</p>
+          <div class="hero__actions">
+            <a class="btn primary" href="portal.html">Prenota questa escursione</a>
+            <a class="btn outline" href="escursioni.html">Torna alle escursioni</a>
+          </div>
+          <ul class="hero__metrics">
+            <li>
+              <strong>2h</strong>
+              <span>Durata experience</span>
+            </li>
+            <li>
+              <strong>18:00</strong>
+              <span>Partenza dal porto</span>
+            </li>
+            <li>
+              <strong>Aperitivo</strong>
+              <span>Bollicine DOC incluse</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section excursion-detail">
+      <header class="section__header">
+        <p class="eyebrow">Programma</p>
+        <h2>Check-in alle 17:30, navigazione verso il faro e rientro con skyline illuminato.</h2>
+      </header>
+      <div class="detail__grid">
+        <div class="detail__copy">
+          <p>Briefing alle 17:30, partenza alle 18:00 verso Capo Vaticano. Snorkeling allo Scoglio di Riaci, sosta alla Grotta degli Innamorati al tramonto, aperitivo romantico e rientro lento con vista sulle Eolie.</p>
+          <h4>Itinerario</h4>
+          <ol>
+            <li>Partenza dal Porto di Tropea.</li>
+            <li>Snorkeling e sosta allo Scoglio di Riaci.</li>
+            <li>Grotta degli Innamorati al tramonto.</li>
+            <li>Aperitivo romantico a bordo con musica soft.</li>
+            <li>Rientro lento con vista sulle Isole Eolie.</li>
+          </ol>
+          <h4>Consigli su cosa portare</h4>
+          <ul>
+            <li>Costume, telo mare, crema solare.</li>
+            <li>Macchina fotografica o smartphone fully charged.</li>
+          </ul>
+          <h4>Incluso</h4>
+          <ul>
+            <li>Aperitivo tipico calabrese e bollicine DOC.</li>
+            <li>Attrezzatura per snorkeling e cuscini extra.</li>
+            <li>Skipper dedicato, carburante e playlist curata.</li>
+          </ul>
+          <div class="price-list">
+            <h4>Listino prezzi · Giugno - Settembre</h4>
+            <ul>
+              <li><span>Max 2 persone</span><strong>€200</strong></li>
+              <li><span>Max 3 persone</span><strong>€250</strong></li>
+              <li><span>4 - 6 persone</span><strong>€350</strong></li>
+              <li><span>7 - 9 persone</span><strong>€400</strong></li>
+              <li><span>10 - 12 persone</span><strong>€450</strong></li>
+            </ul>
+          </div>
+        </div>
+        <figure class="detail__media">
+          <img src="assets/img/11.jpg" alt="Escursione Capo Vaticano al tramonto">
+        </figure>
+      </div>
+    </section>
+
+    <section class="section amenities">
+      <header class="section__header">
+        <p class="eyebrow">Cosa è incluso</p>
+        <h2>Esperienza sunset pensata per coppie e piccoli gruppi.</h2>
+      </header>
+      <div class="amenities-grid">
+        <article class="amenity-card">
+          <span class="label">Degustazione</span>
+          <h3>Bollicine calabresi &amp; appetizer</h3>
+          <p>Selezione di spumanti regionali, finger food e dolci tipici serviti al tramonto.</p>
+        </article>
+        <article class="amenity-card">
+          <span class="label">Lighting setup</span>
+          <h3>Luci soft e tappeto per foto</h3>
+          <p>Illuminazione soffusa e tappeto luci per creare shooting d'effetto al calare del sole.</p>
+        </article>
+        <article class="amenity-card">
+          <span class="label">Sound design</span>
+          <h3>Playlist curata dal nostro crew</h3>
+          <p>Impianto bluetooth con selezione musicale ambient per accompagnare l’esperienza.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section boat-gallery">
+      <header class="section__header">
+        <p class="eyebrow">Gallery</p>
+        <h2>I momenti più iconici della golden hour a Capo Vaticano.</h2>
+      </header>
+      <div class="boat-gallery__grid">
+        <figure>
+          <img src="assets/img/7.jpg" alt="Brindisi al tramonto">
+          <figcaption>Degustazione in rada davanti al faro.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/10.jpg" alt="Setup luci bordo">
+          <figcaption>Setup luci soft e tappeto per shooting fotografici.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/12.jpg" alt="Crew al lavoro">
+          <figcaption>Il nostro crew cura musica, storytelling e assistenza foto.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section finale finale--alt">
+      <div class="finale__content">
+        <p class="eyebrow">Blocca il tramonto</p>
+        <h2>Disponibilità limitata a un solo slot per sera.</h2>
+        <p>Il portale mostra date libere e ti permette di aggiungere servizi come musica live, torta personalizzata o drone operator.</p>
+        <div class="hero__actions">
+          <a class="btn primary" href="portal.html">Prenota ora</a>
+          <a class="btn outline" href="escursioni.html">Torna alle escursioni</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="footer__logo">
+        <div>
+          <h4>Albatros Tropea Noleggio</h4>
+          <p>Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
+        </div>
+        <p>Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
+      </div>
+      <div class="footer__group">
+        <h4>Contatti rapidi</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Desk operativo</span>
+            <a href="tel:+393715328451">+39 371 53 28 451</a>
+          </li>
+          <li>
+            <span>Email concierge</span>
+            <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
+          </li>
+          <li>
+            <span>WhatsApp crew</span>
+            <a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Operation desk</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Fasce attive</span>
+            <p>Daily concierge · 08:00 - 20:00</p>
+          </li>
+          <li>
+            <span>Linee emergenza</span>
+            <p>Skipper &amp; safety team · 24/7</p>
+          </li>
+          <li>
+            <span>Portale clienti</span>
+            <a href="portal.html">Accedi al controllo prenotazioni</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Social signals</h4>
+        <ul class="footer__social">
+          <li><a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener">TripAdvisor</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
+      <span>Privacy · Cookie policy</span>
+    </div>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gommone 40cv · Albatros Tropea Noleggio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing">
+  <header class="topbar">
+    <a class="topbar__brand" href="index.html" aria-label="Albatros Tropea Noleggio · Home">
+      <img class="brand-logo" src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio">
+      <span class="brand-copy">
+        <strong>Albatros Tropea Noleggio</strong>
+        <small>Gommoni·Escursioni·Esperienze</small>
+      </span>
+    </a>
+    <button class="topbar__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Apri il menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="topbar__nav" id="primaryNav">
+      <a href="index.html#hero">Manifesto</a>
+      <a href="boats.html" aria-current="page">Gommone</a>
+      <a href="escursioni.html">Escursioni</a>
+      <a href="index.html#location">Dove siamo</a>
+      <a href="index.html#cta">Prenota</a>
+    </nav>
+    <div class="topbar__actions">
+      <button class="btn ghost" id="openDemo">Tour demo</button>
+      <a class="btn outline" href="portal.html">Portale</a>
+      <button class="btn primary" id="authTrigger">Accedi</button>
+      <div class="user-menu hidden" id="userMenu">
+        <span class="user-avatar">⛵</span>
+        <div>
+          <span class="user-name" id="userDisplayName"></span>
+          <small>Sessione attiva</small>
+        </div>
+        <button class="btn tiny" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-main">
+    <section class="hero hero--sub">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <div class="hero__headline">
+            <h1>Gommone Comfort 5.5 m · Yamaha 40cv</h1>
+          </div>
+          <p class="lead">Set-up premium per 6 ospiti, pensato per navigare senza patente tra Tropea, Capo Vaticano e Baia degli Dei. Tutto è già a bordo: dotazioni di sicurezza, kit snorkeling, soft drink e supporto skipper.</p>
+          <div class="hero__actions">
+            <a class="btn primary" href="portal.html">Prenota il gommone</a>
+            <a class="btn outline" href="#caratteristiche">Caratteristiche tecniche</a>
+          </div>
+          <ul class="hero__metrics">
+            <li>
+              <strong>5.5 m</strong>
+              <span>Lunghezza scafo</span>
+            </li>
+            <li>
+              <strong>40cv</strong>
+              <span>Motore Yamaha</span>
+            </li>
+            <li>
+              <strong>6</strong>
+              <span>Ospiti a bordo</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="caratteristiche" class="section boats boats--detail">
+      <header class="section__header">
+        <p class="eyebrow">Caratteristiche principali</p>
+        <h2>Una configurazione unica, pronta per ogni itinerario tra Tropea e Capo Vaticano.</h2>
+      </header>
+      <div class="boats__grid">
+        <figure class="boats__media">
+          <img src="assets/img/2.jpg" alt="Interni del gommone con sedute comfort" loading="lazy">
+        </figure>
+        <div class="boats__details">
+          <h3>Dotazioni già incluse nel noleggio</h3>
+          <ul class="boats__specs">
+            <li>Cuscineria premium anti-UV con layout prua/solarium</li>
+            <li>Console centrale con parabrezza, USB charge &amp; impianto audio bluetooth</li>
+            <li>Frigorifero 40 litri con acqua, soft drink e frutta fresca</li>
+            <li>Tendalino XL, doccetta acqua dolce e plancette teak</li>
+            <li>Kit snorkeling completo + dry bag 10L</li>
+            <li>Dotazioni di sicurezza per 12 miglia e tracking GPS</li>
+          </ul>
+          <div class="boats__cta">
+            <a class="btn primary" href="escursioni.html">Abbina una escursione</a>
+            <a class="btn outline" href="#gallery">Guarda la gallery</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section amenities">
+      <header class="section__header">
+        <p class="eyebrow">Experience kit</p>
+        <h2>Tutto ciò che serve per rendere speciale la tua uscita in mare.</h2>
+      </header>
+      <div class="amenities-grid">
+        <article class="amenity-card">
+          <span class="label">Briefing &amp; concierge</span>
+          <h3>Accoglienza dedicata in banchina</h3>
+          <p>Check-in con skipper, briefing sicurezza e suggerimenti personalizzati su meteo, soste e ristorazione.</p>
+        </article>
+        <article class="amenity-card">
+          <span class="label">Comfort kit</span>
+          <h3>Set asciugamani + dry bag</h3>
+          <p>Per ogni equipaggio forniamo asciugamani in microfibra, dry bag waterproof e cuscini extra per la prua.</p>
+        </article>
+        <article class="amenity-card">
+          <span class="label">Servizi extra</span>
+          <h3>Food &amp; beverage su richiesta</h3>
+          <p>Possibilità di aggiungere aperitivo locale, bottiglia di bollicine o light lunch consegnato direttamente a bordo.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="gallery" class="section boat-gallery">
+      <header class="section__header">
+        <p class="eyebrow">Gallery</p>
+        <h2>Dettagli del gommone comfort 40cv.</h2>
+      </header>
+      <div class="boat-gallery__grid">
+        <figure>
+          <img src="assets/img/3.jpg" alt="Console del gommone con strumentazione">
+          <figcaption>Console con GPS cartografico e caricatore USB.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/4.jpg" alt="Sedute posteriori del gommone">
+          <figcaption>Zona living con tavolino removibile e cuscineria premium.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/5.jpg" alt="Kit snorkeling e dry bag">
+          <figcaption>Kit snorkeling e dry bag inclusi in ogni uscita.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section finale finale--alt">
+      <div class="finale__content">
+        <p class="eyebrow">Pronto a salpare?</p>
+        <h2>Blocca il tuo slot, scegli l’escursione o naviga in autonomia.</h2>
+        <p>Dal portale puoi scegliere data e orario disponibili, aggiungere servizi extra e ricevere conferma immediata via email.</p>
+        <div class="hero__actions">
+          <a class="btn primary" href="portal.html">Prenota ora</a>
+          <a class="btn outline" href="escursioni.html">Guarda le escursioni</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="footer__logo">
+        <div>
+          <h4>Albatros Tropea Noleggio</h4>
+          <p>Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
+        </div>
+        <p>Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
+      </div>
+      <div class="footer__group">
+        <h4>Contatti rapidi</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Desk operativo</span>
+            <a href="tel:+393715328451">+39 371 53 28 451</a>
+          </li>
+          <li>
+            <span>Email concierge</span>
+            <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
+          </li>
+          <li>
+            <span>WhatsApp crew</span>
+            <a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Operation desk</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Fasce attive</span>
+            <p>Daily concierge · 08:00 - 20:00</p>
+          </li>
+          <li>
+            <span>Linee emergenza</span>
+            <p>Skipper &amp; safety team · 24/7</p>
+          </li>
+          <li>
+            <span>Portale clienti</span>
+            <a href="portal.html">Accedi al controllo prenotazioni</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Social signals</h4>
+        <ul class="footer__social">
+          <li><a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener">TripAdvisor</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
+      <span>Privacy · Cookie policy</span>
+    </div>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

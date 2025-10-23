@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tour Parghelia · Zambrone · Briatico · Escursione in gommone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing">
+  <header class="topbar">
+    <a class="topbar__brand" href="index.html" aria-label="Albatros Tropea Noleggio · Home">
+      <img class="brand-logo" src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio">
+      <span class="brand-copy">
+        <strong>Albatros Tropea Noleggio</strong>
+        <small>Gommoni·Escursioni·Esperienze</small>
+      </span>
+    </a>
+    <button class="topbar__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Apri il menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="topbar__nav" id="primaryNav">
+      <a href="index.html#hero">Manifesto</a>
+      <a href="index.html#boats">Gommone</a>
+      <a href="escursioni.html">Escursioni</a>
+      <a href="index.html#location">Dove siamo</a>
+      <a href="portal.html">Prenota</a>
+    </nav>
+    <div class="topbar__actions">
+      <button class="btn ghost" id="openDemo">Tour demo</button>
+      <a class="btn outline" href="portal.html">Portale</a>
+      <button class="btn primary" id="authTrigger">Accedi</button>
+      <div class="user-menu hidden" id="userMenu">
+        <span class="user-avatar">⛵</span>
+        <div>
+          <span class="user-name" id="userDisplayName"></span>
+          <small>Sessione attiva</small>
+        </div>
+        <button class="btn tiny" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-main">
+    <section class="hero hero--sub">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <div class="hero__headline">
+            <h1>Parghelia · Zambrone · Briatico</h1>
+          </div>
+          <p class="lead">Tour privato di 3 ore dedicato a grandi e bambini (animali non ammessi). Dal porto di Tropea alle baie selvagge di Parghelia, Zambrone e Briatico con snorkeling guidato e aperitivo tipico.</p>
+          <div class="hero__actions">
+            <a class="btn primary" href="portal.html">Prenota questa escursione</a>
+            <a class="btn outline" href="escursioni.html">Torna alle escursioni</a>
+          </div>
+          <ul class="hero__metrics">
+            <li>
+              <strong>3h</strong>
+              <span>Durata experience</span>
+            </li>
+            <li>
+              <strong>09:30</strong>
+              <span>Partenza dal porto</span>
+            </li>
+            <li>
+              <strong>Skipper</strong>
+              <span>Supporto dedicato</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section excursion-detail">
+      <header class="section__header">
+        <p class="eyebrow">Programma</p>
+        <h2>Partenza dal porto di Tropea e circuito completo fino al Paradiso del Sub.</h2>
+      </header>
+      <div class="detail__grid">
+        <div class="detail__copy">
+          <p>Welcome alle 09:00 in banchina con briefing sicurezza. Navigazione verso le baie selvagge del litorale nord, soste per snorkeling e relax in spiagge raggiungibili solo via mare.</p>
+          <h4>Itinerario</h4>
+          <ol>
+            <li>Partenza dal Porto di Tropea.</li>
+            <li>Caletta di Vardanello e snorkeling alla spiaggia di Michelino.</li>
+            <li>Scoglio della Pizzuta e visita alla cava di granito.</li>
+            <li>Baia della Tonnara con sosta aperitivo.</li>
+            <li>Baia delle Sirene e Scoglio della Galea.</li>
+            <li>Paradiso del Sub a Briatico e rientro a Tropea.</li>
+          </ol>
+          <h4>Consigli su cosa portare</h4>
+          <ul>
+            <li>Costume, telo mare, crema solare.</li>
+            <li>Macchina fotografica o action cam.</li>
+          </ul>
+          <h4>Incluso</h4>
+          <ul>
+            <li>Aperitivo tipico calabrese servito a bordo.</li>
+            <li>Attrezzatura completa per snorkeling.</li>
+            <li>Skipper dedicato e carburante.</li>
+          </ul>
+          <div class="price-list">
+            <h4>Listino prezzi · Giugno - Settembre</h4>
+            <ul>
+              <li><span>1 - 3 persone</span><strong>€280</strong></li>
+              <li><span>4 - 6 persone</span><strong>€370</strong></li>
+              <li><span>7 - 9 persone</span><strong>€460</strong></li>
+              <li><span>10 - 12 persone</span><strong>€540</strong></li>
+            </ul>
+          </div>
+        </div>
+        <figure class="detail__media">
+          <img src="assets/img/14.jpg" alt="Calette tra Parghelia e Zambrone">
+        </figure>
+      </div>
+    </section>
+
+    <section class="section amenities">
+      <header class="section__header">
+        <p class="eyebrow">Cosa è incluso</p>
+        <h2>Aperitivo tipico, snorkeling e storytelling della costa.</h2>
+      </header>
+      <div class="amenities-grid">
+        <article class="amenity-card">
+          <span class="label">Snorkeling</span>
+          <h3>Kit completo e guida sul posto</h3>
+          <p>Maschera, boccaglio e pinne in diverse misure con briefing sugli spot più suggestivi.</p>
+        </article>
+        <article class="amenity-card">
+          <span class="label">Aperitivo</span>
+          <h3>Degustazione calabrese on board</h3>
+          <p>Soft drink, vini locali e prodotti tipici serviti durante la sosta alla Baia della Tonnara.</p>
+        </article>
+        <article class="amenity-card">
+          <span class="label">Storytelling</span>
+          <h3>Racconti su storia e geologia della costa</h3>
+          <p>Lo skipper condivide curiosità su borghi marittimi, cave di granito e leggende della Costa degli Dei.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section boat-gallery">
+      <header class="section__header">
+        <p class="eyebrow">Gallery</p>
+        <h2>Gli scorci più iconici tra Parghelia e Briatico.</h2>
+      </header>
+      <div class="boat-gallery__grid">
+        <figure>
+          <img src="assets/img/6.jpg" alt="Caletta di Vardanello">
+          <figcaption>Caletta selvaggia di Vardanello raggiungibile solo via mare.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/5.jpg" alt="Baia della Tonnara">
+          <figcaption>Sosta aperitivo nella Baia della Tonnara.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/12.jpg" alt="Paradiso del Sub">
+          <figcaption>Paradiso del Sub: snorkeling tra acque turchesi.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section finale finale--alt">
+      <div class="finale__content">
+        <p class="eyebrow">Blocca il tuo slot</p>
+        <h2>Un solo tour privato al giorno, posti limitati.</h2>
+        <p>Verifica disponibilità sul portale, aggiungi servizi come drone operator o picnic in spiaggia e ricevi conferma immediata.</p>
+        <div class="hero__actions">
+          <a class="btn primary" href="portal.html">Prenota ora</a>
+          <a class="btn outline" href="escursioni.html">Torna alle escursioni</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="footer__logo">
+        <div>
+          <h4>Albatros Tropea Noleggio</h4>
+          <p>Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
+        </div>
+        <p>Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
+      </div>
+      <div class="footer__group">
+        <h4>Contatti rapidi</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Desk operativo</span>
+            <a href="tel:+393715328451">+39 371 53 28 451</a>
+          </li>
+          <li>
+            <span>Email concierge</span>
+            <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
+          </li>
+          <li>
+            <span>WhatsApp crew</span>
+            <a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Operation desk</h4>
+        <ul class="footer__list">
+          <li>
+            <span>Fasce attive</span>
+            <p>Daily concierge · 08:00 - 20:00</p>
+          </li>
+          <li>
+            <span>Linee emergenza</span>
+            <p>Skipper &amp; safety team · 24/7</p>
+          </li>
+          <li>
+            <span>Portale clienti</span>
+            <a href="portal.html">Accedi al controllo prenotazioni</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4>Social signals</h4>
+        <ul class="footer__social">
+          <li><a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener">TripAdvisor</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
+      <span>Privacy · Cookie policy</span>
+    </div>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
