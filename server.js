@@ -4,18 +4,45 @@ const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const helmet = require('helmet');
 const cors = require('cors');
-const Database = require('better-sqlite3');
+const createDatabase = require('./db');
 
 const SESSION_SECRET = process.env.SESSION_SECRET || 'change-me-please';
 const PORT = process.env.PORT || 3000;
 const DB_FILE = process.env.DB_FILE || path.join(__dirname, 'data.sqlite');
 
-const db = new Database(DB_FILE);
+const db = createDatabase(DB_FILE);
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const TIME_REGEX = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+const PHONE_REGEX = /^[+0-9\s().-]{6,20}$/;
+const BOOKING_STATUSES = new Set(['da confermare', 'confermato', 'completato', 'annullato']);
+const MAX_FULLNAME_LENGTH = 120;
+const MAX_GENERIC_LENGTH = 160;
+const MAX_NOTE_LENGTH = 1000;
+const MAX_INTERNAL_NOTE_LENGTH = 2000;
+const MAX_PHONE_LENGTH = 32;
+
+function normalizeEmail(email = '') {
+  return email.trim().toLowerCase();
+}
+
+function sanitizeName(name = '', maxLength = MAX_FULLNAME_LENGTH) {
+  return name.trim().replace(/\s+/g, ' ').slice(0, maxLength);
+}
+
+function sanitizeOptionalText(value, maxLength = MAX_GENERIC_LENGTH) {
+  if (typeof value !== 'string') return '';
+  return value.trim().slice(0, maxLength);
+}
+
+function sanitizePhone(phone = '') {
+  if (typeof phone !== 'string') return '';
+  return phone.replace(/[^+\d().\-\s]/g, '').trim().slice(0, MAX_PHONE_LENGTH);
+}
 
 function bootstrapDatabase() {
   db.exec(`
-    PRAGMA foreign_keys = ON;
-
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       full_name TEXT NOT NULL,
@@ -111,7 +138,7 @@ function sanitizeUser(user) {
 }
 
 function loadUserByEmail(email) {
-  return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+  return db.prepare('SELECT * FROM users WHERE email = ?').get(normalizeEmail(email));
 }
 
 function loadUserById(id) {
@@ -140,27 +167,49 @@ function requireAdmin(req, res, next) {
 
 app.post('/api/register', (req, res) => {
   const { fullName, email, password, phone } = req.body || {};
-  if (!fullName || !email || !password) {
+  const sanitizedFullName = sanitizeName(typeof fullName === 'string' ? fullName : '');
+  const normalizedEmail = normalizeEmail(typeof email === 'string' ? email : '');
+  const passwordValue = typeof password === 'string' ? password.trim() : '';
+  const rawPhone = typeof phone === 'string' ? phone.trim() : '';
+
+  if (!sanitizedFullName || !normalizedEmail || !passwordValue) {
     return res.status(400).json({ error: 'Compila tutti i campi obbligatori' });
   }
 
-  const existing = loadUserByEmail(email.trim().toLowerCase());
+  if (!EMAIL_REGEX.test(normalizedEmail)) {
+    return res.status(400).json({ error: 'Formato email non valido' });
+  }
+
+  if (passwordValue.length < 8) {
+    return res.status(400).json({ error: 'La password deve contenere almeno 8 caratteri' });
+  }
+
+  if (rawPhone && !PHONE_REGEX.test(rawPhone)) {
+    return res.status(400).json({ error: 'Numero di telefono non valido' });
+  }
+
+  const existing = loadUserByEmail(normalizedEmail);
   if (existing) {
     return res.status(409).json({ error: 'Email già registrata' });
   }
 
-  const passwordHash = bcrypt.hashSync(password, 10);
-  const result = db.prepare(`
-    INSERT INTO users (full_name, email, password_hash, role, phone)
-    VALUES (@fullName, @email, @passwordHash, 'user', @phone)
-  `).run({
-    fullName: fullName.trim(),
-    email: email.trim().toLowerCase(),
-    passwordHash,
-    phone: phone ? phone.trim() : null,
-  });
+  const passwordHash = bcrypt.hashSync(passwordValue, 10);
+  try {
+    const result = db.prepare(`
+      INSERT INTO users (full_name, email, password_hash, role, phone)
+      VALUES (@fullName, @email, @passwordHash, 'user', @phone)
+    `).run({
+      fullName: sanitizedFullName,
+      email: normalizedEmail,
+      passwordHash,
+      phone: rawPhone ? sanitizePhone(rawPhone) : null,
+    });
 
-  req.session.userId = result.lastInsertRowid;
+    req.session.userId = result.lastInsertRowid;
+  } catch (error) {
+    console.error('Errore registrazione utente', error);
+    return res.status(500).json({ error: 'Errore salvataggio utente' });
+  }
 
   const user = loadUserById(req.session.userId);
   return res.status(201).json({ user: sanitizeUser(user) });
@@ -168,16 +217,23 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
   const { email, password } = req.body || {};
-  if (!email || !password) {
+  const normalizedEmail = normalizeEmail(typeof email === 'string' ? email : '');
+  const passwordValue = typeof password === 'string' ? password : '';
+
+  if (!normalizedEmail || !passwordValue) {
     return res.status(400).json({ error: 'Inserisci email e password' });
   }
 
-  const user = loadUserByEmail(email.trim().toLowerCase());
+  if (!EMAIL_REGEX.test(normalizedEmail)) {
+    return res.status(400).json({ error: 'Formato email non valido' });
+  }
+
+  const user = loadUserByEmail(normalizedEmail);
   if (!user) {
     return res.status(401).json({ error: 'Credenziali non valide' });
   }
 
-  const valid = bcrypt.compareSync(password, user.password_hash);
+  const valid = bcrypt.compareSync(passwordValue, user.password_hash);
   if (!valid) {
     return res.status(401).json({ error: 'Credenziali non valide' });
   }
@@ -225,12 +281,38 @@ app.post('/api/bookings', requireAuth, (req, res) => {
     phone,
   } = req.body || {};
 
-  if (!customerName || !serviceType || !date || !time || !people || !phone) {
+  const sanitizedName = sanitizeName(typeof customerName === 'string' ? customerName : '');
+  const normalizedServiceType = typeof serviceType === 'string' ? serviceType.trim() : '';
+  const sanitizedDate = typeof date === 'string' ? date.trim() : '';
+  const sanitizedTime = typeof time === 'string' ? time.trim() : '';
+  const rawPhone = typeof phone === 'string' ? phone.trim() : '';
+  const peopleCount = Number.parseInt(people, 10);
+  const sanitizedBoatModel = sanitizeOptionalText(boatModel, MAX_GENERIC_LENGTH);
+  const sanitizedTour = sanitizeOptionalText(tour, MAX_GENERIC_LENGTH);
+  const sanitizedNotes = sanitizeOptionalText(notes, MAX_NOTE_LENGTH);
+
+  if (!sanitizedName || !normalizedServiceType || !sanitizedDate || !sanitizedTime || Number.isNaN(peopleCount) || !rawPhone) {
     return res.status(400).json({ error: 'Compila i campi obbligatori del modulo' });
   }
 
-  if (!['noleggio', 'escursione'].includes(serviceType)) {
+  if (!['noleggio', 'escursione'].includes(normalizedServiceType)) {
     return res.status(400).json({ error: 'Tipo di servizio non valido' });
+  }
+
+  if (!DATE_REGEX.test(sanitizedDate)) {
+    return res.status(400).json({ error: 'Data non valida' });
+  }
+
+  if (!TIME_REGEX.test(sanitizedTime)) {
+    return res.status(400).json({ error: 'Orario non valido' });
+  }
+
+  if (!Number.isInteger(peopleCount) || peopleCount < 1 || peopleCount > 12) {
+    return res.status(400).json({ error: 'Numero di ospiti non valido' });
+  }
+
+  if (!PHONE_REGEX.test(rawPhone)) {
+    return res.status(400).json({ error: 'Numero di telefono non valido' });
   }
 
   const bookingStmt = db.prepare(`
@@ -245,22 +327,27 @@ app.post('/api/bookings', requireAuth, (req, res) => {
     )
   `);
 
-  const result = bookingStmt.run({
-    userId: req.user.id,
-    customerName: customerName.trim(),
-    email: req.user.email,
-    phone: phone.trim(),
-    serviceType,
-    boatModel: serviceType === 'noleggio' ? (boatModel || '') : '',
-    tour: serviceType === 'escursione' ? (tour || '') : '',
-    date,
-    time,
-    people: Number(people),
-    notes: notes ? notes.trim() : '',
-  });
+  try {
+    const result = bookingStmt.run({
+      userId: req.user.id,
+      customerName: sanitizedName,
+      email: req.user.email,
+      phone: sanitizePhone(rawPhone),
+      serviceType: normalizedServiceType,
+      boatModel: normalizedServiceType === 'noleggio' ? sanitizedBoatModel : '',
+      tour: normalizedServiceType === 'escursione' ? sanitizedTour : '',
+      date: sanitizedDate,
+      time: sanitizedTime,
+      people: peopleCount,
+      notes: sanitizedNotes,
+    });
 
-  const booking = db.prepare('SELECT * FROM bookings WHERE id = ?').get(result.lastInsertRowid);
-  return res.status(201).json({ booking });
+    const booking = db.prepare('SELECT * FROM bookings WHERE id = ?').get(result.lastInsertRowid);
+    return res.status(201).json({ booking });
+  } catch (error) {
+    console.error('Errore salvataggio prenotazione', error);
+    return res.status(500).json({ error: 'Errore salvataggio prenotazione' });
+  }
 });
 
 app.get('/api/bookings', requireAuth, (req, res) => {
@@ -270,32 +357,37 @@ app.get('/api/bookings', requireAuth, (req, res) => {
     SELECT b.*, u.full_name as user_full_name
     FROM bookings b
     INNER JOIN users u ON u.id = b.user_id
+    WHERE 1=1
   `;
-  const filters = [];
-  const params = [];
+  const params = {};
 
   if (req.user.role !== 'admin') {
-    filters.push('b.user_id = ?');
-    params.push(req.user.id);
+    query += ' AND b.user_id = @userId';
+    params.userId = req.user.id;
   }
 
   if (serviceType && ['noleggio', 'escursione'].includes(serviceType)) {
-    filters.push('b.service_type = ?');
-    params.push(serviceType);
+    query += ' AND b.service_type = @serviceType';
+    params.serviceType = serviceType;
   }
 
   if (status) {
-    filters.push('b.status = ?');
-    params.push(status);
-  }
-
-  if (filters.length) {
-    query += ` WHERE ${filters.join(' AND ')}`;
+    if (!BOOKING_STATUSES.has(status)) {
+      return res.status(400).json({ error: 'Stato non valido' });
+    }
+    query += ' AND b.status = @status';
+    params.status = status;
   }
 
   query += ' ORDER BY b.date ASC, b.time ASC';
 
-  const bookings = db.prepare(query).all(...params);
+  let bookings = [];
+  try {
+    bookings = db.prepare(query).all(params);
+  } catch (error) {
+    console.error('Errore recupero prenotazioni', error);
+    return res.status(500).json({ error: 'Errore recupero prenotazioni' });
+  }
 
   const stats = {
     total: bookings.length,
@@ -313,8 +405,13 @@ app.get('/api/bookings', requireAuth, (req, res) => {
 app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
   const { id } = req.params;
   const { status, internalNote } = req.body || {};
+  const bookingId = Number.parseInt(id, 10);
 
-  const booking = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
+  if (!Number.isInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).json({ error: 'ID prenotazione non valido' });
+  }
+
+  const booking = db.prepare('SELECT * FROM bookings WHERE id = ?').get(bookingId);
   if (!booking) {
     return res.status(404).json({ error: 'Prenotazione non trovata' });
   }
@@ -322,8 +419,8 @@ app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
   const updates = [];
   const params = {};
 
-  if (status) {
-    if (!['da confermare', 'confermato', 'completato', 'annullato'].includes(status)) {
+  if (typeof status !== 'undefined') {
+    if (!BOOKING_STATUSES.has(status)) {
       return res.status(400).json({ error: 'Stato non valido' });
     }
     updates.push('status = @status');
@@ -331,8 +428,9 @@ app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
   }
 
   if (typeof internalNote === 'string') {
+    const sanitizedInternalNote = sanitizeOptionalText(internalNote, MAX_INTERNAL_NOTE_LENGTH);
     updates.push('internal_note = @internalNote');
-    params.internalNote = internalNote.trim();
+    params.internalNote = sanitizedInternalNote;
   }
 
   if (!updates.length) {
@@ -340,7 +438,7 @@ app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
   }
 
   updates.push("updated_at = datetime('now')");
-  params.id = id;
+  params.id = bookingId;
 
   const updateQuery = `
     UPDATE bookings
@@ -348,9 +446,14 @@ app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
     WHERE id = @id
   `;
 
-  db.prepare(updateQuery).run(params);
+  try {
+    db.prepare(updateQuery).run(params);
+  } catch (error) {
+    console.error('Errore aggiornamento prenotazione', error);
+    return res.status(500).json({ error: 'Errore aggiornamento prenotazione' });
+  }
 
-  const updated = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
+  const updated = db.prepare('SELECT * FROM bookings WHERE id = ?').get(bookingId);
   return res.json({ booking: updated });
 });
 

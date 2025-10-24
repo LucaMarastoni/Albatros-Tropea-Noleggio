@@ -2133,3 +2133,92 @@ body.modal-open {
 .section:nth-of-type(even) {
   animation-delay: 0.2s;
 }
+
+.legal-page {
+  font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f6fbff 0%, #e3f1ff 100%);
+  color: #0b2a3d;
+}
+
+.legal-header {
+  padding: clamp(32px, 8vw, 64px);
+  text-align: center;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(26, 125, 219, 0.12);
+  box-shadow: 0 12px 32px rgba(12, 74, 132, 0.14);
+}
+
+.legal-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(26, 125, 219, 0.12);
+  text-decoration: none;
+  color: inherit;
+  font-weight: 600;
+}
+
+.legal-brand img {
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(26, 125, 219, 0.18);
+}
+
+.legal-content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: clamp(32px, 6vw, 72px);
+  display: grid;
+  gap: 32px;
+}
+
+.legal-content section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 22px;
+  border: 1px solid rgba(26, 125, 219, 0.14);
+  padding: clamp(24px, 5vw, 36px);
+  box-shadow: 0 24px 60px rgba(12, 74, 132, 0.12);
+}
+
+.legal-content h2 {
+  margin-top: 0;
+  font-size: 1.3rem;
+}
+
+.legal-content p {
+  line-height: 1.6;
+  margin: 0;
+}
+
+.legal-content ul {
+  margin: 16px 0 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 10px;
+  line-height: 1.6;
+}
+
+.legal-content a {
+  color: #1a7ddb;
+  text-decoration: underline;
+}
+
+.legal-footer {
+  padding: clamp(24px, 6vw, 48px);
+  text-align: center;
+  display: grid;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid rgba(26, 125, 219, 0.12);
+}
+
+.legal-footer .btn {
+  justify-self: center;
+}

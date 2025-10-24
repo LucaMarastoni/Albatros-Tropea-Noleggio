@@ -18,17 +18,20 @@ const state = {
 };
 
 const elements = {
-  authScreen: document.getElementById('authScreen'),
-  loginForm: document.getElementById('portalLoginForm'),
+  portalModal: document.getElementById('portalAuthModal'),
+  portalCloseTriggers: Array.from(document.querySelectorAll('#portalAuthModal [data-close-modal]')),
+  portalTabs: Array.from(document.querySelectorAll('#portalAuthModal .tab')),
+  portalTabPanels: Array.from(document.querySelectorAll('#portalAuthModal [data-panel]')),
+  authForm: document.getElementById('portalAuthCard'),
   loginEmail: document.getElementById('portalLoginEmail'),
   loginPassword: document.getElementById('portalLoginPassword'),
   loginFeedback: document.getElementById('portalLoginFeedback'),
-  registerForm: document.getElementById('portalRegisterForm'),
   registerName: document.getElementById('portalRegisterName'),
   registerEmail: document.getElementById('portalRegisterEmail'),
   registerPhone: document.getElementById('portalRegisterPhone'),
   registerPassword: document.getElementById('portalRegisterPassword'),
   registerFeedback: document.getElementById('portalRegisterFeedback'),
+  portalAuthTrigger: document.getElementById('portalAuthTrigger'),
   logoutBtn: document.getElementById('portalLogout'),
   topUserName: document.getElementById('topUserName'),
   topUserRole: document.getElementById('topUserRole'),
@@ -93,13 +96,60 @@ function showFeedback(node, message, type = 'error') {
   node.classList.add(type);
 }
 
-function toggleAuthScreen(show) {
-  elements.authScreen.classList.toggle('hidden', !show);
-  if (show) {
-    resetFeedback(elements.loginFeedback, elements.registerFeedback);
-    elements.loginForm.reset();
-    elements.registerForm.reset();
+let activePortalTab = 'login';
+let lastFocusedElement = null;
+
+function switchPortalTab(tabName) {
+  activePortalTab = tabName;
+  elements.portalTabs.forEach((tab) => {
+    tab.classList.toggle('active', tab.dataset.tab === tabName);
+  });
+  elements.portalTabPanels.forEach((panel) => {
+    panel.classList.toggle('active', panel.dataset.panel === tabName);
+  });
+}
+
+function focusPortalField(tabName) {
+  if (tabName === 'register') {
+    elements.registerName?.focus();
+  } else {
+    elements.loginEmail?.focus();
   }
+}
+
+function openPortalModal(tabName = 'login') {
+  if (!elements.portalModal) return;
+  const wasHidden = elements.portalModal.classList.contains('hidden');
+  if (wasHidden) {
+    lastFocusedElement = document.activeElement;
+    elements.portalModal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+    resetFeedback(elements.loginFeedback, elements.registerFeedback);
+    elements.authForm?.reset();
+  }
+  switchPortalTab(tabName);
+  focusPortalField(tabName);
+}
+
+function closePortalModal() {
+  if (!elements.portalModal || elements.portalModal.classList.contains('hidden')) {
+    return;
+  }
+  elements.portalModal.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  resetFeedback(elements.loginFeedback, elements.registerFeedback);
+  elements.authForm?.reset();
+  switchPortalTab('login');
+  let focusTarget = null;
+  if (state.user && elements.logoutBtn && !elements.logoutBtn.classList.contains('hidden') && elements.logoutBtn.offsetParent) {
+    focusTarget = elements.logoutBtn;
+  } else if (!state.user && elements.portalAuthTrigger?.offsetParent) {
+    focusTarget = elements.portalAuthTrigger;
+  } else {
+    focusTarget = lastFocusedElement;
+  }
+  focusTarget?.focus();
+  lastFocusedElement = null;
 }
 
 function formatRole(role) {
@@ -155,6 +205,8 @@ function updateUserUI() {
     elements.sidebarAvatar.textContent = '⛵';
     elements.clientArea.classList.add('hidden');
     elements.adminArea.classList.add('hidden');
+    elements.portalAuthTrigger?.classList.remove('hidden');
+    elements.logoutBtn?.classList.add('hidden');
     prefillBookingContact();
     return;
   }
@@ -174,6 +226,8 @@ function updateUserUI() {
   } else {
     elements.adminArea.classList.add('hidden');
   }
+  elements.portalAuthTrigger?.classList.add('hidden');
+  elements.logoutBtn?.classList.remove('hidden');
 
   prefillBookingContact();
 }
@@ -427,7 +481,7 @@ async function handleLogin() {
       body: JSON.stringify({ email, password }),
     });
     state.user = user;
-    toggleAuthScreen(false);
+    closePortalModal();
     updateUserUI();
     await Promise.all([loadClientBookings(), loadAdminBookings()]);
   } catch (error) {
@@ -458,7 +512,7 @@ async function handleRegister() {
       }),
     });
     state.user = user;
-    toggleAuthScreen(false);
+    closePortalModal();
     updateUserUI();
     await loadClientBookings();
   } catch (error) {
@@ -477,7 +531,7 @@ async function handleLogout() {
     updateUserUI();
     prefillBookingContact();
     renderClientBookings();
-    toggleAuthScreen(true);
+    openPortalModal('login');
   }
 }
 
@@ -487,14 +541,14 @@ async function checkSession() {
     if (user) {
       state.user = user;
       updateUserUI();
-      toggleAuthScreen(false);
+      closePortalModal();
       await Promise.all([loadClientBookings(), loadAdminBookings()]);
     } else {
-      toggleAuthScreen(true);
+      openPortalModal('login');
     }
   } catch (error) {
     console.warn('Sessione non disponibile:', error);
-    toggleAuthScreen(true);
+    openPortalModal('login');
   }
 }
 
@@ -516,15 +570,30 @@ function attachEventListeners() {
   elements.bookingForm.addEventListener('submit', handleBookingSubmit);
   elements.refreshClientBookings.addEventListener('click', loadClientBookings);
   elements.logoutBtn.addEventListener('click', handleLogout);
-
-  elements.loginForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    handleLogin();
+  elements.portalAuthTrigger?.addEventListener('click', () => openPortalModal(activePortalTab));
+  elements.portalCloseTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', closePortalModal);
+  });
+  elements.portalTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const nextTab = tab.dataset.tab;
+      switchPortalTab(nextTab);
+      focusPortalField(nextTab);
+    });
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !elements.portalModal?.classList.contains('hidden')) {
+      closePortalModal();
+    }
   });
 
-  elements.registerForm.addEventListener('submit', (event) => {
+  elements.authForm?.addEventListener('submit', (event) => {
     event.preventDefault();
-    handleRegister();
+    if (activePortalTab === 'register') {
+      handleRegister();
+    } else {
+      handleLogin();
+    }
   });
 
   elements.adminFilterType.addEventListener('change', (event) => {
@@ -542,6 +611,7 @@ function attachEventListeners() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   attachEventListeners();
+  updateUserUI();
 
   const portalMenuToggle = document.getElementById('portalMenuToggle');
   const portalNav = document.getElementById('portalNav');
