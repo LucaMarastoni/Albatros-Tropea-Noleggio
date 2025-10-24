@@ -7,6 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+  <link rel="manifest" href="assets/favicon/site.webmanifest">
+  <link rel="shortcut icon" href="assets/favicon/favicon.ico">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="landing">
@@ -46,17 +51,13 @@
   </header>
 
   <main class="landing-main">
-    <section id="hero" class="hero">
+    <section id="hero" class="hero hero--fullscreen">
+      <div class="hero__background" aria-hidden="true">
+        <video src="assets/vid/vid7.mp4" autoplay muted loop playsinline preload="metadata" poster="assets/img/1.jpg" aria-hidden="true"></video>
+      </div>
       <div class="hero__grid">
         <div class="hero__content">
-          <div class="hero__headline">
-            <div class="hero__media">
-              <video src="assets/vid/vid7.mp4" autoplay muted loop playsinline preload="metadata" poster="assets/img/1.jpg" aria-label="Gommone in navigazione lungo la costa di Tropea">
-                Il tuo browser non supporta il video.
-              </video>
-            </div>
-            <h1>Esperienze nautiche sartoriali sulla Costa degli Dei.</h1>
-          </div>
+          <h1>Esperienze nautiche sartoriali sulla Costa degli Dei.</h1>
           <p class="lead">Un solo gommone comfort 40cv curato in ogni dettaglio e tre itinerari dedicati tra Tropea e Capo Vaticano. Prenoti online, arrivi in banchina e parti.</p>
           <div class="hero__actions">
             <a class="btn primary" href="boats.html">Scopri il gommone</a>
@@ -79,7 +80,6 @@
         </div>
       </div>
       <div class="hero__ticker">
-        <span>Prossime uscite</span>
         <div class="hero__ticker-scroll" aria-label="Itinerari in partenza">
           <ul class="hero__ticker-track">
             <li>Costa degli Dei Explorer · 09:00</li>
