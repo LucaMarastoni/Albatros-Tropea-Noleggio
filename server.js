@@ -457,11 +457,11 @@ app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
   return res.json({ booking: updated });
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'docs')));
 
 app.use((req, res) => {
   if (req.method === 'GET' && !req.path.startsWith('/api/')) {
-    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    return res.sendFile(path.join(__dirname, 'docs', 'index.html'));
   }
   return res.status(404).json({ error: 'Risorsa non trovata' });
 });
