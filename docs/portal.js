@@ -17,6 +17,10 @@ const state = {
   },
 };
 
+const portalPage = document.body?.dataset?.portalPage || 'booking';
+const isDashboardPage = portalPage === 'dashboard';
+const isBookingPage = portalPage === 'booking';
+
 const elements = {
   portalModal: document.getElementById('portalAuthModal'),
   portalCloseTriggers: Array.from(document.querySelectorAll('#portalAuthModal [data-close-modal]')),
@@ -35,12 +39,10 @@ const elements = {
   logoutBtn: document.getElementById('portalLogout'),
   topUserName: document.getElementById('topUserName'),
   topUserRole: document.getElementById('topUserRole'),
-  sidebarName: document.getElementById('sidebarName'),
-  sidebarRole: document.getElementById('sidebarRole'),
-  sidebarAvatar: document.getElementById('sidebarAvatar'),
-  welcomePanel: document.getElementById('welcomePanel'),
   clientArea: document.getElementById('clientArea'),
   adminArea: document.getElementById('adminArea'),
+  adminGuard: document.getElementById('adminGuard'),
+  guardLogin: document.getElementById('openAuthFromGuard'),
   bookingForm: document.getElementById('bookingForm'),
   bookingFeedback: document.getElementById('bookingFeedback'),
   serviceType: document.getElementById('serviceType'),
@@ -57,7 +59,13 @@ const elements = {
   adminStatPending: document.getElementById('adminStatPending'),
   adminStatToday: document.getElementById('adminStatToday'),
   adminTableBody: document.getElementById('adminTableBody'),
+  adminNavLinks: Array.from(document.querySelectorAll('[data-role="admin"]')),
 };
+
+function toggleHidden(node, shouldHide) {
+  if (!node) return;
+  node.classList.toggle('hidden', shouldHide);
+}
 
 async function fetchJSON(url, options = {}) {
   const response = await fetch(url, {
@@ -197,42 +205,35 @@ function prefillBookingContact() {
 }
 
 function updateUserUI() {
-  if (!state.user) {
-    elements.topUserName.textContent = 'Ospite';
-    elements.topUserRole.textContent = '—';
-    elements.sidebarName.textContent = 'Benvenuto';
-    elements.sidebarRole.textContent = 'ospite';
-    elements.sidebarAvatar.textContent = '⛵';
-    elements.clientArea.classList.add('hidden');
-    elements.adminArea.classList.add('hidden');
-    elements.portalAuthTrigger?.classList.remove('hidden');
-    elements.logoutBtn?.classList.add('hidden');
-    prefillBookingContact();
-    return;
-  }
+  const isLoggedIn = Boolean(state.user);
+  const isAdmin = state.user?.role === 'admin';
+  const displayName = state.user?.full_name || state.user?.email || 'Ospite';
 
-  const { full_name: fullName, email, role } = state.user;
-  const displayName = fullName || email;
+  if (elements.topUserName) elements.topUserName.textContent = displayName;
+  if (elements.topUserRole) elements.topUserRole.textContent = isLoggedIn ? formatRole(state.user.role) : '—';
 
-  elements.topUserName.textContent = displayName;
-  elements.topUserRole.textContent = formatRole(role);
-  elements.sidebarName.textContent = displayName;
-  elements.sidebarRole.textContent = role;
-  elements.sidebarAvatar.textContent = initialsFromName(displayName);
+  toggleHidden(elements.portalAuthTrigger, isLoggedIn);
+  toggleHidden(elements.logoutBtn, !isLoggedIn);
 
-  elements.clientArea.classList.remove('hidden');
-  if (role === 'admin') {
-    elements.adminArea.classList.remove('hidden');
+  elements.adminNavLinks.forEach((link) => {
+    toggleHidden(link, !isAdmin);
+  });
+
+  toggleHidden(elements.clientArea, !isLoggedIn);
+
+  if (isDashboardPage) {
+    toggleHidden(elements.adminArea, !isAdmin);
+    toggleHidden(elements.adminGuard, isAdmin);
   } else {
-    elements.adminArea.classList.add('hidden');
+    toggleHidden(elements.adminArea, true);
+    toggleHidden(elements.adminGuard, true);
   }
-  elements.portalAuthTrigger?.classList.add('hidden');
-  elements.logoutBtn?.classList.remove('hidden');
 
   prefillBookingContact();
 }
 
 function populateServiceOptions() {
+  if (!elements.serviceType) return;
   elements.serviceType.innerHTML = '<option value="">Seleziona</option>';
   [
     { value: 'noleggio', label: 'Noleggio gommone' },
@@ -245,27 +246,31 @@ function populateServiceOptions() {
   });
 
   elements.boatModel.innerHTML = '';
-  state.catalog.boats.forEach((boat) => {
-    const option = document.createElement('option');
-    option.value = boat;
-    option.textContent = boat;
-    elements.boatModel.appendChild(option);
-  });
+  if (elements.boatModel) {
+    state.catalog.boats.forEach((boat) => {
+      const option = document.createElement('option');
+      option.value = boat;
+      option.textContent = boat;
+      elements.boatModel.appendChild(option);
+    });
+  }
 
   elements.tour.innerHTML = '';
-  state.catalog.tours.forEach((experience) => {
-    const option = document.createElement('option');
-    option.value = experience;
-    option.textContent = experience;
-    elements.tour.appendChild(option);
-  });
+  if (elements.tour) {
+    state.catalog.tours.forEach((experience) => {
+      const option = document.createElement('option');
+      option.value = experience;
+      option.textContent = experience;
+      elements.tour.appendChild(option);
+    });
+  }
 }
 
 function handleServiceTypeChange(value) {
   const isRental = value === 'noleggio';
   const isTour = value === 'escursione';
-  elements.boatField.classList.toggle('hidden', !isRental);
-  elements.tourField.classList.toggle('hidden', !isTour);
+  toggleHidden(elements.boatField, !isRental);
+  toggleHidden(elements.tourField, !isTour);
 }
 
 function formatDateTime(date, time) {
@@ -285,6 +290,7 @@ function formatDateTime(date, time) {
 
 function renderClientBookings() {
   const container = elements.clientBookings;
+  if (!container) return;
   container.innerHTML = '';
 
   if (!state.bookings.length) {
@@ -320,6 +326,7 @@ function renderClientBookings() {
 
 function renderAdminStats() {
   if (!state.user || state.user.role !== 'admin') return;
+  if (!elements.adminStatTotal || !elements.adminStatPending || !elements.adminStatToday) return;
   elements.adminStatTotal.textContent = state.stats.total ?? 0;
   elements.adminStatPending.textContent = state.stats.pending ?? 0;
   elements.adminStatToday.textContent = state.stats.todayTours ?? 0;
@@ -329,12 +336,13 @@ function renderAdminTable() {
   if (!state.user || state.user.role !== 'admin') return;
 
   const tbody = elements.adminTableBody;
+  if (!tbody) return;
   tbody.innerHTML = '';
 
   if (!state.adminBookings?.length) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
-    cell.colSpan = 7;
+    cell.colSpan = 8;
     cell.textContent = 'Nessuna prenotazione corrispondente ai filtri.';
     row.appendChild(cell);
     tbody.appendChild(row);
@@ -355,6 +363,7 @@ function renderAdminTable() {
       <td>${booking.people}</td>
       <td></td>
       <td></td>
+      <td>—</td>
     `;
 
     const statusCell = row.children[5];
@@ -418,7 +427,7 @@ async function loadClientBookings() {
 }
 
 async function loadAdminBookings() {
-  if (!state.user || state.user.role !== 'admin') return;
+  if (!state.user || state.user.role !== 'admin' || !elements.adminTableBody) return;
 
   const params = new URLSearchParams();
   if (state.filters.type !== 'all') params.set('serviceType', state.filters.type);
@@ -440,6 +449,7 @@ async function loadAdminBookings() {
 
 async function handleBookingSubmit(event) {
   event.preventDefault();
+  if (!elements.bookingForm) return;
   resetFeedback(elements.bookingFeedback);
 
   const formData = new FormData(elements.bookingForm);
@@ -483,7 +493,10 @@ async function handleLogin() {
     state.user = user;
     closePortalModal();
     updateUserUI();
-    await Promise.all([loadClientBookings(), loadAdminBookings()]);
+    const loaders = [];
+    if (isBookingPage) loaders.push(loadClientBookings());
+    if (isDashboardPage) loaders.push(loadAdminBookings());
+    await Promise.all(loaders);
   } catch (error) {
     showFeedback(elements.loginFeedback, error.message, 'error');
   }
@@ -514,7 +527,10 @@ async function handleRegister() {
     state.user = user;
     closePortalModal();
     updateUserUI();
-    await loadClientBookings();
+    const loaders = [];
+    if (isBookingPage) loaders.push(loadClientBookings());
+    if (isDashboardPage) loaders.push(loadAdminBookings());
+    await Promise.all(loaders);
   } catch (error) {
     showFeedback(elements.registerFeedback, error.message, 'error');
   }
@@ -542,17 +558,23 @@ async function checkSession() {
       state.user = user;
       updateUserUI();
       closePortalModal();
-      await Promise.all([loadClientBookings(), loadAdminBookings()]);
+      const loaders = [];
+      if (isBookingPage) loaders.push(loadClientBookings());
+      if (isDashboardPage) loaders.push(loadAdminBookings());
+      await Promise.all(loaders);
     } else {
+      updateUserUI();
       openPortalModal('login');
     }
   } catch (error) {
     console.warn('Sessione non disponibile:', error);
+    updateUserUI();
     openPortalModal('login');
   }
 }
 
 async function loadCatalog() {
+  if (!elements.serviceType) return;
   try {
     const catalog = await fetchJSON('/api/catalog', { method: 'GET' });
     state.catalog = catalog;
@@ -563,14 +585,20 @@ async function loadCatalog() {
 }
 
 function attachEventListeners() {
-  elements.serviceType.addEventListener('change', (event) => {
-    handleServiceTypeChange(event.target.value);
-  });
+  if (elements.serviceType) {
+    elements.serviceType.addEventListener('change', (event) => {
+      handleServiceTypeChange(event.target.value);
+    });
+  }
 
-  elements.bookingForm.addEventListener('submit', handleBookingSubmit);
-  elements.refreshClientBookings.addEventListener('click', loadClientBookings);
-  elements.logoutBtn.addEventListener('click', handleLogout);
+  if (elements.bookingForm) {
+    elements.bookingForm.addEventListener('submit', handleBookingSubmit);
+  }
+
+  elements.refreshClientBookings?.addEventListener('click', loadClientBookings);
+  elements.logoutBtn?.addEventListener('click', handleLogout);
   elements.portalAuthTrigger?.addEventListener('click', () => openPortalModal(activePortalTab));
+  elements.guardLogin?.addEventListener('click', () => openPortalModal('login'));
   elements.portalCloseTriggers.forEach((trigger) => {
     trigger.addEventListener('click', closePortalModal);
   });
@@ -596,17 +624,21 @@ function attachEventListeners() {
     }
   });
 
-  elements.adminFilterType.addEventListener('change', (event) => {
-    state.filters.type = event.target.value;
-    loadAdminBookings();
-  });
+  if (elements.adminFilterType) {
+    elements.adminFilterType.addEventListener('change', (event) => {
+      state.filters.type = event.target.value;
+      loadAdminBookings();
+    });
+  }
 
-  elements.adminFilterStatus.addEventListener('change', (event) => {
-    state.filters.status = event.target.value;
-    loadAdminBookings();
-  });
+  if (elements.adminFilterStatus) {
+    elements.adminFilterStatus.addEventListener('change', (event) => {
+      state.filters.status = event.target.value;
+      loadAdminBookings();
+    });
+  }
 
-  elements.adminRefresh.addEventListener('click', loadAdminBookings);
+  elements.adminRefresh?.addEventListener('click', loadAdminBookings);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -647,7 +679,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     handlePortalViewport();
   }
 
-  handleServiceTypeChange('');
+  if (elements.serviceType) handleServiceTypeChange('');
   await loadCatalog();
   await checkSession();
 });
