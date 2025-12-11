@@ -122,7 +122,27 @@ app.use(session({
 
 const catalog = {
   boats: [
-    'Gommone Comfort 5.5 m · Yamaha 40cv',
+    {
+      id: 'zar65',
+      label: 'ZAR 65 (9/10 posti)',
+      power: '150 cv',
+      features: ['Doccia', 'GPS cartografico', 'Tendalino', 'Ancora elettrica', '9/10 posti comodi'],
+      image: 'assets/img/2.jpg',
+    },
+    {
+      id: 'zar53',
+      label: 'ZAR 53 (8 posti)',
+      power: '90 cv',
+      features: ['Doccia', 'Tendalino', 'Ancora', 'Ecoscandaglio', '8 posti comodi'],
+      image: 'assets/img/3.jpg',
+    },
+    {
+      id: 'zar49',
+      label: 'ZAR 49 (6 posti)',
+      power: '40 cv',
+      features: ['Doccia', 'Ecoscandaglio', 'Tendalino', '6 posti comodi'],
+      image: 'assets/img/4.jpg',
+    },
   ],
   tours: [
     'Costa degli Dei Explorer',

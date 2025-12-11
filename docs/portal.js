@@ -50,6 +50,7 @@ const elements = {
   boatModel: document.getElementById('boatModel'),
   tourField: document.getElementById('tourField'),
   tour: document.getElementById('tour'),
+  boatSummary: document.getElementById('boatSummary'),
   clientBookings: document.getElementById('clientBookings'),
   refreshClientBookings: document.getElementById('refreshClientBookings'),
   adminFilterType: document.getElementById('adminFilterType'),
@@ -65,6 +66,35 @@ const elements = {
 function toggleHidden(node, shouldHide) {
   if (!node) return;
   node.classList.toggle('hidden', shouldHide);
+}
+
+function getSelectedBoat() {
+  const value = elements.boatModel?.value;
+  if (!value) return null;
+  return state.catalog.boats.find((boat) => boat.label === value || boat.id === value) || null;
+}
+
+function renderBoatSummary() {
+  if (!elements.boatSummary) return;
+  const boat = getSelectedBoat();
+  if (!boat || elements.serviceType?.value !== 'noleggio') {
+    elements.boatSummary.innerHTML = '';
+    toggleHidden(elements.boatSummary, true);
+    return;
+  }
+
+  const featuresList = (boat.features || []).map((item) => `<li>${item}</li>`).join('');
+  elements.boatSummary.innerHTML = `
+    <div class="boat-summary__media">
+      <img src="${boat.image}" alt="${boat.label}" loading="lazy">
+    </div>
+    <div class="boat-summary__body">
+      <h4>${boat.label}</h4>
+      <p class="boat-summary__meta">${boat.power || ''}</p>
+      ${featuresList ? `<ul class="boat-summary__features">${featuresList}</ul>` : ''}
+    </div>
+  `;
+  toggleHidden(elements.boatSummary, false);
 }
 
 async function fetchJSON(url, options = {}) {
@@ -247,10 +277,11 @@ function populateServiceOptions() {
 
   elements.boatModel.innerHTML = '';
   if (elements.boatModel) {
+    elements.boatModel.innerHTML = '<option value="">Seleziona gommone</option>';
     state.catalog.boats.forEach((boat) => {
       const option = document.createElement('option');
-      option.value = boat;
-      option.textContent = boat;
+      option.value = boat.label;
+      option.textContent = boat.label;
       elements.boatModel.appendChild(option);
     });
   }
@@ -264,6 +295,8 @@ function populateServiceOptions() {
       elements.tour.appendChild(option);
     });
   }
+
+  renderBoatSummary();
 }
 
 function handleServiceTypeChange(value) {
@@ -271,6 +304,11 @@ function handleServiceTypeChange(value) {
   const isTour = value === 'escursione';
   toggleHidden(elements.boatField, !isRental);
   toggleHidden(elements.tourField, !isTour);
+  if (!isRental) {
+    renderBoatSummary();
+  } else {
+    renderBoatSummary();
+  }
 }
 
 function formatDateTime(date, time) {
@@ -460,6 +498,11 @@ async function handleBookingSubmit(event) {
     return;
   }
 
+  if (payload.serviceType === 'noleggio' && !payload.boatModel) {
+    showFeedback(elements.bookingFeedback, 'Seleziona il gommone ZAR per il noleggio.', 'error');
+    return;
+  }
+
   try {
     await fetchJSON('/api/bookings', {
       method: 'POST',
@@ -594,6 +637,8 @@ function attachEventListeners() {
   if (elements.bookingForm) {
     elements.bookingForm.addEventListener('submit', handleBookingSubmit);
   }
+
+  elements.boatModel?.addEventListener('change', renderBoatSummary);
 
   elements.refreshClientBookings?.addEventListener('click', loadClientBookings);
   elements.logoutBtn?.addEventListener('click', handleLogout);
