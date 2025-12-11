@@ -68,13 +68,13 @@
                 <option value="">Seleziona</option>
               </select>
             </label>
+            <label id="tourField" class="full hidden">
+              Itinerario escursione
+              <select name="tour" id="tour"></select>
+            </label>
             <label id="boatField" class="hidden">
               Modello gommone
               <select name="boatModel" id="boatModel"></select>
-            </label>
-            <label id="tourField" class="hidden">
-              Itinerario escursione
-              <select name="tour" id="tour"></select>
             </label>
             <label>
               Data
@@ -93,6 +93,7 @@
               <textarea name="notes" rows="3" placeholder="Allergie, richieste speciali, equipment..."></textarea>
             </label>
             <div id="boatSummary" class="boat-summary full hidden" aria-live="polite"></div>
+            <div id="tourSummary" class="boat-summary tour-summary full hidden" aria-live="polite"></div>
             <button type="submit" class="btn primary full">Invia prenotazione</button>
             <p class="form-feedback" id="bookingFeedback" aria-live="polite"></p>
           </form>
@@ -104,7 +105,6 @@
               <h2>Le tue uscite</h2>
               <p>Monitora stato e dettagli logistici aggiornati.</p>
             </div>
-            <button class="btn ghost" id="refreshClientBookings">Aggiorna</button>
           </header>
           <div id="clientBookings" class="booking-stack"></div>
         </article>

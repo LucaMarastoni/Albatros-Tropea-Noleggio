@@ -22,6 +22,8 @@ const MAX_GENERIC_LENGTH = 160;
 const MAX_NOTE_LENGTH = 1000;
 const MAX_INTERNAL_NOTE_LENGTH = 2000;
 const MAX_PHONE_LENGTH = 32;
+const MAX_STAFF_NOTE_LENGTH = 3000;
+const MAX_CLIENT_MESSAGE_LENGTH = 2000;
 
 function normalizeEmail(email = '') {
   return email.trim().toLowerCase();
@@ -68,11 +70,27 @@ function bootstrapDatabase() {
       notes TEXT,
       status TEXT NOT NULL DEFAULT 'da confermare',
       internal_note TEXT DEFAULT '',
+      client_message TEXT DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
+  CREATE TABLE IF NOT EXISTS staff_notes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      content TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
     );
   `);
+
+  try {
+    db.prepare("ALTER TABLE bookings ADD COLUMN client_message TEXT DEFAULT ''").run();
+  } catch (error) {
+    // column may already exist
+  }
 
   const adminExists = db
     .prepare('SELECT COUNT(*) as count FROM users WHERE role = ?')
@@ -145,9 +163,27 @@ const catalog = {
     },
   ],
   tours: [
-    'Costa degli Dei Explorer',
-    'Capo Vaticano Sunset Romance',
-    'Parghelia · Zambrone · Briatico',
+    {
+      id: 'costa-degli-dei',
+      label: 'Costa degli Dei Explorer',
+      image: 'assets/img/6.jpg',
+      features: ['3 ore tra Tropea e Capo Vaticano', 'Snorkeling allo Scoglio di Riaci', 'Soste in calette accessibili solo via mare'],
+      time: '09:00',
+    },
+    {
+      id: 'sunset-romance',
+      label: 'Capo Vaticano Sunset Romance',
+      image: 'assets/img/7.jpg',
+      features: ['Tour al tramonto', 'Grotta degli Innamorati', 'Aperitivo romantico a bordo'],
+      time: '18:00',
+    },
+    {
+      id: 'parghelia-tour',
+      label: 'Parghelia · Zambrone · Briatico',
+      image: 'assets/img/9.jpg',
+      features: ['3 ore di tour personalizzato', 'Vardanello, Michelino e Baia della Tonnara', 'Snorkeling e acque trasparenti'],
+      time: '09:30',
+    },
   ],
 };
 
@@ -339,11 +375,11 @@ app.post('/api/bookings', requireAuth, (req, res) => {
     INSERT INTO bookings (
       user_id, customer_name, email, phone,
       service_type, boat_model, tour,
-      date, time, people, notes
+      date, time, people, notes, client_message
     ) VALUES (
       @userId, @customerName, @email, @phone,
       @serviceType, @boatModel, @tour,
-      @date, @time, @people, @notes
+      @date, @time, @people, @notes, ''
     )
   `);
 
@@ -424,7 +460,7 @@ app.get('/api/bookings', requireAuth, (req, res) => {
 
 app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
   const { id } = req.params;
-  const { status, internalNote } = req.body || {};
+  const { status, internalNote, clientMessage } = req.body || {};
   const bookingId = Number.parseInt(id, 10);
 
   if (!Number.isInteger(bookingId) || bookingId <= 0) {
@@ -453,6 +489,12 @@ app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
     params.internalNote = sanitizedInternalNote;
   }
 
+  if (typeof clientMessage === 'string') {
+    const sanitizedClientMessage = sanitizeOptionalText(clientMessage, MAX_CLIENT_MESSAGE_LENGTH);
+    updates.push('client_message = @clientMessage');
+    params.clientMessage = sanitizedClientMessage;
+  }
+
   if (!updates.length) {
     return res.status(400).json({ error: 'Nessun campo aggiornabile fornito' });
   }
@@ -475,6 +517,121 @@ app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
 
   const updated = db.prepare('SELECT * FROM bookings WHERE id = ?').get(bookingId);
   return res.json({ booking: updated });
+});
+
+app.delete('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
+  const bookingId = Number.parseInt(req.params.id, 10);
+  if (!Number.isInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).json({ error: 'ID prenotazione non valido' });
+  }
+
+  const booking = db.prepare('SELECT * FROM bookings WHERE id = ?').get(bookingId);
+  if (!booking) {
+    return res.status(404).json({ error: 'Prenotazione non trovata' });
+  }
+
+  try {
+    db.prepare('DELETE FROM bookings WHERE id = ?').run(bookingId);
+  } catch (error) {
+    console.error('Errore cancellazione prenotazione', error);
+    return res.status(500).json({ error: 'Errore cancellazione prenotazione' });
+  }
+
+  return res.json({ success: true });
+});
+
+app.get('/api/staff-notes', requireAuth, requireAdmin, (_req, res) => {
+  try {
+    const notes = db.prepare(`
+      SELECT sn.*, u.full_name AS author
+      FROM staff_notes sn
+      INNER JOIN users u ON u.id = sn.user_id
+      ORDER BY sn.created_at DESC
+    `).all();
+    return res.json({ notes });
+  } catch (error) {
+    console.error('Errore recupero note staff', error);
+    return res.status(500).json({ error: 'Errore recupero note staff' });
+  }
+});
+
+app.post('/api/staff-notes', requireAuth, requireAdmin, (req, res) => {
+  const { content } = req.body || {};
+  const sanitizedContent = sanitizeOptionalText(typeof content === 'string' ? content : '', MAX_STAFF_NOTE_LENGTH);
+  if (!sanitizedContent) {
+    return res.status(400).json({ error: 'Inserisci il testo della nota' });
+  }
+
+  try {
+    const result = db.prepare(`
+      INSERT INTO staff_notes (user_id, content)
+      VALUES (@userId, @content)
+    `).run({ userId: req.user.id, content: sanitizedContent });
+    const note = db.prepare(`
+      SELECT sn.*, u.full_name AS author
+      FROM staff_notes sn
+      INNER JOIN users u ON u.id = sn.user_id
+      WHERE sn.id = ?
+    `).get(result.lastInsertRowid);
+    return res.status(201).json({ note });
+  } catch (error) {
+    console.error('Errore creazione nota staff', error);
+    return res.status(500).json({ error: 'Errore salvataggio nota staff' });
+  }
+});
+
+app.patch('/api/staff-notes/:id', requireAuth, requireAdmin, (req, res) => {
+  const noteId = Number.parseInt(req.params.id, 10);
+  if (!Number.isInteger(noteId) || noteId <= 0) {
+    return res.status(400).json({ error: 'ID nota non valido' });
+  }
+  const { content } = req.body || {};
+  const sanitizedContent = sanitizeOptionalText(typeof content === 'string' ? content : '', MAX_STAFF_NOTE_LENGTH);
+  if (!sanitizedContent) {
+    return res.status(400).json({ error: 'Inserisci il testo della nota' });
+  }
+
+  const existing = db.prepare('SELECT * FROM staff_notes WHERE id = ?').get(noteId);
+  if (!existing) {
+    return res.status(404).json({ error: 'Nota non trovata' });
+  }
+
+  try {
+    db.prepare(`
+      UPDATE staff_notes
+      SET content = @content, updated_at = datetime('now')
+      WHERE id = @id
+    `).run({ id: noteId, content: sanitizedContent });
+    const note = db.prepare(`
+      SELECT sn.*, u.full_name AS author
+      FROM staff_notes sn
+      INNER JOIN users u ON u.id = sn.user_id
+      WHERE sn.id = ?
+    `).get(noteId);
+    return res.json({ note });
+  } catch (error) {
+    console.error('Errore aggiornamento nota staff', error);
+    return res.status(500).json({ error: 'Errore aggiornamento nota staff' });
+  }
+});
+
+app.delete('/api/staff-notes/:id', requireAuth, requireAdmin, (req, res) => {
+  const noteId = Number.parseInt(req.params.id, 10);
+  if (!Number.isInteger(noteId) || noteId <= 0) {
+    return res.status(400).json({ error: 'ID nota non valido' });
+  }
+  const existing = db.prepare('SELECT * FROM staff_notes WHERE id = ?').get(noteId);
+  if (!existing) {
+    return res.status(404).json({ error: 'Nota non trovata' });
+  }
+
+  try {
+    db.prepare('DELETE FROM staff_notes WHERE id = ?').run(noteId);
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Errore cancellazione nota staff', error);
+    return res.status(500).json({ error: 'Errore cancellazione nota staff' });
+  }
 });
 
 app.use(express.static(path.join(__dirname, 'docs')));

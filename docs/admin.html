@@ -92,6 +92,46 @@
             </article>
           </div>
         </article>
+        <section class="admin-grid">
+          <article class="panel admin-calendar">
+            <header class="panel-header">
+              <div>
+                <h3>Calendario prenotazioni</h3>
+                <p>Consulta date e slot confermati.</p>
+              </div>
+              <div class="calendar-nav">
+                <button class="btn ghost" type="button" id="calendarPrev" aria-label="Mese precedente">‹</button>
+                <div id="calendarTitle"></div>
+                <button class="btn ghost" type="button" id="calendarNext" aria-label="Mese successivo">›</button>
+              </div>
+            </header>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="calendar-day-detail">
+              <h4 id="calendarDayLabel">Seleziona un giorno</h4>
+              <ul id="calendarDayList" class="calendar-day-list"></ul>
+            </div>
+          </article>
+
+          <article class="panel admin-notes">
+            <header class="panel-header">
+              <div>
+                <h3>Note private staff</h3>
+                <p>Promemoria operativi e comunicazioni interne.</p>
+              </div>
+              <button class="btn primary" type="button" id="addStaffNote">Aggiungi nota</button>
+            </header>
+            <div class="staff-note-form hidden" id="staffNoteForm">
+              <textarea id="staffNoteInput" rows="3" placeholder="Promemoria operativo, consegne, briefing..."></textarea>
+              <div class="staff-note-actions">
+                <button class="btn primary" type="button" id="staffNoteSave">Salva</button>
+                <button class="btn ghost" type="button" id="staffNoteCancel">Annulla</button>
+              </div>
+              <p class="form-feedback" id="staffNoteFeedback" aria-live="polite"></p>
+            </div>
+            <div id="staffNotesList" class="staff-notes"></div>
+          </article>
+        </section>
+
         <article class="panel admin-table">
           <div class="table-scroll">
             <table class="booking-table" id="adminTable">
@@ -113,6 +153,14 @@
             </table>
           </div>
         </article>
+
+        <div class="modal hidden" id="bookingDetailModal" role="dialog" aria-modal="true" aria-labelledby="bookingDetailTitle">
+          <div class="modal-backdrop" data-close-modal></div>
+          <div class="modal-window modal-window--wide">
+            <button class="modal-close" type="button" data-close-modal aria-label="Chiudi">&times;</button>
+            <div class="booking-detail" id="bookingDetailContent"></div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
