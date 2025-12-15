@@ -25,6 +25,13 @@ const elements = {
   galleryTrack: document.getElementById('galleryTrack'),
   galleryNext: document.getElementById('galleryNext'),
   galleryDots: document.querySelectorAll('[data-gallery-dot]'),
+  boatModal: document.getElementById('boatModal'),
+  boatModalTitle: document.getElementById('boatModalTitle'),
+  boatModalDesc: document.getElementById('boatModalDesc'),
+  boatCarouselTrack: document.getElementById('boatCarouselTrack'),
+  boatCarouselDots: document.getElementById('boatCarouselDots'),
+  boatCarouselPrev: document.getElementById('boatCarouselPrev'),
+  boatCarouselNext: document.getElementById('boatCarouselNext'),
 };
 
 let activeModal = null;
@@ -193,6 +200,11 @@ const galleryCarouselState = {
   autoplayTimer: null,
   prefersReducedMotion: false,
   isAnimating: false,
+};
+
+const boatCarouselState = {
+  index: 0,
+  images: [],
 };
 
 function initGalleryCarousel() {
@@ -388,6 +400,110 @@ function initGalleryCarousel() {
   startAutoplay();
 }
 
+function initBoatCards() {
+  const cards = document.querySelectorAll('.boat-card');
+  const modal = elements.boatModal;
+  if (!cards.length || !modal) return;
+
+  const prevBtn = elements.boatCarouselPrev;
+  const nextBtn = elements.boatCarouselNext;
+  const dotsWrapper = elements.boatCarouselDots;
+  const track = elements.boatCarouselTrack;
+
+  const updateDots = () => {
+    if (!dotsWrapper) return;
+    dotsWrapper.innerHTML = '';
+    boatCarouselState.images.forEach((_, idx) => {
+      const dot = document.createElement('button');
+      dot.className = 'boat-carousel__dot';
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Vai all'immagine ${idx + 1}`);
+      dot.classList.toggle('is-active', idx === boatCarouselState.index);
+      dot.addEventListener('click', () => {
+        boatCarouselState.index = idx;
+        applyPosition();
+      });
+      dotsWrapper.appendChild(dot);
+    });
+  };
+
+  const applyPosition = () => {
+    if (!track) return;
+    track.style.transform = `translateX(-${boatCarouselState.index * 100}%)`;
+    dotsWrapper?.querySelectorAll('.boat-carousel__dot').forEach((dot, idx) => {
+      const isActive = idx === boatCarouselState.index;
+      dot.classList.toggle('is-active', isActive);
+      dot.setAttribute('aria-current', isActive ? 'true' : 'false');
+    });
+  };
+
+  const changeSlide = (delta) => {
+    if (!boatCarouselState.images.length) return;
+    const total = boatCarouselState.images.length;
+    boatCarouselState.index = (boatCarouselState.index + delta + total) % total;
+    applyPosition();
+  };
+
+  const renderSlides = (title) => {
+    if (!track) return;
+    track.innerHTML = '';
+    boatCarouselState.images.forEach((src, idx) => {
+      const slide = document.createElement('div');
+      slide.className = 'boat-carousel__slide';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `${title} · foto ${idx + 1}`;
+      slide.appendChild(img);
+      track.appendChild(slide);
+    });
+  };
+
+  const openBoatModal = (card) => {
+    const lang = document.documentElement.lang === 'en' ? 'en' : 'it';
+    const title = lang === 'en'
+      ? (card.dataset.boatTitleEn || card.dataset.boatTitle || card.querySelector('h3')?.textContent || 'Boat detail')
+      : (card.dataset.boatTitle || card.querySelector('h3')?.textContent || 'Dettaglio gommone');
+    const desc = lang === 'en'
+      ? (card.dataset.boatDescEn || card.dataset.boatDesc || card.querySelector('p')?.textContent || '')
+      : (card.dataset.boatDesc || card.querySelector('p')?.textContent || '');
+    const images = (card.dataset.boatImages || '')
+      .split('|')
+      .map((src) => src.trim())
+      .filter(Boolean);
+    const fallbackImg = card.querySelector('img')?.getAttribute('src');
+    if (!images.length && fallbackImg) images.push(fallbackImg);
+
+    boatCarouselState.index = 0;
+    boatCarouselState.images = images;
+
+    if (elements.boatModalTitle) elements.boatModalTitle.textContent = title;
+    if (elements.boatModalDesc) elements.boatModalDesc.textContent = desc;
+
+    renderSlides(title);
+    updateDots();
+    applyPosition();
+    openModal(modal);
+  };
+
+  cards.forEach((card) => {
+    const handleOpen = () => openBoatModal(card);
+    card.addEventListener('click', handleOpen);
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        handleOpen();
+      }
+    });
+  });
+
+  prevBtn?.addEventListener('click', () => changeSlide(-1));
+  nextBtn?.addEventListener('click', () => changeSlide(1));
+
+  modal.querySelectorAll('[data-boat-close]').forEach((node) => {
+    node.addEventListener('click', () => closeModal(modal));
+  });
+}
+
 async function checkSession() {
   try {
     const { user } = await fetchJSON('/api/session');
@@ -511,6 +627,7 @@ function attachEventListeners() {
 document.addEventListener('DOMContentLoaded', async () => {
   attachEventListeners();
   initGalleryCarousel();
+  initBoatCards();
   initScrollReveal();
   await checkSession();
 });
