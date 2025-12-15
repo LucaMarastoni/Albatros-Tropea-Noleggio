@@ -27,10 +27,55 @@ const state = {
 const portalPage = document.body?.dataset?.portalPage || 'booking';
 const isDashboardPage = portalPage === 'dashboard';
 const isBookingPage = portalPage === 'booking';
+const LANG_STORAGE_KEY = 'siteLang';
 const TOUR_SCHEDULE = {
   'Costa degli Dei Explorer': '09:00',
   'Capo Vaticano Sunset Romance': '18:00',
   'Parghelia · Zambrone · Briatico': '09:30',
+};
+
+const optionTranslations = {
+  select: { it: 'Seleziona', en: 'Select' },
+  selectBoat: { it: 'Seleziona gommone', en: 'Select boat' },
+  selectTour: { it: 'Seleziona escursione', en: 'Select excursion' },
+  rental: { it: 'Noleggio gommone', en: 'RIB rental' },
+  tour: { it: 'Escursione guidata', en: 'Guided excursion' },
+};
+
+const boatLabelTranslations = {
+  'ZAR 65 (9/10 posti)': 'ZAR 65 (9/10 seats)',
+  'ZAR 53 (8 posti)': 'ZAR 53 (8 seats)',
+  'ZAR 49 (6 posti)': 'ZAR 49 (6 seats)',
+};
+
+const boatFeatureTranslations = {
+  Doccia: 'Shower',
+  'GPS cartografico': 'Chartplotter GPS',
+  Tendalino: 'Bimini top',
+  'Ancora elettrica': 'Electric anchor',
+  '9/10 posti comodi': '9/10 comfy seats',
+  '8 posti comodi': '8 comfy seats',
+  '6 posti comodi': '6 comfy seats',
+  Ancora: 'Anchor',
+  Ecoscandaglio: 'Fishfinder',
+};
+
+const tourLabelTranslations = {
+  'Costa degli Dei Explorer': 'Coast of the Gods Explorer',
+  'Capo Vaticano Sunset Romance': 'Capo Vaticano Sunset Romance',
+  'Parghelia · Zambrone · Briatico': 'Parghelia · Zambrone · Briatico',
+};
+
+const tourFeatureTranslations = {
+  '3 ore tra Tropea e Capo Vaticano': '3-hour route between Tropea and Capo Vaticano',
+  'Snorkeling allo Scoglio di Riaci': 'Snorkeling at Riaci Rock',
+  'Soste in calette accessibili solo via mare': 'Stops in coves reachable only by sea',
+  'Tour al tramonto': 'Sunset cruise',
+  'Grotta degli Innamorati': 'Lovers’ Cave',
+  'Aperitivo romantico a bordo': 'Romantic aperitif on board',
+  '3 ore di tour personalizzato': '3-hour custom tour',
+  'Vardanello, Michelino e Baia della Tonnara': 'Vardanello, Michelino and Baia della Tonnara',
+  'Snorkeling e acque trasparenti': 'Snorkeling and crystal waters',
 };
 
 const elements = {
@@ -92,6 +137,43 @@ const elements = {
   bookingDetailContent: document.getElementById('bookingDetailContent'),
 };
 
+function getCurrentLang() {
+  try {
+    const saved = localStorage.getItem(LANG_STORAGE_KEY);
+    if (saved === 'en' || saved === 'it') return saved;
+  } catch (_) {}
+  return document.documentElement.lang === 'en' ? 'en' : 'it';
+}
+
+function translateOption(key) {
+  const lang = getCurrentLang();
+  return optionTranslations[key]?.[lang] || optionTranslations[key]?.it || '';
+}
+
+function translateBoatLabel(label) {
+  const lang = getCurrentLang();
+  if (lang !== 'en') return label;
+  return boatLabelTranslations[label] || label;
+}
+
+function translateBoatFeature(feature) {
+  const lang = getCurrentLang();
+  if (lang !== 'en') return feature;
+  return boatFeatureTranslations[feature] || feature;
+}
+
+function translateTourLabel(label) {
+  const lang = getCurrentLang();
+  if (lang !== 'en') return label;
+  return tourLabelTranslations[label] || label;
+}
+
+function translateTourFeature(feature) {
+  const lang = getCurrentLang();
+  if (lang !== 'en') return feature;
+  return tourFeatureTranslations[feature] || feature;
+}
+
 function toggleHidden(node, shouldHide) {
   if (!node) return;
   node.classList.toggle('hidden', shouldHide);
@@ -118,13 +200,14 @@ function renderBoatSummary() {
     return;
   }
 
-  const featuresList = (boat.features || []).map((item) => `<li>${item}</li>`).join('');
+  const featuresList = (boat.features || []).map((item) => `<li>${translateBoatFeature(item)}</li>`).join('');
+  const boatLabel = translateBoatLabel(boat.label);
   elements.boatSummary.innerHTML = `
     <div class="boat-summary__media">
-      <img src="${boat.image}" alt="${boat.label}" loading="lazy">
+      <img src="${boat.image}" alt="${boatLabel}" loading="lazy">
     </div>
     <div class="boat-summary__body">
-      <h4>${boat.label}</h4>
+      <h4>${boatLabel}</h4>
       <p class="boat-summary__meta">${boat.power || ''}</p>
       ${featuresList ? `<ul class="boat-summary__features">${featuresList}</ul>` : ''}
     </div>
@@ -142,14 +225,15 @@ function renderTourSummary() {
     return;
   }
 
-  const featuresList = (tour.features || []).map((item) => `<li>${item}</li>`).join('');
-  const timeInfo = tour.time ? `<p class="tour-summary__meta">Partenza: ${tour.time}</p>` : '';
+  const featuresList = (tour.features || []).map((item) => `<li>${translateTourFeature(item)}</li>`).join('');
+  const tourLabel = translateTourLabel(tour.label);
+  const timeInfo = tour.time ? `<p class="tour-summary__meta">${getCurrentLang() === 'en' ? 'Departure' : 'Partenza'}: ${tour.time}</p>` : '';
   elements.tourSummary.innerHTML = `
     <div class="tour-summary__media">
-      <img src="${tour.image}" alt="${tour.label}" loading="lazy">
+      <img src="${tour.image}" alt="${tourLabel}" loading="lazy">
     </div>
     <div class="tour-summary__body">
-      <h4>${tour.label}</h4>
+      <h4>${tourLabel}</h4>
       ${timeInfo}
       ${featuresList ? `<ul class="tour-summary__features">${featuresList}</ul>` : ''}
     </div>
@@ -351,37 +435,43 @@ function updateUserUI() {
 
 function populateServiceOptions() {
   if (!elements.serviceType) return;
-  elements.serviceType.innerHTML = '<option value="">Seleziona</option>';
+  const prevService = elements.serviceType.value;
+  elements.serviceType.innerHTML = `<option value="">${translateOption('select')}</option>`;
   [
-    { value: 'noleggio', label: 'Noleggio gommone' },
-    { value: 'escursione', label: 'Escursione guidata' },
+    { value: 'noleggio', labelKey: 'rental' },
+    { value: 'escursione', labelKey: 'tour' },
   ].forEach((opt) => {
     const option = document.createElement('option');
     option.value = opt.value;
-    option.textContent = opt.label;
+    option.textContent = translateOption(opt.labelKey);
     elements.serviceType.appendChild(option);
   });
+  if (prevService) elements.serviceType.value = prevService;
 
   elements.boatModel.innerHTML = '';
   if (elements.boatModel) {
-    elements.boatModel.innerHTML = '<option value="">Seleziona gommone</option>';
+    const prevBoat = elements.boatModel.value;
+    elements.boatModel.innerHTML = `<option value="">${translateOption('selectBoat')}</option>`;
     state.catalog.boats.forEach((boat) => {
       const option = document.createElement('option');
       option.value = boat.label;
-      option.textContent = boat.label;
+      option.textContent = translateBoatLabel(boat.label);
       elements.boatModel.appendChild(option);
     });
+    if (prevBoat) elements.boatModel.value = prevBoat;
   }
 
   elements.tour.innerHTML = '';
   if (elements.tour) {
-    elements.tour.innerHTML = '<option value="">Seleziona escursione</option>';
+    const prevTour = elements.tour.value;
+    elements.tour.innerHTML = `<option value="">${translateOption('selectTour')}</option>`;
     state.catalog.tours.forEach((experience) => {
       const option = document.createElement('option');
       option.value = experience.label;
-      option.textContent = experience.label;
+      option.textContent = translateTourLabel(experience.label);
       elements.tour.appendChild(option);
     });
+    if (prevTour) elements.tour.value = prevTour;
   }
 
   renderBoatSummary();
@@ -1149,6 +1239,13 @@ function attachEventListeners() {
     if (event.key === 'Escape') {
       closeBookingDetail();
     }
+  });
+
+  window.addEventListener('language:change', () => {
+    populateServiceOptions();
+    renderBoatSummary();
+    renderTourSummary();
+    enforceExcursionTime();
   });
 }
 

@@ -283,6 +283,7 @@
         langToggle.textContent = lang === 'en' ? 'IT' : 'EN';
         langToggle.setAttribute('aria-label', lang === 'en' ? 'Switch to Italian' : 'Switch to English');
         document.documentElement.lang = lang === 'en' ? 'en' : 'it';
+        window.dispatchEvent(new CustomEvent('language:change', { detail: { lang } }));
       };
 
       langToggle?.addEventListener('click', () => {
