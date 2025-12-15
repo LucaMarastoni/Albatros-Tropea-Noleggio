@@ -66,6 +66,7 @@ function bootstrapDatabase() {
       tour TEXT,
       date TEXT NOT NULL,
       time TEXT NOT NULL,
+      end_time TEXT,
       people INTEGER NOT NULL,
       notes TEXT,
       status TEXT NOT NULL DEFAULT 'da confermare',
@@ -88,6 +89,12 @@ function bootstrapDatabase() {
 
   try {
     db.prepare("ALTER TABLE bookings ADD COLUMN client_message TEXT DEFAULT ''").run();
+  } catch (error) {
+    // column may already exist
+  }
+
+  try {
+    db.prepare("ALTER TABLE bookings ADD COLUMN end_time TEXT").run();
   } catch (error) {
     // column may already exist
   }
@@ -330,6 +337,7 @@ app.post('/api/bookings', requireAuth, (req, res) => {
     serviceType,
     date,
     time,
+    endTime,
     people,
     boatModel,
     tour,
@@ -341,6 +349,7 @@ app.post('/api/bookings', requireAuth, (req, res) => {
   const normalizedServiceType = typeof serviceType === 'string' ? serviceType.trim() : '';
   const sanitizedDate = typeof date === 'string' ? date.trim() : '';
   const sanitizedTime = typeof time === 'string' ? time.trim() : '';
+  const sanitizedEndTime = typeof endTime === 'string' ? endTime.trim() : '';
   const rawPhone = typeof phone === 'string' ? phone.trim() : '';
   const peopleCount = Number.parseInt(people, 10);
   const sanitizedBoatModel = sanitizeOptionalText(boatModel, MAX_GENERIC_LENGTH);
@@ -363,6 +372,15 @@ app.post('/api/bookings', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'Orario non valido' });
   }
 
+  if (normalizedServiceType === 'noleggio') {
+    if (!sanitizedEndTime) {
+      return res.status(400).json({ error: 'Inserisci l\'orario di rientro' });
+    }
+    if (!TIME_REGEX.test(sanitizedEndTime)) {
+      return res.status(400).json({ error: 'Orario di rientro non valido' });
+    }
+  }
+
   if (!Number.isInteger(peopleCount) || peopleCount < 1 || peopleCount > 12) {
     return res.status(400).json({ error: 'Numero di ospiti non valido' });
   }
@@ -375,11 +393,11 @@ app.post('/api/bookings', requireAuth, (req, res) => {
     INSERT INTO bookings (
       user_id, customer_name, email, phone,
       service_type, boat_model, tour,
-      date, time, people, notes, client_message
+      date, time, end_time, people, notes, client_message
     ) VALUES (
       @userId, @customerName, @email, @phone,
       @serviceType, @boatModel, @tour,
-      @date, @time, @people, @notes, ''
+      @date, @time, @endTime, @people, @notes, ''
     )
   `);
 
@@ -394,6 +412,7 @@ app.post('/api/bookings', requireAuth, (req, res) => {
       tour: normalizedServiceType === 'escursione' ? sanitizedTour : '',
       date: sanitizedDate,
       time: sanitizedTime,
+      endTime: sanitizedEndTime || null,
       people: peopleCount,
       notes: sanitizedNotes,
     });
@@ -460,7 +479,7 @@ app.get('/api/bookings', requireAuth, (req, res) => {
 
 app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
   const { id } = req.params;
-  const { status, internalNote, clientMessage } = req.body || {};
+  const { status, internalNote, clientMessage, endTime } = req.body || {};
   const bookingId = Number.parseInt(id, 10);
 
   if (!Number.isInteger(bookingId) || bookingId <= 0) {
@@ -493,6 +512,14 @@ app.patch('/api/bookings/:id', requireAuth, requireAdmin, (req, res) => {
     const sanitizedClientMessage = sanitizeOptionalText(clientMessage, MAX_CLIENT_MESSAGE_LENGTH);
     updates.push('client_message = @clientMessage');
     params.clientMessage = sanitizedClientMessage;
+  }
+
+  if (typeof endTime === 'string' && endTime) {
+    if (!TIME_REGEX.test(endTime.trim())) {
+      return res.status(400).json({ error: 'Orario di rientro non valido' });
+    }
+    updates.push('end_time = @endTime');
+    params.endTime = endTime.trim();
   }
 
   if (!updates.length) {

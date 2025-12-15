@@ -62,6 +62,7 @@ const elements = {
   boatModel: document.getElementById('boatModel'),
   tourField: document.getElementById('tourField'),
   tour: document.getElementById('tour'),
+  endTimeField: document.getElementById('endTimeField'),
   boatSummary: document.getElementById('boatSummary'),
   tourSummary: document.getElementById('tourSummary'),
   clientBookings: document.getElementById('clientBookings'),
@@ -392,6 +393,7 @@ function handleServiceTypeChange(value) {
   const isTour = value === 'escursione';
   toggleHidden(elements.boatField, !isRental);
   toggleHidden(elements.tourField, !isTour);
+  toggleHidden(elements.endTimeField, !isRental);
   enforceExcursionTime();
   renderBoatSummary();
   renderTourSummary();
@@ -497,7 +499,7 @@ function openBookingDetail(id) {
       <div class="booking-detail__cover-info">
         <p class="eyebrow">${isRental ? 'Noleggio' : 'Escursione'}</p>
         <h3 id="bookingDetailTitle">${subtitle}</h3>
-        <p>${formatDateLabel(booking.date)} · ${booking.time}</p>
+        <p>${formatDateLabel(booking.date)} · ${booking.time}${booking.end_time ? ` → ${booking.end_time}` : ''}</p>
       </div>
       <span class="status-pill booking-detail__status ${`status-${booking.status.replace(/\s/g, '\\ ')}`}">${booking.status}</span>
     </div>
@@ -512,6 +514,7 @@ function openBookingDetail(id) {
         <h4>Servizio</h4>
         <p>${subtitle}</p>
         <p>${booking.people} ospiti</p>
+        ${booking.end_time ? `<p>Rientro: ${booking.end_time}</p>` : ''}
       </div>
       <div class="booking-detail__block">
         <h4>Note cliente</h4>
@@ -547,7 +550,7 @@ function openBookingDetail(id) {
     const status = elements.bookingDetailContent.querySelector('#detailStatus')?.value;
     const internalNote = elements.bookingDetailContent.querySelector('#detailInternalNote')?.value || '';
     const clientMessage = elements.bookingDetailContent.querySelector('#detailClientMessage')?.value || '';
-    await updateBooking(id, { status, internalNote, clientMessage });
+    await updateBooking(id, { status, internalNote, clientMessage, endTime: booking.end_time });
     closeBookingDetail();
   });
 
@@ -735,7 +738,7 @@ function renderAdminTable() {
   state.adminBookings.forEach((booking) => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${formatDateTime(booking.date, booking.time)}</td>
+      <td>${formatDateTime(booking.date, booking.time)}${booking.end_time ? `<br><small>Rientro ${booking.end_time}</small>` : ''}</td>
       <td>
         <strong>${booking.customer_name}</strong><br>
         <small>${booking.email}</small><br>
@@ -883,6 +886,11 @@ async function handleBookingSubmit(event) {
 
   if (payload.serviceType === 'noleggio' && !payload.boatModel) {
     showFeedback(elements.bookingFeedback, 'Seleziona il gommone ZAR per il noleggio.', 'error');
+    return;
+  }
+
+  if (payload.serviceType === 'noleggio' && !payload.endTime) {
+    showFeedback(elements.bookingFeedback, 'Indica l\'orario di rientro per il noleggio.', 'error');
     return;
   }
 
