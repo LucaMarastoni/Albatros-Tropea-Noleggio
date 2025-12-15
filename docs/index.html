@@ -227,16 +227,15 @@
       <span></span>
     </button>
     <nav class="topbar__nav" id="primaryNav">
-      <a href="index.html#hero" aria-current="page" data-i18n="nav-manifesto">Manifesto</a>
-      <a href="index.html#boats" data-i18n="nav-boats">Gommone</a>
+      <a href="index.html#hero" aria-current="page" data-i18n="nav-home">Home</a>
+      <a href="index.html#boats" data-i18n="nav-fleet">Flotta</a>
       <a href="index.html#escursioni" data-i18n="nav-tours">Escursioni</a>
       <a href="index.html#location" data-i18n="nav-location">Dove siamo</a>
       <a href="index.html#cta" data-i18n="nav-cta">Prenota</a>
     </nav>
     <div class="topbar__actions">
       <button class="btn ghost" id="openDemo">Tour demo</button>
-      <a class="btn outline" href="portal.html">Portale</a>
-      <button class="btn primary" id="authTrigger">Accedi</button>
+      <a class="btn primary" href="portal.html" data-i18n="portal-login">Accedi al portale</a>
       <div class="user-menu hidden" id="userMenu">
         <span class="user-avatar">⛵</span>
         <div>
@@ -510,11 +509,12 @@ password: admin123</pre>
     (() => {
       const translations = {
         en: {
-          'nav-manifesto': 'Manifesto',
-          'nav-boats': 'Boats',
+          'nav-home': 'Home',
+          'nav-fleet': 'Fleet',
           'nav-tours': 'Excursions',
           'nav-location': 'Where we are',
           'nav-cta': 'Book',
+          'portal-login': 'Access the portal',
           'hero-title': 'Premium RIBs and exclusive tours on the Coast of the Gods.',
           'hero-lead': 'License-free rental or guided tours with skipper: book in a few clicks, we welcome you at Tropea marina.',
           'hero-cta-fleet': 'See the fleet',

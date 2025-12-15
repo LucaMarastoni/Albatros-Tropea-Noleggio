@@ -43,16 +43,15 @@
       <span></span>
     </button>
     <nav class="topbar__nav" id="primaryNav">
-      <a href="index.html#hero" data-i18n="nav-manifesto">Manifesto</a>
-      <a href="boats.html" aria-current="page" data-i18n="nav-boats">Gommone</a>
+      <a href="index.html#hero" data-i18n="nav-home">Home</a>
+      <a href="boats.html" aria-current="page" data-i18n="nav-fleet">Flotta</a>
       <a href="escursioni.html" data-i18n="nav-tours">Escursioni</a>
       <a href="index.html#location" data-i18n="nav-location">Dove siamo</a>
       <a href="index.html#cta" data-i18n="nav-cta">Prenota</a>
     </nav>
     <div class="topbar__actions">
       <button class="btn ghost" id="openDemo" data-i18n="demo-btn">Tour demo</button>
-      <a class="btn outline" href="portal.html" data-i18n="portal-btn">Portale</a>
-      <button class="btn primary" id="authTrigger" data-i18n="login-btn">Accedi</button>
+      <a class="btn primary" href="portal.html" data-i18n="portal-login">Accedi al portale</a>
       <div class="user-menu hidden" id="userMenu">
         <span class="user-avatar">⛵</span>
         <div>
@@ -175,20 +174,7 @@
               <p class="price-list__note" data-i18n="price-note">Carburante escluso</p>
             </div>
           </div>
-          <ul class="hero__metrics">
-            <li>
-              <strong>3</strong>
-              <span data-i18n="metric1">Modelli ZAR</span>
-            </li>
-            <li>
-              <strong>150·90·40</strong>
-              <span data-i18n="metric2">Motorizzazioni</span>
-            </li>
-            <li>
-              <strong>6·8·10</strong>
-              <span data-i18n="metric3">Ospiti comodi</span>
-            </li>
-          </ul>
+
         </div>
       </div>
     </section>
@@ -363,13 +349,13 @@
     (() => {
       const translations = {
         en: {
-          'nav-manifesto': 'Manifesto',
-          'nav-boats': 'Boats',
+          'nav-home': 'Home',
+          'nav-fleet': 'Fleet',
           'nav-tours': 'Excursions',
           'nav-location': 'Where we are',
           'nav-cta': 'Book',
           'demo-btn': 'Demo tour',
-          'portal-btn': 'Portal',
+          'portal-login': 'Access the portal',
           'login-btn': 'Login',
           'logout-btn': 'Logout',
           'session-active': 'Active session',

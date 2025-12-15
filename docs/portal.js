@@ -135,6 +135,8 @@ const elements = {
   addStaffNote: document.getElementById('addStaffNote'),
   bookingDetailModal: document.getElementById('bookingDetailModal'),
   bookingDetailContent: document.getElementById('bookingDetailContent'),
+  portalGuard: document.getElementById('portalGuard'),
+  guardLogin: document.getElementById('openAuthFromGuard'),
 };
 
 function getCurrentLang() {
@@ -349,6 +351,7 @@ function closePortalModal() {
   resetFeedback(elements.loginFeedback, elements.registerFeedback);
   elements.authForm?.reset();
   switchPortalTab('login');
+  updateUserUI();
   let focusTarget = null;
   if (state.user && elements.logoutBtn && !elements.logoutBtn.classList.contains('hidden') && elements.logoutBtn.offsetParent) {
     focusTarget = elements.logoutBtn;
@@ -421,6 +424,7 @@ function updateUserUI() {
   });
 
   toggleHidden(elements.clientArea, !isLoggedIn);
+  toggleHidden(elements.portalGuard, isLoggedIn);
 
   if (isDashboardPage) {
     toggleHidden(elements.adminArea, !isAdmin);
@@ -1169,6 +1173,8 @@ function attachEventListeners() {
       handleServiceTypeChange(event.target.value);
     });
   }
+
+  elements.guardLogin?.addEventListener('click', () => openPortalModal('login'));
 
   if (elements.bookingForm) {
     elements.bookingForm.addEventListener('submit', handleBookingSubmit);
