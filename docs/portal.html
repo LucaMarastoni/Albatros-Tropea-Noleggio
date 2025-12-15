@@ -19,8 +19,8 @@
     <a class="portal-brand" href="index.html" aria-label="Torna alla landing Albatros Tropea Noleggio">
       <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="portal-logo">
       <div>
-        <strong>Albatros Tropea Noleggio</strong>
-        <small>Control Room prenotazioni</small>
+        <strong data-i18n="brand-title">Albatros Tropea Noleggio</strong>
+        <small data-i18n="brand-sub">Control Room prenotazioni</small>
       </div>
     </a>
     <button class="portal-menu-toggle" id="portalMenuToggle" aria-expanded="false" aria-label="Apri il menu">
@@ -29,17 +29,18 @@
       <span></span>
     </button>
     <nav class="portal-nav" id="portalNav">
-      <a href="index.html">Landing</a>
-      <a href="portal.html" aria-current="page">Prenotazioni</a>
-      <a href="admin.html" data-role="admin" class="hidden">Dashboard</a>
+      <a href="index.html" data-i18n="nav-landing">Landing</a>
+      <a href="portal.html" aria-current="page" data-i18n="nav-bookings">Prenotazioni</a>
+      <a href="admin.html" data-role="admin" class="hidden" data-i18n="nav-dashboard">Dashboard</a>
     </nav>
+    <button class="btn outline" id="langToggle" aria-label="Cambia lingua">EN</button>
     <div class="portal-user" id="portalUserActions">
       <div>
         <span id="topUserName">Ospite</span>
         <small id="topUserRole">—</small>
       </div>
-      <button class="btn ghost" type="button" id="portalAuthTrigger">Accedi</button>
-      <button class="btn ghost hidden" id="portalLogout">Esci</button>
+      <button class="btn ghost" type="button" id="portalAuthTrigger" data-i18n="login-btn">Accedi</button>
+      <button class="btn ghost hidden" id="portalLogout" data-i18n="logout-btn">Esci</button>
     </div>
   </header>
 
@@ -49,56 +50,56 @@
         <article class="panel booking-panel">
           <header class="panel-header">
             <div>
-              <h2>Nuova prenotazione</h2>
-              <p>Configura la tua esperienza in mare e invia la richiesta al desk.</p>
+              <h2 data-i18n="booking-title">Nuova prenotazione</h2>
+              <p data-i18n="booking-sub">Configura la tua esperienza in mare e invia la richiesta al desk.</p>
             </div>
           </header>
           <form id="bookingForm" class="form-grid" novalidate>
             <label>
-              Referente viaggio
+              <span data-i18n="label-customer">Referente viaggio</span>
               <input type="text" name="customerName" required placeholder="Nome Cognome">
             </label>
             <label>
-              Telefono
+              <span data-i18n="label-phone">Telefono</span>
               <input type="tel" name="phone" required placeholder="+39 333 1234567">
             </label>
             <label>
-              Tipo di servizio
+              <span data-i18n="label-service">Tipo di servizio</span>
               <select name="serviceType" id="serviceType" required>
-                <option value="">Seleziona</option>
+                <option value="" data-i18n="option-select">Seleziona</option>
               </select>
             </label>
             <label id="tourField" class="full hidden">
-              Itinerario escursione
+              <span data-i18n="label-tour">Itinerario escursione</span>
               <select name="tour" id="tour"></select>
             </label>
             <label id="boatField" class="hidden">
-              Modello gommone
+              <span data-i18n="label-boat">Modello gommone</span>
               <select name="boatModel" id="boatModel"></select>
             </label>
             <label>
-              Data
+              <span data-i18n="label-date">Data</span>
               <input type="date" name="date" required>
             </label>
             <label>
-              Partenza
+              <span data-i18n="label-start">Partenza</span>
               <input type="time" name="time" required>
             </label>
             <label id="endTimeField" class="hidden">
-              Rientro
+              <span data-i18n="label-end">Rientro</span>
               <input type="time" name="endTime">
             </label>
             <label>
-              Ospiti
+              <span data-i18n="label-people">Ospiti</span>
               <input type="number" name="people" min="1" max="12" value="2" required>
             </label>
             <label class="full">
-              Note per lo staff
+              <span data-i18n="label-notes">Note per lo staff</span>
               <textarea name="notes" rows="3" placeholder="Allergie, richieste speciali, equipment..."></textarea>
             </label>
             <div id="boatSummary" class="boat-summary full hidden" aria-live="polite"></div>
             <div id="tourSummary" class="boat-summary tour-summary full hidden" aria-live="polite"></div>
-            <button type="submit" class="btn primary full">Invia prenotazione</button>
+            <button type="submit" class="btn primary full" data-i18n="send-btn">Invia prenotazione</button>
             <p class="form-feedback" id="bookingFeedback" aria-live="polite"></p>
           </form>
         </article>
@@ -106,8 +107,8 @@
         <article class="panel bookings-panel">
           <header class="panel-header">
             <div>
-              <h2>Le tue uscite</h2>
-              <p>Monitora stato e dettagli logistici aggiornati.</p>
+              <h2 data-i18n="list-title">Le tue uscite</h2>
+              <p data-i18n="list-sub">Monitora stato e dettagli logistici aggiornati.</p>
             </div>
           </header>
           <div id="clientBookings" class="booking-stack"></div>
@@ -121,30 +122,30 @@
       <div class="portal-footer__brand">
         <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="portal-footer__logo">
         <div>
-          <strong>Control room Albatros</strong>
-          <span>Portale prenotazioni riservato</span>
+          <strong data-i18n="footer-brand-title">Control room Albatros</strong>
+          <span data-i18n="footer-brand-sub">Portale prenotazioni riservato</span>
         </div>
       </div>
       <div class="portal-footer__group">
-        <h4>Support crew</h4>
+        <h4 data-i18n="footer-support">Support crew</h4>
         <ul>
-          <li><span>Line desk</span><a href="tel:+393715328451">+39 371 53 28 451</a></li>
-          <li><span>Email</span><a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a></li>
-          <li><span>WhatsApp</span><a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a></li>
+          <li><span data-i18n="footer-line">Line desk</span><a href="tel:+393715328451">+39 371 53 28 451</a></li>
+          <li><span data-i18n="footer-email">Email</span><a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a></li>
+          <li><span data-i18n="footer-wa">WhatsApp</span><a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a></li>
         </ul>
       </div>
       <div class="portal-footer__group">
-        <h4>Orari operativi</h4>
+        <h4 data-i18n="footer-hours-title">Orari operativi</h4>
         <ul>
-          <li><span>Concierge clienti</span><p>08:00 · 20:00</p></li>
-          <li><span>Emergency skipper</span><p>H24 · 7/7</p></li>
-          <li><span>Base Tropea</span><p>Viale Raf Vallone, 89861</p></li>
+          <li><span data-i18n="footer-hours-concierge">Concierge clienti</span><p>08:00 · 20:00</p></li>
+          <li><span data-i18n="footer-hours-emergency">Emergency skipper</span><p>H24 · 7/7</p></li>
+          <li><span data-i18n="footer-hours-base">Base Tropea</span><p>Viale Raf Vallone, 89861</p></li>
         </ul>
       </div>
     </div>
     <div class="portal-footer__legal">
-      <span>© 2024 Albatros Tropea Noleggio · Uso interno riservato</span>
-      <a href="index.html">Torna alla landing</a>
+      <span data-i18n="footer-legal">© 2024 Albatros Tropea Noleggio · Uso interno riservato</span>
+      <a href="index.html" data-i18n="footer-back">Torna alla landing</a>
     </div>
   </footer>
 
@@ -154,44 +155,44 @@
       <button class="modal-close" type="button" data-close-modal aria-label="Chiudi accesso">&times;</button>
       <form class="auth-card" id="portalAuthCard" novalidate>
         <header>
-          <p class="eyebrow">Area riservata</p>
-          <h3 id="portalAuthModalTitle">Accedi o crea un account</h3>
-          <p>Se sei staff usa le credenziali admin; i clienti possono registrarsi in autonomia.</p>
+          <p class="eyebrow" data-i18n="auth-eyebrow">Area riservata</p>
+          <h3 id="portalAuthModalTitle" data-i18n="auth-title">Accedi o crea un account</h3>
+          <p data-i18n="auth-copy">Se sei staff usa le credenziali admin; i clienti possono registrarsi in autonomia.</p>
         </header>
         <div class="tabs">
-          <button type="button" class="tab active" data-tab="login">Accesso</button>
-          <button type="button" class="tab" data-tab="register">Registrati</button>
+          <button type="button" class="tab active" data-tab="login" data-i18n="tab-login">Accesso</button>
+          <button type="button" class="tab" data-tab="register" data-i18n="tab-register">Registrati</button>
         </div>
         <section class="tab-panel active" data-panel="login">
           <label>
-            Email
+            <span data-i18n="label-email">Email</span>
             <input type="email" id="portalLoginEmail" required placeholder="tuo@email.com">
           </label>
           <label>
-            Password
+            <span data-i18n="label-password">Password</span>
             <input type="password" id="portalLoginPassword" required placeholder="••••••••">
           </label>
-          <button type="submit" class="btn primary full">Accedi</button>
+          <button type="submit" class="btn primary full" data-i18n="login-submit">Accedi</button>
           <p class="form-feedback" id="portalLoginFeedback" aria-live="polite"></p>
         </section>
         <section class="tab-panel" data-panel="register">
           <label>
-            Nome completo
+            <span data-i18n="label-fullname">Nome completo</span>
             <input type="text" id="portalRegisterName" required placeholder="Nome Cognome">
           </label>
           <label>
-            Email
+            <span data-i18n="label-email">Email</span>
             <input type="email" id="portalRegisterEmail" required placeholder="tuo@email.com">
           </label>
           <label>
-            Telefono
+            <span data-i18n="label-phone">Telefono</span>
             <input type="tel" id="portalRegisterPhone" placeholder="+39 333 1234567">
           </label>
           <label>
-            Password
+            <span data-i18n="label-password">Password</span>
             <input type="password" id="portalRegisterPassword" required placeholder="Almeno 8 caratteri">
           </label>
-          <button type="submit" class="btn primary full">Registrati</button>
+          <button type="submit" class="btn primary full" data-i18n="register-submit">Registrati</button>
           <p class="form-feedback" id="portalRegisterFeedback" aria-live="polite"></p>
         </section>
       </form>
@@ -199,5 +200,100 @@
   </div>
 
   <script src="portal.js" type="module"></script>
+  <script>
+    (() => {
+      const translations = {
+        en: {
+          'brand-title': 'Albatros Tropea Rental',
+          'brand-sub': 'Booking control room',
+          'nav-landing': 'Landing',
+          'nav-bookings': 'Bookings',
+          'nav-dashboard': 'Dashboard',
+          'user-guest': 'Guest',
+          'login-btn': 'Login',
+          'logout-btn': 'Logout',
+          'booking-title': 'New booking',
+          'booking-sub': 'Configure your sea experience and send the request to the desk.',
+          'label-customer': 'Trip lead',
+          'label-phone': 'Phone',
+          'label-service': 'Service type',
+          'label-tour': 'Excursion itinerary',
+          'label-boat': 'Boat model',
+          'label-date': 'Date',
+          'label-start': 'Departure',
+          'label-end': 'Return',
+          'label-people': 'Guests',
+          'label-notes': 'Notes for the staff',
+          'option-select': 'Select',
+          'send-btn': 'Send booking',
+          'list-title': 'Your outings',
+          'list-sub': 'Monitor status and up-to-date logistics.',
+          'footer-brand-title': 'Albatros control room',
+          'footer-brand-sub': 'Reserved booking portal',
+          'footer-support': 'Support crew',
+          'footer-line': 'Ops line',
+          'footer-email': 'Email',
+          'footer-wa': 'WhatsApp',
+          'footer-hours-title': 'Operating hours',
+          'footer-hours-concierge': 'Client concierge',
+          'footer-hours-emergency': 'Emergency skipper',
+          'footer-hours-base': 'Tropea base',
+          'footer-legal': '© 2024 Albatros Tropea Noleggio · Internal use only',
+          'footer-back': 'Back to landing',
+          'auth-eyebrow': 'Reserved area',
+          'auth-title': 'Login or create an account',
+          'auth-copy': 'Staff should use admin credentials; clients can self-register.',
+          'tab-login': 'Login',
+          'tab-register': 'Register',
+          'label-email': 'Email',
+          'label-password': 'Password',
+          'login-submit': 'Login',
+          'label-fullname': 'Full name',
+          'register-submit': 'Sign up',
+        },
+      };
+
+      const langToggle = document.getElementById('langToggle');
+      const storageKey = 'siteLang';
+
+      const getSavedLang = () => {
+        try {
+          const saved = localStorage.getItem(storageKey);
+          if (saved === 'en' || saved === 'it') return saved;
+        } catch (_) {}
+        return 'it';
+      };
+
+      const persistLang = (lang) => {
+        try {
+          localStorage.setItem(storageKey, lang);
+        } catch (_) {}
+      };
+
+      const applyTranslations = (lang) => {
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          const key = el.dataset.i18n;
+          if (!el.dataset.defaultText) {
+            el.dataset.defaultText = el.textContent;
+          }
+          const translation = lang === 'en' ? translations.en[key] : el.dataset.defaultText;
+          if (translation) el.textContent = translation;
+        });
+
+        langToggle.textContent = lang === 'en' ? 'IT' : 'EN';
+        langToggle.setAttribute('aria-label', lang === 'en' ? 'Switch to Italian' : 'Switch to English');
+        document.documentElement.lang = lang === 'en' ? 'en' : 'it';
+      };
+
+      langToggle?.addEventListener('click', () => {
+        const current = document.documentElement.lang === 'en' ? 'en' : 'it';
+        const next = current === 'en' ? 'it' : 'en';
+        persistLang(next);
+        applyTranslations(next);
+      });
+
+      applyTranslations(getSavedLang());
+    })();
+  </script>
 </body>
 </html>

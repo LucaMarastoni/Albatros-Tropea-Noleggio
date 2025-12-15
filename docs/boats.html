@@ -35,23 +35,24 @@
       <span></span>
     </button>
     <nav class="topbar__nav" id="primaryNav">
-      <a href="index.html#hero">Manifesto</a>
-      <a href="boats.html" aria-current="page">Gommone</a>
-      <a href="escursioni.html">Escursioni</a>
-      <a href="index.html#location">Dove siamo</a>
-      <a href="index.html#cta">Prenota</a>
+      <a href="index.html#hero" data-i18n="nav-manifesto">Manifesto</a>
+      <a href="boats.html" aria-current="page" data-i18n="nav-boats">Gommone</a>
+      <a href="escursioni.html" data-i18n="nav-tours">Escursioni</a>
+      <a href="index.html#location" data-i18n="nav-location">Dove siamo</a>
+      <a href="index.html#cta" data-i18n="nav-cta">Prenota</a>
     </nav>
     <div class="topbar__actions">
-      <button class="btn ghost" id="openDemo">Tour demo</button>
-      <a class="btn outline" href="portal.html">Portale</a>
-      <button class="btn primary" id="authTrigger">Accedi</button>
+      <button class="btn outline" id="langToggle" aria-label="Cambia lingua">EN</button>
+      <button class="btn ghost" id="openDemo" data-i18n="demo-btn">Tour demo</button>
+      <a class="btn outline" href="portal.html" data-i18n="portal-btn">Portale</a>
+      <button class="btn primary" id="authTrigger" data-i18n="login-btn">Accedi</button>
       <div class="user-menu hidden" id="userMenu">
         <span class="user-avatar">⛵</span>
         <div>
           <span class="user-name" id="userDisplayName"></span>
-          <small>Sessione attiva</small>
+          <small data-i18n="session-active">Sessione attiva</small>
         </div>
-        <button class="btn tiny" id="logoutBtn">Esci</button>
+        <button class="btn tiny" id="logoutBtn" data-i18n="logout-btn">Esci</button>
       </div>
     </div>
   </header>
@@ -61,61 +62,61 @@
       <div class="hero__grid">
         <div class="hero__content">
           <div class="hero__headline">
-            <h1>Flotta ZAR 65 · 53 · 49</h1>
+            <h1 data-i18n="hero-title">Flotta ZAR 65 · 53 · 49</h1>
           </div>
           <div class="hero__copy">
-            <p class="lead">Tre gommoni ZAR con diverse motorizzazioni per adattarsi al tuo equipaggio: ZAR 65 (150 cv), ZAR 53 (90 cv) e ZAR 49 (40 cv – senza patente). Comfort premium, briefing dedicato e assistenza costante.</p>
-            <p>Perfetti per coppie, famiglie o gruppi, offrono tutto il necessario per una giornata indimenticabile tra calette, grotte marine e acque turchesi.</p>
-            <p>Grazie a un breve briefing iniziale e all’assistenza garantita, potrai salpare in totale sicurezza anche alla tua prima esperienza.</p>
+            <p class="lead" data-i18n="hero-lead1">Tre gommoni ZAR con diverse motorizzazioni per adattarsi al tuo equipaggio: ZAR 65 (150 cv), ZAR 53 (90 cv) e ZAR 49 (40 cv – senza patente). Comfort premium, briefing dedicato e assistenza costante.</p>
+            <p data-i18n="hero-lead2">Perfetti per coppie, famiglie o gruppi, offrono tutto il necessario per una giornata indimenticabile tra calette, grotte marine e acque turchesi.</p>
+            <p data-i18n="hero-lead3">Grazie a un breve briefing iniziale e all’assistenza garantita, potrai salpare in totale sicurezza anche alla tua prima esperienza.</p>
           </div>
           <div class="hero__actions">
-            <a class="btn primary" href="portal.html">Prenota il tuo ZAR</a>
-            <a class="btn outline" href="#caratteristiche">Caratteristiche tecniche</a>
+            <a class="btn primary" href="portal.html" data-i18n="hero-cta1">Prenota il tuo ZAR</a>
+            <a class="btn outline" href="#caratteristiche" data-i18n="hero-cta2">Caratteristiche tecniche</a>
           </div>
           <div class="hero__pricing">
             <div class="price-list">
-              <h4>Listino prezzi</h4>
-              <p class="price-list__period">📅 Giugno – Luglio</p>
+              <h4 data-i18n="price-title1">Listino prezzi</h4>
+              <p class="price-list__period" data-i18n="price-period1">📅 Giugno – Luglio</p>
               <ul>
                 <li>
-                  <span>Mezza giornata</span>
+                  <span data-i18n="price-hg1">Mezza giornata</span>
                   <strong>€150</strong>
                 </li>
                 <li>
-                  <span>Giornata intera</span>
+                  <span data-i18n="price-fd1">Giornata intera</span>
                   <strong>€210</strong>
                 </li>
               </ul>
-              <p class="price-list__note">Carburante escluso</p>
+              <p class="price-list__note" data-i18n="price-note">Carburante escluso</p>
             </div>
             <div class="price-list">
-              <h4>Listino prezzi</h4>
-              <p class="price-list__period">📅 Agosto</p>
+              <h4 data-i18n="price-title2">Listino prezzi</h4>
+              <p class="price-list__period" data-i18n="price-period2">📅 Agosto</p>
               <ul>
                 <li>
-                  <span>Mezza giornata</span>
+                  <span data-i18n="price-hg2">Mezza giornata</span>
                   <strong>€180</strong>
                 </li>
                 <li>
-                  <span>Giornata intera</span>
+                  <span data-i18n="price-fd2">Giornata intera</span>
                   <strong>€250</strong>
                 </li>
               </ul>
-              <p class="price-list__note">Carburante escluso</p>
+              <p class="price-list__note" data-i18n="price-note">Carburante escluso</p>
             </div>
           </div>
           <ul class="hero__metrics">
             <li>
               <strong>3</strong>
-              <span>Modelli ZAR</span>
+              <span data-i18n="metric1">Modelli ZAR</span>
             </li>
             <li>
               <strong>150·90·40</strong>
-              <span>Motorizzazioni</span>
+              <span data-i18n="metric2">Motorizzazioni</span>
             </li>
             <li>
               <strong>6·8·10</strong>
-              <span>Ospiti comodi</span>
+              <span data-i18n="metric3">Ospiti comodi</span>
             </li>
           </ul>
         </div>
@@ -124,26 +125,26 @@
 
     <section id="caratteristiche" class="section boats boats--detail">
       <header class="section__header">
-        <p class="eyebrow">Caratteristiche principali</p>
-        <h2>Una configurazione unica, pronta per ogni itinerario tra Tropea e Capo Vaticano.</h2>
+        <p class="eyebrow" data-i18n="features-eyebrow">Caratteristiche principali</p>
+        <h2 data-i18n="features-title">Una configurazione unica, pronta per ogni itinerario tra Tropea e Capo Vaticano.</h2>
       </header>
       <div class="boats__grid">
         <figure class="boats__media">
           <img src="assets/img/2.jpg" alt="Interni del gommone con sedute comfort" loading="lazy">
         </figure>
         <div class="boats__details">
-          <h3>Dotazioni già incluse nel noleggio</h3>
+          <h3 data-i18n="features-subtitle">Dotazioni già incluse nel noleggio</h3>
           <ul class="boats__specs">
-            <li>Cuscineria premium anti-UV con layout prua/solarium</li>
-            <li>Console centrale con parabrezza, USB charge &amp; impianto audio bluetooth</li>
-            <li>Frigorifero 40 litri con acqua, soft drink e frutta fresca</li>
-            <li>Tendalino XL, doccetta acqua dolce e plancette teak</li>
-            <li>Kit snorkeling completo + dry bag 10L</li>
-            <li>Dotazioni di sicurezza per 12 miglia e tracking GPS</li>
+            <li data-i18n="spec1">Cuscineria premium anti-UV con layout prua/solarium</li>
+            <li data-i18n="spec2">Console centrale con parabrezza, USB charge &amp; impianto audio bluetooth</li>
+            <li data-i18n="spec3">Frigorifero 40 litri con acqua, soft drink e frutta fresca</li>
+            <li data-i18n="spec4">Tendalino XL, doccetta acqua dolce e plancette teak</li>
+            <li data-i18n="spec5">Kit snorkeling completo + dry bag 10L</li>
+            <li data-i18n="spec6">Dotazioni di sicurezza per 12 miglia e tracking GPS</li>
           </ul>
           <div class="boats__cta">
-            <a class="btn primary" href="escursioni.html">Abbina una escursione</a>
-            <a class="btn outline" href="#gallery">Guarda la gallery</a>
+            <a class="btn primary" href="escursioni.html" data-i18n="features-cta1">Abbina una escursione</a>
+            <a class="btn outline" href="#gallery" data-i18n="features-cta2">Guarda la gallery</a>
           </div>
         </div>
       </div>
@@ -151,57 +152,57 @@
 
     <section class="section amenities">
       <header class="section__header">
-        <p class="eyebrow">Experience kit</p>
-        <h2>Tutto ciò che serve per rendere speciale la tua uscita in mare.</h2>
+        <p class="eyebrow" data-i18n="amenities-eyebrow">Experience kit</p>
+        <h2 data-i18n="amenities-title">Tutto ciò che serve per rendere speciale la tua uscita in mare.</h2>
       </header>
       <div class="amenities-grid">
         <article class="amenity-card">
-          <span class="label">Briefing &amp; concierge</span>
-          <h3>Accoglienza dedicata in banchina</h3>
-          <p>Check-in con skipper, briefing sicurezza e suggerimenti personalizzati su meteo, soste e ristorazione.</p>
+          <span class="label" data-i18n="am1-label">Briefing &amp; concierge</span>
+          <h3 data-i18n="am1-title">Accoglienza dedicata in banchina</h3>
+          <p data-i18n="am1-copy">Check-in con skipper, briefing sicurezza e suggerimenti personalizzati su meteo, soste e ristorazione.</p>
         </article>
         <article class="amenity-card">
-          <span class="label">Comfort kit</span>
-          <h3>Set asciugamani + dry bag</h3>
-          <p>Per ogni equipaggio forniamo asciugamani in microfibra, dry bag waterproof e cuscini extra per la prua.</p>
+          <span class="label" data-i18n="am2-label">Comfort kit</span>
+          <h3 data-i18n="am2-title">Set asciugamani + dry bag</h3>
+          <p data-i18n="am2-copy">Per ogni equipaggio forniamo asciugamani in microfibra, dry bag waterproof e cuscini extra per la prua.</p>
         </article>
         <article class="amenity-card">
-          <span class="label">Servizi extra</span>
-          <h3>Food &amp; beverage su richiesta</h3>
-          <p>Possibilità di aggiungere aperitivo locale, bottiglia di bollicine o light lunch consegnato direttamente a bordo.</p>
+          <span class="label" data-i18n="am3-label">Servizi extra</span>
+          <h3 data-i18n="am3-title">Food &amp; beverage su richiesta</h3>
+          <p data-i18n="am3-copy">Possibilità di aggiungere aperitivo locale, bottiglia di bollicine o light lunch consegnato direttamente a bordo.</p>
         </article>
       </div>
     </section>
 
     <section id="gallery" class="section boat-gallery">
       <header class="section__header">
-        <p class="eyebrow">Gallery</p>
-        <h2>Dettagli della flotta ZAR (65 · 53 · 49).</h2>
+        <p class="eyebrow" data-i18n="gallery-eyebrow">Gallery</p>
+        <h2 data-i18n="gallery-title">Dettagli della flotta ZAR (65 · 53 · 49).</h2>
       </header>
       <div class="boat-gallery__grid">
         <figure>
           <img src="assets/img/3.jpg" alt="Console del gommone con strumentazione">
-          <figcaption>Console con GPS cartografico e caricatore USB.</figcaption>
+          <figcaption data-i18n="gal1">Console con GPS cartografico e caricatore USB.</figcaption>
         </figure>
         <figure>
           <img src="assets/img/4.jpg" alt="Sedute posteriori del gommone">
-          <figcaption>Zona living con tavolino removibile e cuscineria premium.</figcaption>
+          <figcaption data-i18n="gal2">Zona living con tavolino removibile e cuscineria premium.</figcaption>
         </figure>
         <figure>
           <img src="assets/img/5.jpg" alt="Kit snorkeling e dry bag">
-          <figcaption>Kit snorkeling e dry bag inclusi in ogni uscita.</figcaption>
+          <figcaption data-i18n="gal3">Kit snorkeling e dry bag inclusi in ogni uscita.</figcaption>
         </figure>
       </div>
     </section>
 
     <section class="section finale finale--alt">
       <div class="finale__content">
-        <p class="eyebrow">Pronto a salpare?</p>
-        <h2>Blocca il tuo slot, scegli l’escursione o naviga in autonomia.</h2>
-        <p>Dal portale puoi scegliere data e orario disponibili, aggiungere servizi extra e ricevere conferma immediata via email.</p>
+        <p class="eyebrow" data-i18n="cta-eyebrow">Pronto a salpare?</p>
+        <h2 data-i18n="cta-title">Blocca il tuo slot, scegli l’escursione o naviga in autonomia.</h2>
+        <p data-i18n="cta-copy">Dal portale puoi scegliere data e orario disponibili, aggiungere servizi extra e ricevere conferma immediata via email.</p>
         <div class="hero__actions">
-          <a class="btn primary" href="portal.html">Prenota ora</a>
-          <a class="btn outline" href="escursioni.html">Guarda le escursioni</a>
+          <a class="btn primary" href="portal.html" data-i18n="cta-btn1">Prenota ora</a>
+          <a class="btn outline" href="escursioni.html" data-i18n="cta-btn2">Guarda le escursioni</a>
         </div>
       </div>
     </section>
@@ -212,61 +213,192 @@
       <div class="footer__brand">
         <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="footer__logo">
         <div>
-          <h4>Albatros Tropea Noleggio</h4>
-          <p>Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
+          <h4 data-i18n="footer-title">Albatros Tropea Noleggio</h4>
+          <p data-i18n="footer-address">Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
         </div>
-        <p>Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
+        <p data-i18n="footer-desc">Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
       </div>
       <div class="footer__group">
-        <h4>Contatti rapidi</h4>
+        <h4 data-i18n="footer-fast">Contatti rapidi</h4>
         <ul class="footer__list">
           <li>
-            <span>Desk operativo</span>
+            <span data-i18n="footer-desk-label">Desk operativo</span>
             <a href="tel:+393715328451">+39 371 53 28 451</a>
           </li>
           <li>
-            <span>Email concierge</span>
+            <span data-i18n="footer-email-label">Email concierge</span>
             <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
           </li>
           <li>
-            <span>WhatsApp crew</span>
+            <span data-i18n="footer-wa-label">WhatsApp crew</span>
             <a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a>
           </li>
         </ul>
       </div>
       <div class="footer__group">
-        <h4>Operation desk</h4>
+        <h4 data-i18n="footer-ops-title">Operation desk</h4>
         <ul class="footer__list">
           <li>
-            <span>Fasce attive</span>
-            <p>Daily concierge · 08:00 - 20:00</p>
+            <span data-i18n="footer-ops-hours-label">Fasce attive</span>
+            <p data-i18n="footer-ops-hours">Daily concierge · 08:00 - 20:00</p>
           </li>
           <li>
-            <span>Linee emergenza</span>
-            <p>Skipper &amp; safety team · 24/7</p>
+            <span data-i18n="footer-ops-emergency-label">Linee emergenza</span>
+            <p data-i18n="footer-ops-emergency">Skipper &amp; safety team · 24/7</p>
           </li>
           <li>
-            <span>Portale clienti</span>
-            <a href="portal.html">Accedi al controllo prenotazioni</a>
+            <span data-i18n="footer-ops-portal-label">Portale clienti</span>
+            <a href="portal.html" data-i18n="footer-ops-portal-link">Accedi al controllo prenotazioni</a>
           </li>
         </ul>
       </div>
       <div class="footer__group">
-        <h4>Social signals</h4>
+        <h4 data-i18n="footer-social-title">Social signals</h4>
         <ul class="footer__social">
-          <li><a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener">TikTok</a></li>
-          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener">TripAdvisor</a></li>
-          <li><a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a></li>
+          <li><a href="https://www.instagram.com" target="_blank" rel="noopener" data-i18n="footer-social-ig">Instagram</a></li>
+          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener" data-i18n="footer-social-tt">TikTok</a></li>
+          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener" data-i18n="footer-social-ta">TripAdvisor</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener" data-i18n="footer-social-yt">YouTube</a></li>
         </ul>
       </div>
     </div>
     <div class="footer__legal">
-      <span>© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
-      <span><a href="privacy.html">Privacy</a> · <a href="cookie.html">Cookie Policy</a></span>
+      <span data-i18n="footer-legal">© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
+      <span><a href="privacy.html" data-i18n="footer-privacy">Privacy</a> · <a href="cookie.html" data-i18n="footer-cookie">Cookie Policy</a></span>
     </div>
   </footer>
 
   <script src="app.js" type="module"></script>
+  <script>
+    (() => {
+      const translations = {
+        en: {
+          'nav-manifesto': 'Manifesto',
+          'nav-boats': 'Boats',
+          'nav-tours': 'Excursions',
+          'nav-location': 'Where we are',
+          'nav-cta': 'Book',
+          'demo-btn': 'Demo tour',
+          'portal-btn': 'Portal',
+          'login-btn': 'Login',
+          'logout-btn': 'Logout',
+          'session-active': 'Active session',
+          'hero-title': 'ZAR Fleet 65 · 53 · 49',
+          'hero-lead1': 'Three ZAR RIBs with different engines to match your crew: ZAR 65 (150 hp), ZAR 53 (90 hp) and ZAR 49 (40 hp – no license). Premium comfort, dedicated briefing and constant support.',
+          'hero-lead2': 'Perfect for couples, families or groups, they offer everything you need for an unforgettable day between coves, sea caves and turquoise water.',
+          'hero-lead3': 'A short initial briefing plus guaranteed assistance so you can set sail safely even on your first outing.',
+          'hero-cta1': 'Book your ZAR',
+          'hero-cta2': 'Technical features',
+          'price-title1': 'Price list',
+          'price-title2': 'Price list',
+          'price-period1': '📅 June – July',
+          'price-period2': '📅 August',
+          'price-hg1': 'Half day',
+          'price-fd1': 'Full day',
+          'price-hg2': 'Half day',
+          'price-fd2': 'Full day',
+          'price-note': 'Fuel not included',
+          'metric1': 'ZAR models',
+          'metric2': 'Engines',
+          'metric3': 'Guests comfortably',
+          'features-eyebrow': 'Key features',
+          'features-title': 'A unique setup, ready for any route between Tropea and Capo Vaticano.',
+          'features-subtitle': 'Equipment already included in the rental',
+          'spec1': 'Premium UV-resistant cushions with bow/solarium layout',
+          'spec2': 'Center console with windshield, USB charge & bluetooth sound system',
+          'spec3': '40L fridge with water, soft drinks and fresh fruit',
+          'spec4': 'XL bimini, fresh water shower and teak swim platforms',
+          'spec5': 'Complete snorkeling kit + 10L dry bag',
+          'spec6': 'Safety gear for 12 miles and GPS tracking',
+          'features-cta1': 'Pair an excursion',
+          'features-cta2': 'View gallery',
+          'amenities-eyebrow': 'Experience kit',
+          'amenities-title': 'Everything you need to make your day at sea special.',
+          'am1-label': 'Briefing & concierge',
+          'am1-title': 'Dedicated welcome at the dock',
+          'am1-copy': 'Check-in with skipper, safety briefing and tailored tips on weather, stops and food.',
+          'am2-label': 'Comfort kit',
+          'am2-title': 'Towel set + dry bag',
+          'am2-copy': 'Microfiber towels, waterproof dry bag and extra cushions for the bow.',
+          'am3-label': 'Extra services',
+          'am3-title': 'Food & beverage on request',
+          'am3-copy': 'Add local aperitif, a bottle of bubbles or light lunch delivered on board.',
+          'gallery-eyebrow': 'Gallery',
+          'gallery-title': 'Details of the ZAR fleet (65 · 53 · 49).',
+          'gal1': 'Console with chartplotter GPS and USB charger.',
+          'gal2': 'Living area with removable table and premium cushions.',
+          'gal3': 'Snorkeling kit and dry bag included on every outing.',
+          'cta-eyebrow': 'Ready to sail?',
+          'cta-title': 'Lock your slot, pick a tour or sail independently.',
+          'cta-copy': 'From the portal you can choose available dates and times, add extra services and get instant email confirmation.',
+          'cta-btn1': 'Book now',
+          'cta-btn2': 'See the excursions',
+          'footer-title': 'Albatros Tropea Noleggio',
+          'footer-address': 'Viale Raf Vallone, 89861 Tropea (VV) · Italy',
+          'footer-desc': 'Premium nautical hub with signature RIBs, tailored experiences and dedicated crew.',
+          'footer-fast': 'Quick contacts',
+          'footer-desk-label': 'Ops desk',
+          'footer-email-label': 'Concierge email',
+          'footer-wa-label': 'WhatsApp crew',
+          'footer-ops-title': 'Operation desk',
+          'footer-ops-hours-label': 'Active hours',
+          'footer-ops-hours': 'Daily concierge · 08:00 - 20:00',
+          'footer-ops-emergency-label': 'Emergency lines',
+          'footer-ops-emergency': 'Skipper & safety team · 24/7',
+          'footer-ops-portal-label': 'Client portal',
+          'footer-ops-portal-link': 'Access booking control',
+          'footer-social-title': 'Social signals',
+          'footer-social-ig': 'Instagram',
+          'footer-social-tt': 'TikTok',
+          'footer-social-ta': 'TripAdvisor',
+          'footer-social-yt': 'YouTube',
+          'footer-legal': '© 2024 Albatros Tropea Noleggio · VAT 01234567890',
+          'footer-privacy': 'Privacy',
+          'footer-cookie': 'Cookie Policy',
+        },
+      };
+
+      const langToggle = document.getElementById('langToggle');
+      const storageKey = 'siteLang';
+
+      const getSavedLang = () => {
+        try {
+          const saved = localStorage.getItem(storageKey);
+          if (saved === 'en' || saved === 'it') return saved;
+        } catch (_) {}
+        return 'it';
+      };
+
+      const persistLang = (lang) => {
+        try {
+          localStorage.setItem(storageKey, lang);
+        } catch (_) {}
+      };
+
+      const applyTranslations = (lang) => {
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          const key = el.dataset.i18n;
+          if (!el.dataset.defaultText) {
+            el.dataset.defaultText = el.textContent;
+          }
+          const translation = lang === 'en' ? translations.en[key] : el.dataset.defaultText;
+          if (translation) el.textContent = translation;
+        });
+
+        langToggle.textContent = lang === 'en' ? 'IT' : 'EN';
+        langToggle.setAttribute('aria-label', lang === 'en' ? 'Switch to Italian' : 'Switch to English');
+        document.documentElement.lang = lang === 'en' ? 'en' : 'it';
+      };
+
+      langToggle?.addEventListener('click', () => {
+        const current = document.documentElement.lang === 'en' ? 'en' : 'it';
+        const next = current === 'en' ? 'it' : 'en';
+        persistLang(next);
+        applyTranslations(next);
+      });
+
+      applyTranslations(getSavedLang());
+    })();
+  </script>
 </body>
 </html>

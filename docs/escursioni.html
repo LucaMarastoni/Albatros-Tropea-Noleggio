@@ -35,13 +35,14 @@
       <span></span>
     </button>
     <nav class="topbar__nav" id="primaryNav">
-      <a href="index.html#hero">Manifesto</a>
-      <a href="boats.html">Gommone</a>
-      <a href="escursioni.html" aria-current="page">Escursioni</a>
-      <a href="index.html#location">Dove siamo</a>
-      <a href="index.html#cta">Prenota</a>
+      <a href="index.html#hero" data-i18n="nav-manifesto">Manifesto</a>
+      <a href="boats.html" data-i18n="nav-boats">Gommone</a>
+      <a href="escursioni.html" aria-current="page" data-i18n="nav-tours">Escursioni</a>
+      <a href="index.html#location" data-i18n="nav-location">Dove siamo</a>
+      <a href="index.html#cta" data-i18n="nav-cta">Prenota</a>
     </nav>
     <div class="topbar__actions">
+      <button class="btn outline" id="langToggle" aria-label="Cambia lingua">EN</button>
       <button class="btn ghost" id="openDemo">Tour demo</button>
       <a class="btn outline" href="portal.html">Portale</a>
       <button class="btn primary" id="authTrigger">Accedi</button>
@@ -61,25 +62,25 @@
       <div class="hero__grid">
         <div class="hero__content">
           <div class="hero__headline">
-            <h1>Tre escursioni guidate per scoprire la Costa degli Dei.</h1>
+            <h1 data-i18n="hero-title">Tre escursioni guidate per scoprire la Costa degli Dei.</h1>
           </div>
-          <p class="lead">Tre escursioni guidate per grandi e bambini (animali non ammessi) con skipper dedicato, snorkeling e aperitivo tipico. Scegli l’orario che preferisci e prenota online.</p>
+          <p class="lead" data-i18n="hero-lead">Tre escursioni guidate per grandi e bambini (animali non ammessi) con skipper dedicato, snorkeling e aperitivo tipico. Scegli l’orario che preferisci e prenota online.</p>
           <div class="hero__actions">
-            <a class="btn primary" href="portal.html">Prenota una escursione</a>
-            <a class="btn outline" href="#overview">Sfoglia gli itinerari</a>
+            <a class="btn primary" href="portal.html" data-i18n="hero-cta1">Prenota una escursione</a>
+            <a class="btn outline" href="#overview" data-i18n="hero-cta2">Sfoglia gli itinerari</a>
           </div>
           <ul class="hero__metrics">
             <li>
               <strong>3</strong>
-              <span>Itinerari curati</span>
+              <span data-i18n="hero-m1">Itinerari curati</span>
             </li>
             <li>
               <strong>2-3 h</strong>
-              <span>Durata media</span>
+              <span data-i18n="hero-m2">Durata media</span>
             </li>
             <li>
               <strong>Skipper</strong>
-              <span>Briefing dedicato</span>
+              <span data-i18n="hero-m3">Briefing dedicato</span>
             </li>
           </ul>
         </div>
@@ -88,8 +89,8 @@
 
     <section id="overview" class="section excursions">
       <header class="section__header">
-        <p class="eyebrow">Panoramica</p>
-        <h2>Scegli l’escursione che preferisci: mattina, tramonto o esperienza notturna.</h2>
+        <p class="eyebrow" data-i18n="overview-eyebrow">Panoramica</p>
+        <h2 data-i18n="overview-title">Scegli l’escursione che preferisci: mattina, tramonto o esperienza notturna.</h2>
       </header>
       <div class="excursions__grid">
         <article class="excursion-card">
@@ -97,14 +98,14 @@
             <img src="assets/img/6.jpg" alt="Calette della Baia degli Dei" loading="lazy">
           </figure>
           <div class="excursion-card__body">
-            <span class="label">Costa degli Dei Explorer</span>
-            <h3>3h · grandi e bambini · no cani</h3>
-            <p>Dal porto di Tropea alle calette di Capo Vaticano con soste snorkeling e aperitivo tipico.</p>
+            <span class="label" data-i18n="tour1-title">Costa degli Dei Explorer</span>
+            <h3 data-i18n="tour1-label">3h · grandi e bambini · no cani</h3>
+            <p data-i18n="tour1-copy">Dal porto di Tropea alle calette di Capo Vaticano con soste snorkeling e aperitivo tipico.</p>
             <ul>
-              <li>Include aperitivo tipico e kit snorkeling</li>
-              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+              <li data-i18n="tour1-item1">Include aperitivo tipico e kit snorkeling</li>
+              <li data-i18n="tour1-item2">Consigli: costume, telo, crema solare, fotocamera</li>
             </ul>
-            <a class="btn tiny outline" href="escursione-baia.html">Vai ai dettagli</a>
+            <a class="btn tiny outline" href="escursione-baia.html" data-i18n="tour-cta">Vai ai dettagli</a>
           </div>
         </article>
         <article class="excursion-card">
@@ -112,14 +113,14 @@
             <img src="assets/img/7.jpg" alt="Tramonto a Capo Vaticano" loading="lazy">
           </figure>
           <div class="excursion-card__body">
-            <span class="label">Capo Vaticano Sunset Romance</span>
-            <h3>2h · grandi e bambini · no cani</h3>
-            <p>Snorkeling allo Scoglio di Riaci, Grotta degli Innamorati al tramonto e aperitivo romantico.</p>
+            <span class="label" data-i18n="tour2-title">Capo Vaticano Sunset Romance</span>
+            <h3 data-i18n="tour2-label">2h · grandi e bambini · no cani</h3>
+            <p data-i18n="tour2-copy">Snorkeling allo Scoglio di Riaci, Grotta degli Innamorati al tramonto e aperitivo romantico.</p>
             <ul>
-              <li>Include aperitivo tipico e kit snorkeling</li>
-              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+              <li data-i18n="tour2-item1">Include aperitivo tipico e kit snorkeling</li>
+              <li data-i18n="tour2-item2">Consigli: costume, telo, crema solare, fotocamera</li>
             </ul>
-            <a class="btn tiny outline" href="escursione-sunset.html">Vai ai dettagli</a>
+            <a class="btn tiny outline" href="escursione-sunset.html" data-i18n="tour-cta">Vai ai dettagli</a>
           </div>
         </article>
         <article class="excursion-card">
@@ -127,14 +128,14 @@
             <img src="assets/img/9.jpg" alt="Costa tra Parghelia Zambrone e Briatico" loading="lazy">
           </figure>
           <div class="excursion-card__body">
-            <span class="label">Parghelia · Zambrone · Briatico</span>
-            <h3>3h · grandi e bambini · no cani</h3>
-            <p>Tour privato con tappe tra Vardanello, Michelino, Baia della Tonnara e Paradiso del Sub.</p>
+            <span class="label" data-i18n="tour3-title">Parghelia · Zambrone · Briatico</span>
+            <h3 data-i18n="tour3-label">3h · grandi e bambini · no cani</h3>
+            <p data-i18n="tour3-copy">Tour privato con tappe tra Vardanello, Michelino, Baia della Tonnara e Paradiso del Sub.</p>
             <ul>
-              <li>Include aperitivo tipico e kit snorkeling</li>
-              <li>Consigli: costume, telo, crema solare, fotocamera</li>
+              <li data-i18n="tour3-item1">Include aperitivo tipico e kit snorkeling</li>
+              <li data-i18n="tour3-item2">Consigli: costume, telo, crema solare, fotocamera</li>
             </ul>
-            <a class="btn tiny outline" href="escursione-parghelia.html">Vai ai dettagli</a>
+            <a class="btn tiny outline" href="escursione-parghelia.html" data-i18n="tour-cta">Vai ai dettagli</a>
           </div>
         </article>
       </div>
@@ -142,12 +143,12 @@
 
     <section class="section finale finale--alt">
       <div class="finale__content">
-        <p class="eyebrow">Prenotazione immediata</p>
-        <h2>Scegli data e itinerario, conferma online in meno di due minuti.</h2>
-        <p>Il portale mostra disponibilità in tempo reale, consente di aggiungere servizi extra e ricevere riepilogo via email/WhatsApp.</p>
+        <p class="eyebrow" data-i18n="cta-eyebrow">Prenotazione immediata</p>
+        <h2 data-i18n="cta-title">Scegli data e itinerario, conferma online in meno di due minuti.</h2>
+        <p data-i18n="cta-copy">Il portale mostra disponibilità in tempo reale, consente di aggiungere servizi extra e ricevere riepilogo via email/WhatsApp.</p>
         <div class="hero__actions">
-          <a class="btn primary" href="portal.html">Prenota adesso</a>
-          <a class="btn outline" href="boats.html">Guarda il gommone</a>
+          <a class="btn primary" href="portal.html" data-i18n="cta-btn1">Prenota adesso</a>
+          <a class="btn outline" href="boats.html" data-i18n="cta-btn2">Guarda il gommone</a>
         </div>
       </div>
     </section>
@@ -158,61 +159,167 @@
       <div class="footer__brand">
         <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="footer__logo">
         <div>
-          <h4>Albatros Tropea Noleggio</h4>
-          <p>Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
+          <h4 data-i18n="footer-title">Albatros Tropea Noleggio</h4>
+          <p data-i18n="footer-address">Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
         </div>
-        <p>Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
+        <p data-i18n="footer-desc">Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
       </div>
       <div class="footer__group">
-        <h4>Contatti rapidi</h4>
+        <h4 data-i18n="footer-fast">Contatti rapidi</h4>
         <ul class="footer__list">
           <li>
-            <span>Desk operativo</span>
+            <span data-i18n="footer-desk-label">Desk operativo</span>
             <a href="tel:+393715328451">+39 371 53 28 451</a>
           </li>
           <li>
-            <span>Email concierge</span>
+            <span data-i18n="footer-email-label">Email concierge</span>
             <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
           </li>
           <li>
-            <span>WhatsApp crew</span>
+            <span data-i18n="footer-wa-label">WhatsApp crew</span>
             <a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a>
           </li>
         </ul>
       </div>
       <div class="footer__group">
-        <h4>Operation desk</h4>
+        <h4 data-i18n="footer-ops-title">Operation desk</h4>
         <ul class="footer__list">
           <li>
-            <span>Fasce attive</span>
-            <p>Daily concierge · 08:00 - 20:00</p>
+            <span data-i18n="footer-ops-hours-label">Fasce attive</span>
+            <p data-i18n="footer-ops-hours">Daily concierge · 08:00 - 20:00</p>
           </li>
           <li>
-            <span>Linee emergenza</span>
-            <p>Skipper &amp; safety team · 24/7</p>
+            <span data-i18n="footer-ops-emergency-label">Linee emergenza</span>
+            <p data-i18n="footer-ops-emergency">Skipper &amp; safety team · 24/7</p>
           </li>
           <li>
-            <span>Portale clienti</span>
-            <a href="portal.html">Accedi al controllo prenotazioni</a>
+            <span data-i18n="footer-ops-portal-label">Portale clienti</span>
+            <a href="portal.html" data-i18n="footer-ops-portal-link">Accedi al controllo prenotazioni</a>
           </li>
         </ul>
       </div>
       <div class="footer__group">
-        <h4>Social signals</h4>
+        <h4 data-i18n="footer-social-title">Social signals</h4>
         <ul class="footer__social">
-          <li><a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener">TikTok</a></li>
-          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener">TripAdvisor</a></li>
-          <li><a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a></li>
+          <li><a href="https://www.instagram.com" target="_blank" rel="noopener" data-i18n="footer-social-ig">Instagram</a></li>
+          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener" data-i18n="footer-social-tt">TikTok</a></li>
+          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener" data-i18n="footer-social-ta">TripAdvisor</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener" data-i18n="footer-social-yt">YouTube</a></li>
         </ul>
       </div>
     </div>
     <div class="footer__legal">
-      <span>© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
-      <span><a href="privacy.html">Privacy</a> · <a href="cookie.html">Cookie Policy</a></span>
+      <span data-i18n="footer-legal">© 2024 Albatros Tropea Noleggio · P.IVA 01234567890</span>
+      <span><a href="privacy.html" data-i18n="footer-privacy">Privacy</a> · <a href="cookie.html" data-i18n="footer-cookie">Cookie Policy</a></span>
     </div>
   </footer>
 
   <script src="app.js" type="module"></script>
+  <script>
+    (() => {
+      const translations = {
+        en: {
+          'nav-manifesto': 'Manifesto',
+          'nav-boats': 'Boats',
+          'nav-tours': 'Excursions',
+          'nav-location': 'Where we are',
+          'nav-cta': 'Book',
+          'hero-title': 'Three guided excursions to discover the Coast of the Gods.',
+          'hero-lead': 'Three guided trips for adults and kids (no pets) with dedicated skipper, snorkeling and local aperitif. Choose your time slot and book online.',
+          'hero-cta1': 'Book an excursion',
+          'hero-cta2': 'Browse itineraries',
+          'hero-m1': 'Curated itineraries',
+          'hero-m2': 'Average duration',
+          'hero-m3': 'Dedicated briefing',
+          'overview-eyebrow': 'Overview',
+          'overview-title': 'Pick your favorite: morning, sunset or night experience.',
+          'tour1-title': 'Coast of the Gods Explorer',
+          'tour1-label': '3h · adults and kids · no pets',
+          'tour1-copy': 'From Tropea harbor to Capo Vaticano coves with snorkeling stops and local aperitif.',
+          'tour1-item1': 'Includes local aperitif and snorkeling kit',
+          'tour1-item2': 'Tips: swimsuit, towel, sunscreen, camera',
+          'tour2-title': 'Capo Vaticano Sunset Romance',
+          'tour2-label': '2h · adults and kids · no pets',
+          'tour2-copy': 'Snorkeling at Riaci Rock, Lovers’ Cave at sunset and romantic aperitif on board.',
+          'tour2-item1': 'Includes local aperitif and snorkeling kit',
+          'tour2-item2': 'Tips: swimsuit, towel, sunscreen, camera',
+          'tour3-title': 'Parghelia · Zambrone · Briatico',
+          'tour3-label': '3h · adults and kids · no pets',
+          'tour3-copy': 'Private tour with stops at Vardanello, Michelino, Baia della Tonnara and Paradiso del Sub.',
+          'tour3-item1': 'Includes local aperitif and snorkeling kit',
+          'tour3-item2': 'Tips: swimsuit, towel, sunscreen, camera',
+          'tour-cta': 'View details',
+          'cta-eyebrow': 'Instant booking',
+          'cta-title': 'Pick date and itinerary, confirm online in under two minutes.',
+          'cta-copy': 'The portal shows live availability, lets you add extras and get a recap via email/WhatsApp.',
+          'cta-btn1': 'Book now',
+          'cta-btn2': 'See the boat',
+          'footer-title': 'Albatros Tropea Noleggio',
+          'footer-address': 'Viale Raf Vallone, 89861 Tropea (VV) · Italy',
+          'footer-desc': 'Premium nautical hub with signature RIBs, tailored experiences and dedicated crew.',
+          'footer-fast': 'Quick contacts',
+          'footer-desk-label': 'Ops desk',
+          'footer-email-label': 'Concierge email',
+          'footer-wa-label': 'WhatsApp crew',
+          'footer-ops-title': 'Operation desk',
+          'footer-ops-hours-label': 'Active hours',
+          'footer-ops-hours': 'Daily concierge · 08:00 - 20:00',
+          'footer-ops-emergency-label': 'Emergency lines',
+          'footer-ops-emergency': 'Skipper & safety team · 24/7',
+          'footer-ops-portal-label': 'Client portal',
+          'footer-ops-portal-link': 'Access booking control',
+          'footer-social-title': 'Social signals',
+          'footer-social-ig': 'Instagram',
+          'footer-social-tt': 'TikTok',
+          'footer-social-ta': 'TripAdvisor',
+          'footer-social-yt': 'YouTube',
+          'footer-legal': '© 2024 Albatros Tropea Noleggio · VAT 01234567890',
+          'footer-privacy': 'Privacy',
+          'footer-cookie': 'Cookie Policy',
+        },
+      };
+
+      const langToggle = document.getElementById('langToggle');
+      const storageKey = 'siteLang';
+
+      const getSavedLang = () => {
+        try {
+          const saved = localStorage.getItem(storageKey);
+          if (saved === 'en' || saved === 'it') return saved;
+        } catch (_) {}
+        return 'it';
+      };
+
+      const persistLang = (lang) => {
+        try {
+          localStorage.setItem(storageKey, lang);
+        } catch (_) {}
+      };
+
+      const applyTranslations = (lang) => {
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          const key = el.dataset.i18n;
+          if (!el.dataset.defaultText) {
+            el.dataset.defaultText = el.textContent;
+          }
+          const translation = lang === 'en' ? translations.en[key] : el.dataset.defaultText;
+          if (translation) el.textContent = translation;
+        });
+
+        langToggle.textContent = lang === 'en' ? 'IT' : 'EN';
+        langToggle.setAttribute('aria-label', lang === 'en' ? 'Switch to Italian' : 'Switch to English');
+        document.documentElement.lang = lang === 'en' ? 'en' : 'it';
+      };
+
+      langToggle?.addEventListener('click', () => {
+        const current = document.documentElement.lang === 'en' ? 'en' : 'it';
+        const next = current === 'en' ? 'it' : 'en';
+        persistLang(next);
+        applyTranslations(next);
+      });
+
+      applyTranslations(getSavedLang());
+    })();
+  </script>
 </body>
 </html>
