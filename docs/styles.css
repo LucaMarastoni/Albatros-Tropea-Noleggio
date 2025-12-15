@@ -196,6 +196,11 @@ h1, h2, h3, h4 {
   flex-shrink: 0;
 }
 
+.topbar__lang {
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
 .topbar__nav {
   display: flex;
   gap: 24px;
@@ -1880,16 +1885,20 @@ body.modal-open {
     order: 2;
   }
 
-  .topbar__menu-toggle {
+  .topbar__lang {
     order: 3;
   }
 
-  .topbar__nav {
+  .topbar__menu-toggle {
     order: 4;
   }
 
-  .topbar__actions {
+  .topbar__nav {
     order: 5;
+  }
+
+  .topbar__actions {
+    order: 6;
   }
 
   .topbar__menu-toggle {
