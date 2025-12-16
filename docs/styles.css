@@ -1969,6 +1969,10 @@ h1, h2, h3, h4 {
   box-shadow: 0 28px 70px rgba(12, 74, 132, 0.16);
 }
 
+.finale .hero__actions .btn {
+  min-width: 220px;
+}
+
 .finale__visual {
   overflow: hidden;
   border-radius: var(--radius-md);
