@@ -561,7 +561,9 @@ function attachEventListeners() {
 
   elements.logoutBtn?.addEventListener('click', handleLogout);
 
-  elements.openDemo?.addEventListener('click', () => openModal(elements.demoModal));
+  document.querySelectorAll('[data-open-demo]').forEach((trigger) => {
+    trigger.addEventListener('click', () => openModal(elements.demoModal));
+  });
 
   document.querySelectorAll('[data-close-modal]').forEach((trigger) => {
     trigger.addEventListener('click', () => {

@@ -148,6 +148,13 @@ app.use(session({
 const catalog = {
   boats: [
     {
+      id: 'zar50-2024',
+      label: 'Gommone 2024 (senza patente)',
+      power: '40 cv',
+      features: ['Senza patente', 'Stereo bluetooth', 'GPS cartografico', 'Ecoscandaglio', '2 posti'],
+      image: 'assets/img/32.jpg',
+    },
+    {
       id: 'zar65',
       label: 'ZAR 65 (9/10 posti)',
       power: '150 cv',

@@ -43,12 +43,18 @@ const optionTranslations = {
 };
 
 const boatLabelTranslations = {
+  'Gommone 2024 (senza patente)': '2024 RIB (no license)',
   'ZAR 65 (9/10 posti)': 'ZAR 65 (9/10 seats)',
   'ZAR 53 (8 posti)': 'ZAR 53 (8 seats)',
   'ZAR 49 (6 posti)': 'ZAR 49 (6 seats)',
 };
 
 const boatFeatureTranslations = {
+  'Senza patente': 'No license',
+  'Stereo bluetooth': 'Bluetooth stereo',
+  'GPS cartografico': 'Chartplotter GPS',
+  Ecoscandaglio: 'Fishfinder',
+  '2 posti': '2 seats',
   Doccia: 'Shower',
   'GPS cartografico': 'Chartplotter GPS',
   Tendalino: 'Bimini top',
