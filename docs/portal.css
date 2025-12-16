@@ -277,6 +277,20 @@ a {
   gap: 16px;
 }
 
+.booking-panel .panel-header h2,
+.bookings-panel .panel-header h2 {
+  color: #0b5cab;
+  position: relative;
+  text-shadow: 0 3px 10px rgba(26, 125, 219, 0.45);
+  animation: pulseTitle 2.8s ease-in-out infinite;
+}
+
+@keyframes pulseTitle {
+  0% { text-shadow: 0 3px 10px rgba(26, 125, 219, 0.45); transform: translateY(0); }
+  50% { text-shadow: 0 8px 22px rgba(79, 181, 255, 0.65); transform: translateY(-2px); }
+  100% { text-shadow: 0 3px 10px rgba(26, 125, 219, 0.45); transform: translateY(0); }
+}
+
 .intro-panel {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   align-items: center;
