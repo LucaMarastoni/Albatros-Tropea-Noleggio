@@ -673,6 +673,10 @@ h1, h2, h3, h4 {
   gap: 16px;
 }
 
+.landing .hero--sub .hero__actions {
+  margin-top: 18px;
+}
+
 .hero__metrics {
   display: flex;
   flex-wrap: wrap;

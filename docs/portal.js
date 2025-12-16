@@ -43,7 +43,7 @@ const optionTranslations = {
 };
 
 const boatLabelTranslations = {
-  'Gommone 2024 (senza patente)': '2024 RIB (no license)',
+  'Gommone senza patente (2 posti)': 'No-license RIB (2 seats)',
   'ZAR 65 (9/10 posti)': 'ZAR 65 (9/10 seats)',
   'ZAR 53 (8 posti)': 'ZAR 53 (8 seats)',
   'ZAR 49 (6 posti)': 'ZAR 49 (6 seats)',

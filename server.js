@@ -149,7 +149,7 @@ const catalog = {
   boats: [
     {
       id: 'zar50-2024',
-      label: 'Gommone 2024 (senza patente)',
+      label: 'Gommone senza patente (2 posti)',
       power: '40 cv',
       features: ['Senza patente', 'Stereo bluetooth', 'GPS cartografico', 'Ecoscandaglio', '2 posti'],
       image: 'assets/img/32.jpg',
