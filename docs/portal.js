@@ -1065,6 +1065,7 @@ async function handleLogin() {
     });
     state.user = user;
     closePortalModal();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     updateUserUI();
     const loaders = [];
     if (isBookingPage) loaders.push(loadClientBookings());
@@ -1102,6 +1103,7 @@ async function handleRegister() {
     });
     state.user = user;
     closePortalModal();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     updateUserUI();
     const loaders = [];
     if (isBookingPage) loaders.push(loadClientBookings());
