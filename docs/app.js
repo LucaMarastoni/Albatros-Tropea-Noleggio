@@ -403,12 +403,71 @@ function initGalleryCarousel() {
 function initBoatCards() {
   const cards = document.querySelectorAll('.boat-card');
   const modal = elements.boatModal;
-  if (!cards.length || !modal) return;
+  if (!cards.length) return;
 
   const prevBtn = elements.boatCarouselPrev;
   const nextBtn = elements.boatCarouselNext;
   const dotsWrapper = elements.boatCarouselDots;
   const track = elements.boatCarouselTrack;
+
+  const createInlineCarousel = (card) => {
+    const figure = card.querySelector('.boat-card__media');
+    const baseImg = figure?.querySelector('img');
+    const altText = baseImg?.getAttribute('alt') || card.querySelector('h3')?.textContent || 'Foto gommone';
+
+    if (!figure || !baseImg) return;
+
+    const images = (card.dataset.boatImages || '')
+      .split('|')
+      .map((src) => src.trim())
+      .filter(Boolean);
+
+    if (!images.length && baseImg.getAttribute('src')) {
+      images.push(baseImg.getAttribute('src'));
+    }
+
+    if (!images.length) return;
+
+    const carousel = document.createElement('div');
+    carousel.className = 'boat-card__carousel';
+
+    baseImg.src = images[0];
+    baseImg.loading = 'lazy';
+    baseImg.classList.add('is-active');
+    carousel.appendChild(baseImg);
+
+    images.slice(1).forEach((src) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = altText;
+      img.loading = 'lazy';
+      carousel.appendChild(img);
+    });
+
+    figure.appendChild(carousel);
+
+    const slides = carousel.querySelectorAll('img');
+    if (slides.length < 2) return;
+
+    let inlineIndex = 0;
+    const showSlide = () => {
+      slides.forEach((img, idx) => {
+        img.classList.toggle('is-active', idx === inlineIndex);
+      });
+    };
+
+    const rotate = () => {
+      inlineIndex = (inlineIndex + 1) % slides.length;
+      showSlide();
+    };
+
+    window.setInterval(rotate, 3600);
+  };
+
+  if (!modal) {
+    cards.forEach((card) => createInlineCarousel(card));
+    return;
+  }
 
   const updateDots = () => {
     if (!dotsWrapper) return;
@@ -486,6 +545,8 @@ function initBoatCards() {
   };
 
   cards.forEach((card) => {
+    createInlineCarousel(card);
+
     const handleOpen = () => openBoatModal(card);
     card.addEventListener('click', handleOpen);
     card.addEventListener('keydown', (event) => {
@@ -541,7 +602,34 @@ function initScrollReveal() {
 }
 
 function attachEventListeners() {
+  const ensureDemoModal = () => {
+    if (elements.demoModal) return;
+    const modal = document.createElement('div');
+    modal.className = 'modal hidden';
+    modal.id = 'demoModal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'demoModalTitle');
+    modal.innerHTML = `
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-window demo-window">
+        <button class="modal-close" type="button" data-close-modal aria-label="Chiudi demo">&times;</button>
+        <article>
+          <h3 id="demoModalTitle">Accesso demo</h3>
+          <p>Accedi come amministratore con le credenziali di default:</p>
+          <pre>email: admin@tropeawavecharter.it
+password: admin123</pre>
+          <p>Ricorda di aggiornare password e utenti prima del go-live.</p>
+          <button class="btn primary" type="button" data-close-modal>Ho capito</button>
+        </article>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    elements.demoModal = modal;
+  };
+
   const openAuthModal = () => openModal(elements.authModal);
+  ensureDemoModal();
 
   elements.authTrigger?.addEventListener('click', openAuthModal);
 
