@@ -1229,12 +1229,14 @@ h1, h2, h3, h4 {
   position: relative;
 }
 
-.boat-card__carousel {
+.boat-card__carousel,
+.card-carousel {
   position: absolute;
   inset: 0;
 }
 
-.boat-card__carousel img {
+.boat-card__carousel img,
+.card-carousel img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -1244,7 +1246,8 @@ h1, h2, h3, h4 {
   transition: opacity 0.6s ease;
 }
 
-.boat-card__carousel img.is-active {
+.boat-card__carousel img.is-active,
+.card-carousel img.is-active {
   opacity: 1;
 }
 
@@ -1331,11 +1334,14 @@ h1, h2, h3, h4 {
 
 .excursion-card figure {
   margin: 0;
+  position: relative;
+  height: 220px;
+  overflow: hidden;
 }
 
 .excursion-card img {
   width: 100%;
-  height: 220px;
+  height: 100%;
   object-fit: cover;
   display: block;
 }

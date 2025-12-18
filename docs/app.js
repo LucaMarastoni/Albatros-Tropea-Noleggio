@@ -105,6 +105,66 @@ function showFeedback(node, message, type = 'error') {
   node.classList.add(type);
 }
 
+function buildInlineCarousel(card, {
+  datasetKey = 'inlineImages',
+  imgSelector = 'img',
+  containerClass = 'card-carousel',
+  interval = 3600,
+} = {}) {
+  const figure = card.querySelector('figure');
+  const baseImg = figure?.querySelector(imgSelector);
+  const altText = baseImg?.getAttribute('alt') || card.querySelector('h3')?.textContent || 'Foto';
+
+  if (!figure || !baseImg) return;
+
+  const dataValue = card.dataset?.[datasetKey] || '';
+  const images = dataValue
+    .split('|')
+    .map((src) => src.trim())
+    .filter(Boolean);
+
+  if (!images.length && baseImg.getAttribute('src')) {
+    images.push(baseImg.getAttribute('src'));
+  }
+
+  if (!images.length) return;
+
+  const carousel = document.createElement('div');
+  carousel.className = containerClass;
+
+  baseImg.src = images[0];
+  baseImg.loading = 'lazy';
+  baseImg.classList.add('is-active');
+  carousel.appendChild(baseImg);
+
+  images.slice(1).forEach((src) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = altText;
+    img.loading = 'lazy';
+    carousel.appendChild(img);
+  });
+
+  figure.appendChild(carousel);
+
+  const slides = carousel.querySelectorAll('img');
+  if (slides.length < 2) return;
+
+  let inlineIndex = 0;
+  const showSlide = () => {
+    slides.forEach((img, idx) => {
+      img.classList.toggle('is-active', idx === inlineIndex);
+    });
+  };
+
+  const rotate = () => {
+    inlineIndex = (inlineIndex + 1) % slides.length;
+    showSlide();
+  };
+
+  window.setInterval(rotate, interval);
+}
+
 function switchTab(tabName) {
   elements.tabs.forEach((tab) => {
     tab.classList.toggle('active', tab.dataset.tab === tabName);
@@ -410,62 +470,12 @@ function initBoatCards() {
   const dotsWrapper = elements.boatCarouselDots;
   const track = elements.boatCarouselTrack;
 
-  const createInlineCarousel = (card) => {
-    const figure = card.querySelector('.boat-card__media');
-    const baseImg = figure?.querySelector('img');
-    const altText = baseImg?.getAttribute('alt') || card.querySelector('h3')?.textContent || 'Foto gommone';
-
-    if (!figure || !baseImg) return;
-
-    const images = (card.dataset.boatImages || '')
-      .split('|')
-      .map((src) => src.trim())
-      .filter(Boolean);
-
-    if (!images.length && baseImg.getAttribute('src')) {
-      images.push(baseImg.getAttribute('src'));
-    }
-
-    if (!images.length) return;
-
-    const carousel = document.createElement('div');
-    carousel.className = 'boat-card__carousel';
-
-    baseImg.src = images[0];
-    baseImg.loading = 'lazy';
-    baseImg.classList.add('is-active');
-    carousel.appendChild(baseImg);
-
-    images.slice(1).forEach((src) => {
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = altText;
-      img.loading = 'lazy';
-      carousel.appendChild(img);
-    });
-
-    figure.appendChild(carousel);
-
-    const slides = carousel.querySelectorAll('img');
-    if (slides.length < 2) return;
-
-    let inlineIndex = 0;
-    const showSlide = () => {
-      slides.forEach((img, idx) => {
-        img.classList.toggle('is-active', idx === inlineIndex);
-      });
-    };
-
-    const rotate = () => {
-      inlineIndex = (inlineIndex + 1) % slides.length;
-      showSlide();
-    };
-
-    window.setInterval(rotate, 3600);
-  };
-
   if (!modal) {
-    cards.forEach((card) => createInlineCarousel(card));
+    cards.forEach((card) => buildInlineCarousel(card, {
+      datasetKey: 'boatImages',
+      imgSelector: '.boat-card__media img',
+      containerClass: 'boat-card__carousel',
+    }));
     return;
   }
 
@@ -545,7 +555,11 @@ function initBoatCards() {
   };
 
   cards.forEach((card) => {
-    createInlineCarousel(card);
+    buildInlineCarousel(card, {
+      datasetKey: 'boatImages',
+      imgSelector: '.boat-card__media img',
+      containerClass: 'boat-card__carousel',
+    });
 
     const handleOpen = () => openBoatModal(card);
     card.addEventListener('click', handleOpen);
@@ -562,6 +576,20 @@ function initBoatCards() {
 
   modal.querySelectorAll('[data-boat-close]').forEach((node) => {
     node.addEventListener('click', () => closeModal(modal));
+  });
+}
+
+function initHomeCardCarousels() {
+  const homeFleetCards = document.querySelectorAll('#boats .excursion-card');
+  const excursionCards = document.querySelectorAll('#escursioni .excursion-card');
+
+  [...homeFleetCards, ...excursionCards].forEach((card) => {
+    buildInlineCarousel(card, {
+      datasetKey: 'inlineImages',
+      imgSelector: 'img',
+      containerClass: 'card-carousel',
+      interval: 3200,
+    });
   });
 }
 
@@ -718,6 +746,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   attachEventListeners();
   initGalleryCarousel();
   initBoatCards();
+  initHomeCardCarousels();
   initScrollReveal();
   await checkSession();
 });

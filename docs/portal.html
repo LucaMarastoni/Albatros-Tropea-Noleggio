@@ -18,22 +18,18 @@
   <header class="portal-topbar">
     <a class="portal-brand" href="index.html" aria-label="Torna alla landing Albatros Tropea Noleggio">
       <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="portal-logo">
-      <div>
-        <strong data-i18n="brand-title">Albatros Tropea Noleggio</strong>
-        <small data-i18n="brand-sub">Control Room prenotazioni</small>
-      </div>
     </a>
+    <nav class="portal-nav" id="portalNav">
+      <a href="index.html" data-i18n="nav-landing">Home</a>
+      <a href="portal.html" aria-current="page" data-i18n="nav-bookings">Prenotazioni</a>
+      <a href="admin.html" data-role="admin" class="hidden" data-i18n="nav-dashboard">Dashboard</a>
+    </nav>
+    <button class="btn outline" id="langToggle" aria-label="Cambia lingua">ENG</button>
     <button class="portal-menu-toggle" id="portalMenuToggle" aria-expanded="false" aria-label="Apri il menu">
       <span></span>
       <span></span>
       <span></span>
     </button>
-    <nav class="portal-nav" id="portalNav">
-      <a href="index.html" data-i18n="nav-landing">Landing</a>
-      <a href="portal.html" aria-current="page" data-i18n="nav-bookings">Prenotazioni</a>
-      <a href="admin.html" data-role="admin" class="hidden" data-i18n="nav-dashboard">Dashboard</a>
-    </nav>
-    <button class="btn outline" id="langToggle" aria-label="Cambia lingua">ENG</button>
     <div class="portal-user" id="portalUserActions">
       <div>
         <span id="topUserName">Ospite</span>
@@ -216,7 +212,7 @@
         en: {
           'brand-title': 'Albatros Tropea Rental',
           'brand-sub': 'Booking control room',
-          'nav-landing': 'Landing',
+          'nav-landing': 'Home',
           'nav-bookings': 'Bookings',
           'nav-dashboard': 'Dashboard',
           'user-guest': 'Guest',
