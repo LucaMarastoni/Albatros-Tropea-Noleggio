@@ -418,7 +418,11 @@ a {
 .admin-grid {
   display: grid;
   gap: 24px;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.admin-grid > * {
+  min-width: 0;
 }
 
 .admin-table {
@@ -547,7 +551,7 @@ a {
 .staff-notes {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
 .staff-note-form textarea {
@@ -1265,6 +1269,10 @@ body.modal-open {
 }
 
 @media (max-width: 640px) {
+  .portal-shell {
+    padding: 24px 16px;
+  }
+
   .portal-topbar {
     padding: 18px 20px;
     gap: 16px;
@@ -1309,8 +1317,18 @@ body.modal-open {
   .booking-panel,
   .bookings-panel,
   .admin-summary,
-  .admin-table {
+  .admin-table,
+  .admin-calendar,
+  .admin-notes {
     padding: 20px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .staff-notes {
+    grid-template-columns: 1fr;
   }
 
   .portal-footer {
