@@ -533,9 +533,9 @@ h1, h2, h3, h4 {
   box-shadow: none;
   min-height: 100vh;
   gap: clamp(48px, 8vw, 96px);
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
+  width: calc(100% + (2 * var(--page-pad-x)));
+  margin-left: calc(-1 * var(--page-pad-x));
+  margin-right: calc(-1 * var(--page-pad-x));
   margin-top: calc(-1 * var(--page-pad-y));
 }
 
