@@ -2125,6 +2125,24 @@ h1, h2, h3, h4 {
   color: var(--muted);
 }
 
+.site-credit {
+  padding: 16px clamp(32px, 6vw, 64px) 28px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.92);
+  border-top: 1px solid rgba(26, 125, 219, 0.12);
+}
+
+.site-credit a {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.site-credit a:hover {
+  text-decoration: underline;
+}
+
 
 .modal {
   position: fixed;
