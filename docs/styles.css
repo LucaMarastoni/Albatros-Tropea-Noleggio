@@ -159,6 +159,14 @@ h1, h2, h3, h4 {
   word-break: break-word;
 }
 
+.brand-copy--short {
+  display: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: var(--primary-dark);
+}
+
 .brand-copy small {
   color: var(--muted);
   font-size: 0.8rem;
@@ -609,7 +617,11 @@ h1, h2, h3, h4 {
   }
 
   .hero--fullscreen .hero__grid {
-    padding: clamp(64px, 16vh, 120px) var(--page-pad-x) clamp(42px, 18vh, 90px);
+    padding: clamp(28px, 7vh, 80px) var(--page-pad-x) clamp(42px, 18vh, 90px);
+  }
+
+  .hero--fullscreen .hero__content h1 {
+    line-height: 1.08;
   }
 }
 
@@ -2531,6 +2543,11 @@ body.modal-open {
 
   .brand-copy {
     display: none;
+  }
+
+  .brand-copy--short {
+    display: inline-flex;
+    align-items: center;
   }
 
   .topbar__brand {
