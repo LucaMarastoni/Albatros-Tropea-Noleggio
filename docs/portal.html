@@ -47,56 +47,137 @@
           <header class="panel-header">
             <div>
               <h2 data-i18n="booking-title">Nuova prenotazione</h2>
-              <p data-i18n="booking-sub">Configura la tua esperienza in mare e invia la richiesta al desk.</p>
+              <p data-i18n="booking-sub">Compila i dati essenziali: il team ti ricontatterà per conferma.</p>
             </div>
           </header>
-          <form id="bookingForm" class="form-grid" novalidate>
-            <label>
-              <span data-i18n="label-customer">Referente viaggio</span>
-              <input type="text" name="customerName" required placeholder="Nome Cognome">
-            </label>
-            <label>
-              <span data-i18n="label-phone">Telefono</span>
-              <input type="tel" name="phone" required placeholder="+39 333 1234567">
-            </label>
-            <label>
-              <span data-i18n="label-service">Tipo di servizio</span>
-              <select name="serviceType" id="serviceType" required>
-                <option value="" data-i18n="option-select">Seleziona</option>
-              </select>
-            </label>
-            <label id="boatField" class="full hidden">
-              <span data-i18n="label-boat">Modello gommone</span>
-              <select name="boatModel" id="boatModel"></select>
-            </label>
-            <label id="tourField" class="full hidden">
-              <span data-i18n="label-tour">Itinerario escursione</span>
-              <select name="tour" id="tour"></select>
-            </label>
-            <label>
-              <span data-i18n="label-date">Data</span>
-              <input type="date" name="date" required>
-            </label>
-            <label>
-              <span data-i18n="label-start">Partenza</span>
-              <input type="time" name="time" required>
-            </label>
-            <label id="endTimeField" class="hidden">
-              <span data-i18n="label-end">Rientro</span>
-              <input type="time" name="endTime">
-            </label>
-            <label>
-              <span data-i18n="label-people">Ospiti</span>
-              <input type="number" name="people" min="1" max="12" value="2" required>
-            </label>
-            <label class="full">
-              <span data-i18n="label-notes">Note per lo staff</span>
-              <textarea name="notes" rows="3" placeholder="Allergie, richieste speciali, equipment..."></textarea>
-            </label>
+          <form id="bookingForm" class="form-stack" novalidate>
+            <fieldset class="form-section" aria-labelledby="sectionContactTitle">
+              <div class="form-section__header">
+                <h3 id="sectionContactTitle" data-i18n="section-contact">Contatto</h3>
+                <p data-i18n="section-contact-sub">Chi gestisce la prenotazione e come possiamo raggiungerti.</p>
+              </div>
+              <div class="field-grid">
+                <div class="field" data-field="customerName">
+                  <label for="customerName" data-i18n="label-customer">Referente viaggio</label>
+                  <input id="customerName" type="text" name="customerName" required placeholder="Nome Cognome" autocomplete="name" aria-describedby="customerNameHint customerNameError">
+                  <span class="field__hint" id="customerNameHint" data-i18n="hint-customer">Il nome che useremo per la conferma.</span>
+                  <span class="field__error" id="customerNameError" aria-live="polite"></span>
+                </div>
+                <div class="field" data-field="phone">
+                  <label for="customerPhone" data-i18n="label-phone">Telefono</label>
+                  <input id="customerPhone" type="tel" name="phone" required placeholder="+39 333 1234567" inputmode="tel" autocomplete="tel" aria-describedby="phoneHint phoneError">
+                  <span class="field__hint" id="phoneHint" data-i18n="hint-phone">Solo numeri, includi il prefisso internazionale.</span>
+                  <span class="field__error" id="phoneError" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-section" aria-labelledby="sectionServiceTitle">
+              <div class="form-section__header">
+                <h3 id="sectionServiceTitle" data-i18n="section-service">Servizio</h3>
+                <p data-i18n="section-service-sub">Scegli noleggio o escursione e aggiungi il dettaglio.</p>
+              </div>
+              <div class="field-grid">
+                <div class="field" data-field="serviceType">
+                  <label for="serviceType" data-i18n="label-service">Tipo di servizio</label>
+                  <select name="serviceType" id="serviceType" required aria-describedby="serviceTypeHint serviceTypeError">
+                    <option value="" data-i18n="option-select">Seleziona</option>
+                  </select>
+                  <span class="field__hint" id="serviceTypeHint" data-i18n="hint-service">Scegli tra noleggio e tour guidati.</span>
+                  <span class="field__error" id="serviceTypeError" aria-live="polite"></span>
+                </div>
+                <div id="boatField" class="field full hidden" data-field="boatModel">
+                  <label for="boatModel" data-i18n="label-boat">Modello gommone</label>
+                  <select name="boatModel" id="boatModel" aria-describedby="boatModelHint boatModelError"></select>
+                  <span class="field__hint" id="boatModelHint" data-i18n="hint-boat">Scegli il gommone disponibile per il noleggio.</span>
+                  <span class="field__error" id="boatModelError" aria-live="polite"></span>
+                </div>
+                <div id="tourField" class="field full hidden" data-field="tour">
+                  <label for="tour" data-i18n="label-tour">Itinerario escursione</label>
+                  <select name="tour" id="tour" aria-describedby="tourHint tourError"></select>
+                  <span class="field__hint" id="tourHint" data-i18n="hint-tour">Seleziona l'itinerario preferito.</span>
+                  <span class="field__error" id="tourError" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-section" aria-labelledby="sectionTimeTitle">
+              <div class="form-section__header">
+                <h3 id="sectionTimeTitle" data-i18n="section-time">Data e orario</h3>
+                <p data-i18n="section-time-sub">Indica quando vuoi partire e rientrare.</p>
+              </div>
+              <div class="field-grid">
+                <div class="field" data-field="date">
+                  <label for="bookingDate" data-i18n="label-date">Data</label>
+                  <input id="bookingDate" type="date" name="date" required aria-describedby="dateHint dateError">
+                  <span class="field__hint" id="dateHint" data-i18n="hint-date">Scegli una data disponibile.</span>
+                  <span class="field__error" id="dateError" aria-live="polite"></span>
+                </div>
+                <div class="field" data-field="time">
+                  <label for="bookingTime" data-i18n="label-start">Partenza</label>
+                  <input id="bookingTime" type="time" name="time" required aria-describedby="timeHint timeError">
+                  <span class="field__hint" id="timeHint" data-i18n="hint-time">Fascia consigliata 08:00 - 20:00.</span>
+                  <span class="field__error" id="timeError" aria-live="polite"></span>
+                </div>
+                <div id="endTimeField" class="field hidden" data-field="endTime">
+                  <label for="bookingEndTime" data-i18n="label-end">Rientro</label>
+                  <input id="bookingEndTime" type="time" name="endTime" aria-describedby="endTimeHint endTimeError">
+                  <span class="field__hint" id="endTimeHint" data-i18n="hint-end">Per il noleggio indica l'orario previsto.</span>
+                  <span class="field__error" id="endTimeError" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-section" aria-labelledby="sectionPeopleTitle">
+              <div class="form-section__header">
+                <h3 id="sectionPeopleTitle" data-i18n="section-people">Partecipanti</h3>
+                <p data-i18n="section-people-sub">Numero totale di ospiti a bordo.</p>
+              </div>
+              <div class="field-grid">
+                <div class="field" data-field="people">
+                  <label for="bookingPeople" data-i18n="label-people">Ospiti</label>
+                  <div class="number-input">
+                    <button type="button" class="stepper-btn" data-people-stepper="decrement" aria-label="Diminuisci numero ospiti">-</button>
+                    <input id="bookingPeople" type="number" name="people" min="1" inputmode="numeric" pattern="[0-9]*" placeholder="Seleziona" required aria-describedby="peopleHint peopleError">
+                    <button type="button" class="stepper-btn" data-people-stepper="increment" aria-label="Aumenta numero ospiti">+</button>
+                  </div>
+                  <span class="field__hint" id="peopleHint" data-i18n="hint-people">Seleziona un servizio per vedere il massimo.</span>
+                  <span class="field__error" id="peopleError" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-section" aria-labelledby="sectionNotesTitle">
+              <div class="form-section__header">
+                <h3 id="sectionNotesTitle" data-i18n="section-notes">Note per lo staff</h3>
+                <p data-i18n="section-notes-sub">Allergie, richieste speciali, esigenze logistiche.</p>
+              </div>
+              <div class="field-grid">
+                <div class="field full" data-field="notes">
+                  <label for="bookingNotes" data-i18n="label-notes">Note per lo staff</label>
+                  <textarea id="bookingNotes" name="notes" rows="3" placeholder="Allergie, richieste speciali, attrezzatura..." aria-describedby="notesHint"></textarea>
+                  <span class="field__hint" id="notesHint" data-i18n="hint-notes">Le note sono visibili solo allo staff.</span>
+                </div>
+              </div>
+            </fieldset>
+
             <div id="boatSummary" class="boat-summary full hidden" aria-live="polite"></div>
             <div id="tourSummary" class="boat-summary tour-summary full hidden" aria-live="polite"></div>
-            <button type="submit" class="btn primary full" data-i18n="send-btn">Invia prenotazione</button>
-            <p class="form-feedback" id="bookingFeedback" aria-live="polite"></p>
+
+            <section id="bookingRecap" class="booking-recap full" aria-live="polite">
+              <div class="booking-recap__header">
+                <h3 data-i18n="summary-title">Riepilogo</h3>
+                <p data-i18n="summary-sub">Controlla i dettagli prima di inviare.</p>
+                <p class="booking-recap__alert" id="bookingRecapStatus" aria-live="polite"></p>
+              </div>
+              <div class="booking-recap__list" id="bookingRecapList"></div>
+            </section>
+
+            <div class="form-actions full">
+              <p class="form-trust" data-i18n="form-trust">Riceverai conferma dal team via email o telefono, di norma entro 24 ore lavorative. Per modifiche o cancellazioni puoi contattarci direttamente.</p>
+              <button type="submit" class="btn primary full" data-i18n="send-btn" id="bookingSubmit">Invia prenotazione</button>
+              <p class="form-feedback" id="bookingFeedback" aria-live="polite"></p>
+            </div>
           </form>
         </article>
 
@@ -161,6 +242,7 @@
   <div class="site-credit">
     <a href="https://lucamarastoni.eu" target="_blank" rel="noopener" data-i18n="site-credit">Realizzato da Luca Marastoni Digital Solutions</a>
   </div>
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
   <div class="modal hidden" id="portalAuthModal" role="dialog" aria-modal="true" aria-labelledby="portalAuthModalTitle">
     <div class="modal-backdrop" data-close-modal></div>
     <div class="modal-window">
@@ -225,19 +307,42 @@
           'login-btn': 'Login',
           'logout-btn': 'Logout',
           'booking-title': 'New booking',
-          'booking-sub': 'Configure your sea experience and send the request to the desk.',
+          'booking-sub': 'Fill in the essentials and we will contact you to confirm.',
+          'section-contact': 'Contact',
+          'section-contact-sub': 'Who manages the booking and how to reach you.',
           'label-customer': 'Trip lead',
+          'hint-customer': 'Name used for confirmation.',
           'label-phone': 'Phone',
+          'hint-phone': 'Numbers only, include country code.',
+          'section-service': 'Service',
+          'section-service-sub': 'Choose rental or excursion and add details.',
           'label-service': 'Service type',
           'label-tour': 'Excursion itinerary',
           'label-boat': 'Boat model',
+          'hint-service': 'Pick between rentals and guided tours.',
+          'hint-boat': 'Select the available RIB for rental.',
+          'hint-tour': 'Choose the preferred itinerary.',
+          'section-time': 'Date & time',
+          'section-time-sub': 'Tell us when you want to depart and return.',
           'label-date': 'Date',
           'label-start': 'Departure',
           'label-end': 'Return',
+          'hint-date': 'Pick an available date.',
+          'hint-time': 'Suggested window 08:00 - 20:00.',
+          'hint-end': 'For rentals, add the expected return time.',
+          'section-people': 'Guests',
+          'section-people-sub': 'Total people on board.',
           'label-people': 'Guests',
+          'hint-people': 'Select a service to see the maximum.',
+          'section-notes': 'Notes for the staff',
+          'section-notes-sub': 'Allergies, special requests, logistics.',
           'label-notes': 'Notes for the staff',
+          'hint-notes': 'Notes are only visible to the team.',
           'option-select': 'Select',
           'send-btn': 'Send booking',
+          'summary-title': 'Summary',
+          'summary-sub': 'Review the details before sending.',
+          'form-trust': 'You will receive confirmation via email or phone, usually within 24 business hours. For changes or cancellations, contact us directly.',
           'list-title': 'Your outings',
           'list-sub': 'Monitor status and up-to-date logistics.',
           'footer-brand-title': 'Albatros control room',

@@ -62,19 +62,29 @@
               <p>Gestisci lo scheduling della flotta e le conferme clienti.</p>
             </div>
             <div class="filter-group">
-              <select id="adminFilterType">
-                <option value="all">Tutti i servizi</option>
-                <option value="noleggio">Noleggi</option>
-                <option value="escursione">Escursioni</option>
-              </select>
-              <select id="adminFilterStatus">
-                <option value="all">Tutti gli stati</option>
-                <option value="da confermare">Da confermare</option>
-                <option value="confermato">Confermati</option>
-                <option value="completato">Completati</option>
-                <option value="annullato">Annullati</option>
-              </select>
-              <button class="btn ghost" id="adminRefresh">Aggiorna</button>
+              <div class="filter-row">
+                <select id="adminFilterType" aria-label="Filtro servizi">
+                  <option value="all">Tutti i servizi</option>
+                  <option value="noleggio">Noleggi</option>
+                  <option value="escursione">Escursioni</option>
+                </select>
+                <select id="adminFilterStatus" aria-label="Filtro stato">
+                  <option value="all">Tutti gli stati</option>
+                  <option value="da confermare">Da confermare</option>
+                  <option value="confermato">Confermati</option>
+                  <option value="completato">Completati</option>
+                  <option value="annullato">Annullati</option>
+                </select>
+                <button class="btn outline" id="adminResetFilters" type="button">Reset filtri</button>
+                <button class="btn ghost" id="adminRefresh" type="button">Aggiorna</button>
+              </div>
+              <div class="filter-chips" id="adminFilterChips" role="group" aria-label="Filtri rapidi stato">
+                <button class="chip is-active" type="button" data-filter-status="all">Tutti</button>
+                <button class="chip" type="button" data-filter-status="da confermare">Da confermare</button>
+                <button class="chip" type="button" data-filter-status="confermato">Confermati</button>
+                <button class="chip" type="button" data-filter-status="completato">Completati</button>
+                <button class="chip" type="button" data-filter-status="annullato">Annullati</button>
+              </div>
             </div>
           </header>
           <div class="stat-grid">
@@ -93,6 +103,17 @@
           </div>
         </article>
         <section class="admin-grid">
+          <article class="panel admin-pending">
+            <header class="panel-header">
+              <div>
+                <h3>Da confermare</h3>
+                <p>Richieste in attesa di conferma: agisci rapidamente.</p>
+              </div>
+              <span class="pending-count" id="adminPendingCount">0</span>
+            </header>
+            <div id="adminPendingList" class="pending-list"></div>
+          </article>
+
           <article class="panel admin-calendar">
             <header class="panel-header">
               <div>
@@ -106,6 +127,11 @@
               </div>
             </header>
             <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="calendar-legend">
+              <span>Oggi = bordo</span>
+              <span>Selezionato = riempimento</span>
+              <span>Prenotazioni = punto</span>
+            </div>
             <div class="calendar-day-detail">
               <h4 id="calendarDayLabel">Seleziona un giorno</h4>
               <ul id="calendarDayList" class="calendar-day-list"></ul>
@@ -120,6 +146,9 @@
               </div>
               <button class="btn primary" type="button" id="addStaffNote">Aggiungi nota</button>
             </header>
+            <div class="staff-note-toolbar">
+              <input type="search" id="staffNoteSearch" placeholder="Cerca note o autore" aria-label="Cerca note staff">
+            </div>
             <div class="staff-note-form hidden" id="staffNoteForm">
               <textarea id="staffNoteInput" rows="3" placeholder="Promemoria operativo, consegne, briefing..."></textarea>
               <div class="staff-note-actions">
@@ -200,6 +229,7 @@
   <div class="site-credit">
     <a href="https://lucamarastoni.eu" target="_blank" rel="noopener" data-i18n="site-credit">Realizzato da Luca Marastoni Digital Solutions</a>
   </div>
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
   <div class="modal hidden" id="portalAuthModal" role="dialog" aria-modal="true" aria-labelledby="portalAuthModalTitle">
     <div class="modal-backdrop" data-close-modal></div>
     <div class="modal-window">

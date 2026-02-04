@@ -6,7 +6,10 @@ const state = {
   },
   bookings: [],
   adminBookings: [],
+  pendingBookings: [],
   staffNotes: [],
+  staffNoteQuery: '',
+  staffNotePins: new Set(),
   calendar: {
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
@@ -84,6 +87,49 @@ const tourFeatureTranslations = {
   'Snorkeling e acque trasparenti': 'Snorkeling and crystal waters',
 };
 
+const STATUS_META = {
+  'da confermare': { tone: 'pending', label: { it: 'Da confermare', en: 'Pending' } },
+  confermato: { tone: 'confirmed', label: { it: 'Confermato', en: 'Confirmed' } },
+  completato: { tone: 'completed', label: { it: 'Completato', en: 'Completed' } },
+  annullato: { tone: 'canceled', label: { it: 'Annullato', en: 'Canceled' } },
+};
+
+const SERVICE_LABELS = {
+  noleggio: { it: 'Noleggio gommone', en: 'RIB rental' },
+  escursione: { it: 'Escursione guidata', en: 'Guided excursion' },
+};
+
+const INCLUDED_COPY = {
+  noleggio: {
+    it: 'Briefing, tendalino, doccia, GPS/eco, dotazioni sicurezza.',
+    en: 'Briefing, canopy, shower, GPS/fishfinder, safety gear.',
+  },
+  escursione: {
+    it: 'Skipper, soste programmate, snorkeling kit e briefing di bordo.',
+    en: 'Skipper, planned stops, snorkeling kit, onboard briefing.',
+  },
+};
+
+const SUMMARY_LABELS = {
+  contact: { it: 'Contatto', en: 'Contact' },
+  service: { it: 'Servizio', en: 'Service' },
+  date: { it: 'Data', en: 'Date' },
+  time: { it: 'Partenza', en: 'Departure' },
+  endTime: { it: 'Rientro', en: 'Return' },
+  guests: { it: 'Ospiti', en: 'Guests' },
+  notes: { it: 'Note', en: 'Notes' },
+};
+
+const FORM_LIMITS = {
+  minPeople: 1,
+  maxPeople: 12,
+  minTime: '08:00',
+  maxTime: '20:00',
+};
+
+const STAFF_PINS_KEY = 'staffNotePins';
+const TOAST_DURATION = 4200;
+
 const elements = {
   portalModal: document.getElementById('portalAuthModal'),
   portalCloseTriggers: Array.from(document.querySelectorAll('#portalAuthModal [data-close-modal]')),
@@ -108,6 +154,12 @@ const elements = {
   guardLogin: document.getElementById('openAuthFromGuard'),
   bookingForm: document.getElementById('bookingForm'),
   bookingFeedback: document.getElementById('bookingFeedback'),
+  bookingRecap: document.getElementById('bookingRecap'),
+  bookingRecapList: document.getElementById('bookingRecapList'),
+  bookingRecapStatus: document.getElementById('bookingRecapStatus'),
+  bookingSubmit: document.getElementById('bookingSubmit'),
+  peopleInput: document.getElementById('bookingPeople'),
+  peopleHint: document.getElementById('peopleHint'),
   serviceType: document.getElementById('serviceType'),
   boatField: document.getElementById('boatField'),
   boatModel: document.getElementById('boatModel'),
@@ -120,10 +172,14 @@ const elements = {
   refreshClientBookings: document.getElementById('refreshClientBookings'),
   adminFilterType: document.getElementById('adminFilterType'),
   adminFilterStatus: document.getElementById('adminFilterStatus'),
+  adminFilterChips: document.getElementById('adminFilterChips'),
+  adminResetFilters: document.getElementById('adminResetFilters'),
   adminRefresh: document.getElementById('adminRefresh'),
   adminStatTotal: document.getElementById('adminStatTotal'),
   adminStatPending: document.getElementById('adminStatPending'),
   adminStatToday: document.getElementById('adminStatToday'),
+  adminPendingList: document.getElementById('adminPendingList'),
+  adminPendingCount: document.getElementById('adminPendingCount'),
   adminTableBody: document.getElementById('adminTableBody'),
   adminNavLinks: Array.from(document.querySelectorAll('[data-role="admin"]')),
   calendarGrid: document.getElementById('calendarGrid'),
@@ -139,10 +195,11 @@ const elements = {
   staffNoteSave: document.getElementById('staffNoteSave'),
   staffNoteCancel: document.getElementById('staffNoteCancel'),
   addStaffNote: document.getElementById('addStaffNote'),
+  staffNoteSearch: document.getElementById('staffNoteSearch'),
   bookingDetailModal: document.getElementById('bookingDetailModal'),
   bookingDetailContent: document.getElementById('bookingDetailContent'),
   portalGuard: document.getElementById('portalGuard'),
-  guardLogin: document.getElementById('openAuthFromGuard'),
+  toastContainer: document.getElementById('toastContainer'),
 };
 
 function getCurrentLang() {
@@ -151,6 +208,46 @@ function getCurrentLang() {
     if (saved === 'en' || saved === 'it') return saved;
   } catch (_) {}
   return document.documentElement.lang === 'en' ? 'en' : 'it';
+}
+
+function getLocale() {
+  return getCurrentLang() === 'en' ? 'en-GB' : 'it-IT';
+}
+
+function translateFromMap(map, key, fallback = '') {
+  const lang = getCurrentLang();
+  if (!key || !map[key]) return fallback;
+  return map[key][lang] || map[key].it || fallback;
+}
+
+function getStatusMeta(status) {
+  const meta = STATUS_META[status] || null;
+  if (!meta) {
+    return { tone: 'default', label: status || '' };
+  }
+  const lang = getCurrentLang();
+  const label = meta.label?.[lang] || meta.label?.it || status;
+  return { tone: meta.tone, label };
+}
+
+function getServiceLabel(serviceType) {
+  return translateFromMap(SERVICE_LABELS, serviceType, serviceType || '');
+}
+
+function getIncludedCopy(serviceType) {
+  return translateFromMap(INCLUDED_COPY, serviceType, '');
+}
+
+function getSummaryLabel(key) {
+  return translateFromMap(SUMMARY_LABELS, key, key);
+}
+
+function createStatusBadgeElement(status) {
+  const meta = getStatusMeta(status);
+  const badge = document.createElement('span');
+  badge.className = `status-pill status-pill--${meta.tone}`;
+  badge.textContent = meta.label;
+  return badge;
 }
 
 function translateOption(key) {
@@ -188,15 +285,178 @@ function toggleHidden(node, shouldHide) {
 }
 
 function getSelectedBoat() {
-  const value = elements.boatModel?.value;
+  return findBoatByValue(elements.boatModel?.value);
+}
+
+function getSelectedTour() {
+  return findTourByValue(elements.tour?.value);
+}
+
+function findBoatByValue(value) {
   if (!value) return null;
   return state.catalog.boats.find((boat) => boat.label === value || boat.id === value) || null;
 }
 
-function getSelectedTour() {
-  const value = elements.tour?.value;
+function findTourByValue(value) {
   if (!value) return null;
   return state.catalog.tours.find((tour) => tour.label === value || tour.id === value) || null;
+}
+
+function extractNumbersFromText(text = '') {
+  const matches = String(text).match(/\d+/g);
+  if (!matches) return [];
+  return matches.map((value) => Number(value)).filter((value) => Number.isFinite(value));
+}
+
+function extractCapacityFromText(text = '') {
+  const normalized = String(text).toLowerCase();
+  const matches = [];
+  const regex = /(\d+)\s*(?:\/\s*(\d+))?\s*(posti|seats)/g;
+  let match = regex.exec(normalized);
+  while (match) {
+    matches.push(Number(match[1]));
+    if (match[2]) matches.push(Number(match[2]));
+    match = regex.exec(normalized);
+  }
+  return matches.filter((value) => Number.isFinite(value));
+}
+
+function inferMaxPeopleFromBoat(boat) {
+  if (!boat) return null;
+  const explicit = Number(boat.maxPeople ?? boat.max_people ?? boat.capacity);
+  if (Number.isFinite(explicit) && explicit > 0) return explicit;
+  const capacityMatches = [
+    ...extractCapacityFromText(boat.label),
+    ...(boat.features || []).flatMap((feature) => extractCapacityFromText(feature)),
+  ];
+  if (capacityMatches.length) {
+    return Math.max(...capacityMatches);
+  }
+  const fallbackCandidates = [
+    ...extractNumbersFromText(boat.label),
+    ...(boat.features || []).flatMap((feature) => extractNumbersFromText(feature)),
+  ].filter((value) => value > 0 && value <= 20);
+  if (!fallbackCandidates.length) return null;
+  return Math.max(...fallbackCandidates);
+}
+
+function inferMaxPeopleFromTour(tour) {
+  if (!tour) return null;
+  const explicit = Number(tour.maxPeople ?? tour.max_people ?? tour.capacity);
+  if (Number.isFinite(explicit) && explicit > 0) return explicit;
+  const capacityMatches = [
+    ...extractCapacityFromText(tour.label),
+    ...(tour.features || []).flatMap((feature) => extractCapacityFromText(feature)),
+  ];
+  if (capacityMatches.length) {
+    return Math.max(...capacityMatches);
+  }
+  const fallbackCandidates = [
+    ...extractNumbersFromText(tour.label),
+    ...(tour.features || []).flatMap((feature) => extractNumbersFromText(feature)),
+  ].filter((value) => value > 0 && value <= 20);
+  if (!fallbackCandidates.length) return null;
+  return Math.max(...fallbackCandidates);
+}
+
+function resolvePeopleLimits({ serviceType, boatValue, tourValue } = {}) {
+  const min = FORM_LIMITS.minPeople;
+  let max = FORM_LIMITS.maxPeople;
+
+  if (serviceType === 'noleggio') {
+    const boat = findBoatByValue(boatValue);
+    const inferred = inferMaxPeopleFromBoat(boat);
+    if (Number.isFinite(inferred)) {
+      max = Math.min(inferred, FORM_LIMITS.maxPeople);
+    }
+  } else if (serviceType === 'escursione') {
+    const tour = findTourByValue(tourValue);
+    const inferred = inferMaxPeopleFromTour(tour);
+    if (Number.isFinite(inferred)) {
+      max = Math.min(inferred, FORM_LIMITS.maxPeople);
+    }
+  }
+
+  return { min, max };
+}
+
+function getPeopleMessages(min, max) {
+  const lang = getCurrentLang();
+  const t = (it, en) => (lang === 'en' ? en : it);
+  return {
+    invalid: t('Inserisci un numero valido.', 'Enter a valid number.'),
+    min: t(`Minimo: ${min} persona${min === 1 ? '' : 'e'}.`, `Minimum: ${min} guest${min === 1 ? '' : 's'}.`),
+    max: t(`Massimo: ${max} persone (incl. bambini).`, `Maximum: ${max} people (incl. children).`),
+  };
+}
+
+function getPeopleHintText({ serviceType, boatValue, tourValue, max }) {
+  const lang = getCurrentLang();
+  const t = (it, en) => (lang === 'en' ? en : it);
+  if (!serviceType) {
+    return t('Seleziona un servizio per vedere il massimo.', 'Select a service to see the maximum.');
+  }
+  if (serviceType === 'noleggio' && !boatValue) {
+    return t('Seleziona il gommone per vedere il massimo.', 'Select the boat to see the maximum.');
+  }
+  return t(`Massimo: ${max} persone (incl. bambini).`, `Maximum: ${max} people (incl. children).`);
+}
+
+function syncPeopleConstraints() {
+  const input = elements.peopleInput || elements.bookingForm?.elements?.people;
+  if (!input) return;
+  const serviceType = elements.serviceType?.value || '';
+  const boatValue = elements.boatModel?.value || '';
+  const tourValue = elements.tour?.value || '';
+  const { min, max } = resolvePeopleLimits({ serviceType, boatValue, tourValue });
+  const placeholder = getCurrentLang() === 'en' ? 'Select' : 'Seleziona';
+
+  input.min = String(min);
+  input.max = String(max);
+  input.step = '1';
+  input.setAttribute('placeholder', placeholder);
+
+  if (elements.peopleHint) {
+    elements.peopleHint.textContent = getPeopleHintText({ serviceType, boatValue, tourValue, max });
+  }
+
+  const rawValue = input.value.trim();
+  if (!rawValue) {
+    setFieldError('people', '');
+    return;
+  }
+
+  const numericValue = Number(rawValue);
+  const messages = getPeopleMessages(min, max);
+  if (!Number.isFinite(numericValue)) {
+    setFieldError('people', messages.invalid);
+    return;
+  }
+
+  let clamped = numericValue;
+  let errorMessage = '';
+  if (numericValue < min) {
+    clamped = min;
+    errorMessage = messages.min;
+  } else if (numericValue > max) {
+    clamped = max;
+    errorMessage = messages.max;
+  }
+
+  if (clamped !== numericValue) {
+    input.value = String(clamped);
+  }
+  setFieldError('people', errorMessage);
+}
+
+function adjustPeopleValue(delta) {
+  const input = elements.peopleInput || elements.bookingForm?.elements?.people;
+  if (!input) return;
+  const current = Number(input.value);
+  const nextValue = Number.isFinite(current) ? current + delta : FORM_LIMITS.minPeople;
+  input.value = String(nextValue);
+  syncPeopleConstraints();
+  updateBookingRecap();
 }
 
 function renderBoatSummary() {
@@ -258,6 +518,8 @@ function enforceExcursionTime() {
     timeInput.readOnly = false;
     timeInput.value = timeInput.value || '';
     renderTourSummary();
+    syncTimeConstraints();
+    updateBookingRecap();
     return;
   }
 
@@ -266,6 +528,8 @@ function enforceExcursionTime() {
   timeInput.value = fixedTime;
   timeInput.readOnly = true;
   renderTourSummary();
+  syncTimeConstraints();
+  updateBookingRecap();
 }
 
 function shiftCalendarMonth(delta) {
@@ -311,6 +575,18 @@ function showFeedback(node, message, type = 'error') {
   node.textContent = message;
   node.classList.remove('success', 'error');
   node.classList.add(type);
+}
+
+function showToast(message, type = 'info') {
+  if (!elements.toastContainer) return;
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+  toast.textContent = message;
+  elements.toastContainer.appendChild(toast);
+  window.setTimeout(() => {
+    toast.remove();
+  }, TOAST_DURATION);
 }
 
 let activePortalTab = 'login';
@@ -412,6 +688,285 @@ function prefillBookingContact() {
       phoneInput.removeAttribute('readonly');
     }
   }
+
+  updateBookingRecap();
+}
+
+function setButtonLoading(button, isLoading, loadingText = '') {
+  if (!button) return;
+  if (isLoading) {
+    if (!button.dataset.originalText) {
+      button.dataset.originalText = button.textContent;
+    }
+    if (loadingText) {
+      button.textContent = loadingText;
+    }
+    button.classList.add('is-loading');
+    button.disabled = true;
+    return;
+  }
+  button.classList.remove('is-loading');
+  button.disabled = false;
+  if (button.dataset.originalText) {
+    button.textContent = button.dataset.originalText;
+    delete button.dataset.originalText;
+  }
+}
+
+function normalizePhone(value = '') {
+  let cleaned = value.replace(/[^\d+]/g, '');
+  if (cleaned.startsWith('00')) {
+    cleaned = `+${cleaned.slice(2)}`;
+  }
+  return cleaned;
+}
+
+function formatPhone(value = '') {
+  const normalized = normalizePhone(value);
+  const digits = normalized.replace(/\D/g, '');
+  if (!digits) return '';
+  if (normalized.startsWith('+')) {
+    const match = normalized.match(/^\+\d{1,3}/);
+    const country = match ? match[0] : '+';
+    const countryDigits = country.replace('+', '');
+    const rest = digits.slice(countryDigits.length);
+    const grouped = rest.replace(/(\d{3})(?=\d)/g, '$1 ');
+    return `${country} ${grouped}`.trim();
+  }
+  return digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim();
+}
+
+function isValidPhone(value = '') {
+  const digits = normalizePhone(value).replace(/\D/g, '');
+  return digits.length >= 8 && digits.length <= 15;
+}
+
+function timeToMinutes(value = '') {
+  const [hours, minutes] = value.split(':').map((part) => Number(part));
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
+  return hours * 60 + minutes;
+}
+
+function isDateInPast(dateStr = '') {
+  if (!dateStr) return false;
+  const selected = new Date(`${dateStr}T00:00:00`);
+  if (Number.isNaN(selected.getTime())) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return selected < today;
+}
+
+function getFieldWrapper(fieldName) {
+  return elements.bookingForm?.querySelector(`[data-field="${fieldName}"]`);
+}
+
+function setFieldError(fieldName, message = '') {
+  const wrapper = getFieldWrapper(fieldName);
+  if (!wrapper) return;
+  const errorNode = wrapper.querySelector('.field__error');
+  const control = wrapper.querySelector('input, select, textarea');
+  if (errorNode) errorNode.textContent = message;
+  wrapper.classList.toggle('is-error', Boolean(message));
+  if (control) {
+    if (message) {
+      control.setAttribute('aria-invalid', 'true');
+    } else {
+      control.removeAttribute('aria-invalid');
+    }
+  }
+}
+
+function clearAllFieldErrors() {
+  if (!elements.bookingForm) return;
+  elements.bookingForm.querySelectorAll('.field').forEach((field) => {
+    field.classList.remove('is-error');
+    const errorNode = field.querySelector('.field__error');
+    if (errorNode) errorNode.textContent = '';
+    const control = field.querySelector('input, select, textarea');
+    control?.removeAttribute('aria-invalid');
+  });
+}
+
+function validateBookingPayload(payload = {}) {
+  const lang = getCurrentLang();
+  const t = (it, en) => (lang === 'en' ? en : it);
+  const errors = {};
+  const nameValue = (payload.customerName || '').trim();
+  const phoneValue = (payload.phone || '').trim();
+
+  if (!nameValue) {
+    errors.customerName = t('Inserisci il nome del referente.', 'Enter the contact name.');
+  }
+
+  if (!phoneValue) {
+    errors.phone = t('Inserisci un numero di telefono.', 'Enter a phone number.');
+  } else if (!isValidPhone(phoneValue)) {
+    errors.phone = t('Numero non valido. Usa solo cifre e prefisso.', 'Invalid phone number. Use digits and country code.');
+  }
+
+  if (!payload.serviceType) {
+    errors.serviceType = t('Seleziona il tipo di servizio.', 'Select a service type.');
+  }
+
+  if (!payload.date) {
+    errors.date = t('Seleziona una data.', 'Select a date.');
+  } else if (isDateInPast(payload.date)) {
+    errors.date = t('La data non può essere nel passato.', 'Date cannot be in the past.');
+  }
+
+  if (!payload.time) {
+    errors.time = t('Indica l\'orario di partenza.', 'Select a departure time.');
+  } else {
+    const timeValue = timeToMinutes(payload.time);
+    const minTime = timeToMinutes(FORM_LIMITS.minTime);
+    const maxTime = timeToMinutes(FORM_LIMITS.maxTime);
+    if (timeValue !== null && (timeValue < minTime || timeValue > maxTime)) {
+      errors.time = t('Orario fuori fascia 08:00 - 20:00.', 'Time must be between 08:00 and 20:00.');
+    }
+  }
+
+  if (payload.serviceType === 'noleggio') {
+    if (!payload.boatModel) {
+      errors.boatModel = t('Seleziona il gommone per il noleggio.', 'Select the RIB for rental.');
+    }
+    if (!payload.endTime) {
+      errors.endTime = t('Indica l\'orario di rientro.', 'Add the expected return time.');
+    } else {
+      const startMinutes = timeToMinutes(payload.time);
+      const endMinutes = timeToMinutes(payload.endTime);
+      const maxTime = timeToMinutes(FORM_LIMITS.maxTime);
+      if (startMinutes !== null && endMinutes !== null && endMinutes <= startMinutes) {
+        errors.endTime = t('Il rientro deve essere successivo alla partenza.', 'Return time must be after departure.');
+      } else if (endMinutes !== null && maxTime !== null && endMinutes > maxTime) {
+        errors.endTime = t('Il rientro deve essere entro le 20:00.', 'Return time must be by 20:00.');
+      }
+    }
+  }
+
+  if (payload.serviceType === 'escursione' && !payload.tour) {
+    errors.tour = t('Seleziona l\'itinerario dell\'escursione.', 'Select the excursion itinerary.');
+  }
+
+  const peopleValue = Number(payload.people);
+  const { min: peopleMin, max: peopleMax } = resolvePeopleLimits({
+    serviceType: payload.serviceType,
+    boatValue: payload.boatModel,
+    tourValue: payload.tour,
+  });
+  const peopleMessages = getPeopleMessages(peopleMin, peopleMax);
+  if (!Number.isFinite(peopleValue)) {
+    errors.people = peopleMessages.invalid;
+  } else if (peopleValue < peopleMin || peopleValue > peopleMax) {
+    errors.people = peopleValue < peopleMin ? peopleMessages.min : peopleMessages.max;
+  }
+
+  const normalizedPayload = {
+    ...payload,
+    customerName: nameValue,
+    phone: normalizePhone(payload.phone || ''),
+    people: Number.isFinite(peopleValue) ? peopleValue : payload.people,
+    notes: payload.notes?.trim() || '',
+  };
+
+  return { errors, normalizedPayload };
+}
+
+function updateBookingRecap() {
+  if (!elements.bookingForm || !elements.bookingRecapList) return;
+  const form = elements.bookingForm;
+  const name = form.elements.customerName?.value.trim() || '';
+  const phone = form.elements.phone?.value.trim() || '';
+  const serviceType = form.elements.serviceType?.value || '';
+  const boat = form.elements.boatModel?.value || '';
+  const tour = form.elements.tour?.value || '';
+  const date = form.elements.date?.value || '';
+  const time = form.elements.time?.value || '';
+  const endTime = form.elements.endTime?.value || '';
+  const people = form.elements.people?.value || '';
+  const notes = form.elements.notes?.value.trim() || '';
+
+  const serviceDetail = serviceType === 'noleggio' ? boat : serviceType === 'escursione' ? tour : '';
+  const serviceLabel = serviceType ? `${getServiceLabel(serviceType)}${serviceDetail ? ` · ${serviceDetail}` : ''}` : '—';
+
+  const formattedPhone = formatPhone(phone) || phone;
+  const summaryItems = [
+    { label: getSummaryLabel('contact'), value: [name, formattedPhone].filter(Boolean).join(' · ') || '—' },
+    { label: getSummaryLabel('service'), value: serviceLabel || '—' },
+    { label: getSummaryLabel('date'), value: date ? formatDateLabel(date) : '—' },
+    { label: getSummaryLabel('time'), value: time || '—' },
+  ];
+
+  if (serviceType === 'noleggio') {
+    summaryItems.push({ label: getSummaryLabel('endTime'), value: endTime || '—' });
+  }
+
+  summaryItems.push({ label: getSummaryLabel('guests'), value: people || '—' });
+  summaryItems.push({ label: getSummaryLabel('notes'), value: notes || '—' });
+
+  elements.bookingRecapList.innerHTML = summaryItems
+    .map((item) => `<div class="booking-recap__item"><span>${item.label}</span><strong>${item.value}</strong></div>`)
+    .join('');
+
+  const missingRequired = !name || !phone || !serviceType || !date || !time
+    || (serviceType === 'noleggio' && (!boat || !endTime))
+    || (serviceType === 'escursione' && !tour);
+  if (elements.bookingRecapStatus) {
+    elements.bookingRecapStatus.textContent = missingRequired
+      ? (getCurrentLang() === 'en'
+        ? 'Complete required fields to send your request.'
+        : 'Completa i campi obbligatori per inviare la richiesta.')
+      : '';
+  }
+}
+
+function syncTimeConstraints() {
+  if (!elements.bookingForm) return;
+  const timeInput = elements.bookingForm.elements.time;
+  const endInput = elements.bookingForm.elements.endTime;
+  if (timeInput) {
+    timeInput.min = FORM_LIMITS.minTime;
+    timeInput.max = FORM_LIMITS.maxTime;
+  }
+  if (endInput) {
+    endInput.min = timeInput?.value || FORM_LIMITS.minTime;
+    endInput.max = FORM_LIMITS.maxTime;
+  }
+}
+
+function applyDateConstraints() {
+  if (!elements.bookingForm) return;
+  const dateInput = elements.bookingForm.elements.date;
+  if (!dateInput) return;
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  dateInput.min = today;
+  if (dateInput.value && dateInput.value < today) {
+    dateInput.value = today;
+  }
+}
+
+function handleBookingFormInput(event) {
+  const fieldName = event?.target?.name;
+  if (!fieldName) return;
+  if (fieldName === 'people') {
+    syncPeopleConstraints();
+  } else {
+    setFieldError(fieldName, '');
+  }
+  if (fieldName === 'time') {
+    syncTimeConstraints();
+  }
+  updateBookingRecap();
+}
+
+function handlePhoneBlur(event) {
+  const input = event?.target;
+  if (!input || input.name !== 'phone') return;
+  const formatted = formatPhone(input.value);
+  if (formatted) {
+    input.value = formatted;
+  }
+  updateBookingRecap();
 }
 
 function updateUserUI() {
@@ -497,6 +1052,8 @@ function handleServiceTypeChange(value) {
   enforceExcursionTime();
   renderBoatSummary();
   renderTourSummary();
+  syncPeopleConstraints();
+  updateBookingRecap();
 }
 
 function formatDateTime(date, time) {
@@ -505,7 +1062,7 @@ function formatDateTime(date, time) {
   if (Number.isNaN(parsed.getTime())) {
     return `${date} · ${time}`;
   }
-  return parsed.toLocaleString('it-IT', {
+  return parsed.toLocaleString(getLocale(), {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
@@ -517,7 +1074,7 @@ function formatDateTime(date, time) {
 function formatDateLabel(date) {
   const parsed = new Date(date);
   if (Number.isNaN(parsed.getTime())) return date;
-  return parsed.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  return parsed.toLocaleDateString(getLocale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function renderClientBookings() {
@@ -527,8 +1084,10 @@ function renderClientBookings() {
 
   if (!state.bookings.length) {
     const empty = document.createElement('p');
-    empty.className = 'form-feedback';
-    empty.textContent = 'Ancora nessuna prenotazione. Compila il form per fissare la tua prossima uscita.';
+    empty.className = 'empty-state';
+    empty.textContent = getCurrentLang() === 'en'
+      ? 'No bookings yet. Complete the form to plan your next outing.'
+      : 'Ancora nessuna prenotazione. Compila il form per fissare la tua prossima uscita.';
     container.appendChild(empty);
     return;
   }
@@ -536,29 +1095,31 @@ function renderClientBookings() {
   const sorted = [...state.bookings].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
 
   sorted.forEach((booking) => {
+    const lang = getCurrentLang();
+    const t = (it, en) => (lang === 'en' ? en : it);
     const card = document.createElement('article');
     card.className = 'booking-card';
-    const statusClass = `status-${booking.status.replace(/\s/g, '\\ ')}`;
+    const statusMeta = getStatusMeta(booking.status);
+    const statusClass = `status-pill--${statusMeta.tone}`;
     const coverImage = getBookingImage(booking);
     const subtitle = getBookingSubtitle(booking);
+    const serviceLabel = getServiceLabel(booking.service_type);
     card.innerHTML = `
-      <div class="booking-card__badge status-pill ${statusClass}">${booking.status}</div>
+      <div class="booking-card__badge status-pill ${statusClass}">${statusMeta.label}</div>
       <div class="booking-card__media">
         <img src="${coverImage}" alt="${subtitle}">
       </div>
       <header class="booking-card__header">
-        <p class="booking-card__eyebrow">${booking.service_type === 'noleggio' ? 'Noleggio gommone' : 'Escursione guidata'}</p>
+        <p class="booking-card__eyebrow">${serviceLabel}</p>
         <h3>${subtitle}</h3>
         <p class="booking-card__time">${formatDateTime(booking.date, booking.time)}</p>
       </header>
       <div class="booking-meta">
-        <p><strong>Ospiti</strong><span>${booking.people}</span></p>
-        <p><strong>Contatto</strong><span>${booking.phone}</span></p>
-        ${booking.notes ? `<p class="booking-note"><strong>Note</strong><span>${booking.notes}</span></p>` : ''}
-        <p class="booking-note"><strong>Cos'è compreso</strong><span>${booking.service_type === 'noleggio'
-          ? 'Briefing, tendalino, doccia, GPS/eco, dotazioni sicurezza.'
-          : 'Skipper, soste programmate, snorkeling kit e briefing di bordo.'}</span></p>
-        ${booking.client_message ? `<p class="booking-note"><strong>Messaggio staff</strong><span>${booking.client_message}</span></p>` : ''}
+        <p><strong>${t('Ospiti', 'Guests')}</strong><span>${booking.people}</span></p>
+        <p><strong>${t('Contatto', 'Contact')}</strong><span>${formatPhone(booking.phone || '') || booking.phone}</span></p>
+        ${booking.notes ? `<p class="booking-note"><strong>${t('Note', 'Notes')}</strong><span>${booking.notes}</span></p>` : ''}
+        <p class="booking-note"><strong>${t('Cos\'è compreso', 'Included')}</strong><span>${getIncludedCopy(booking.service_type)}</span></p>
+        ${booking.client_message ? `<p class="booking-note"><strong>${t('Messaggio staff', 'Staff message')}</strong><span>${booking.client_message}</span></p>` : ''}
       </div>
     `;
     container.appendChild(card);
@@ -579,9 +1140,36 @@ function getBookingImage(booking) {
 
 function getBookingSubtitle(booking) {
   if (booking.service_type === 'escursione') {
-    return booking.tour || 'Escursione guidata';
+    return booking.tour || (getCurrentLang() === 'en' ? 'Guided excursion' : 'Escursione guidata');
   }
-  return booking.boat_model || 'Noleggio gommone';
+  return booking.boat_model || (getCurrentLang() === 'en' ? 'RIB rental' : 'Noleggio gommone');
+}
+
+const scrollLock = {
+  active: false,
+  y: 0,
+};
+
+function lockBodyScroll() {
+  if (scrollLock.active) return;
+  scrollLock.y = window.scrollY || window.pageYOffset || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollLock.y}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  scrollLock.active = true;
+}
+
+function unlockBodyScroll() {
+  if (!scrollLock.active) return;
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, scrollLock.y);
+  scrollLock.active = false;
 }
 
 function openBookingDetail(id) {
@@ -592,55 +1180,104 @@ function openBookingDetail(id) {
   const cover = getBookingImage(booking);
   const subtitle = getBookingSubtitle(booking);
   const isRental = booking.service_type === 'noleggio';
+  const statusMeta = getStatusMeta(booking.status);
+  const serviceLabel = getServiceLabel(booking.service_type);
+
+  const dateTimeLabel = `${formatDateLabel(booking.date)} · ${booking.time}${booking.end_time ? ` → ${booking.end_time}` : ''}`;
+  const serviceFullLabel = `${serviceLabel}${subtitle ? ` · ${subtitle}` : ''}`;
 
   elements.bookingDetailContent.innerHTML = `
-    <div class="booking-detail__cover">
-      <img src="${cover}" alt="${subtitle}">
-      <div class="booking-detail__cover-info">
-        <p class="eyebrow">${isRental ? 'Noleggio' : 'Escursione'}</p>
-        <h3 id="bookingDetailTitle">${subtitle}</h3>
-        <p>${formatDateLabel(booking.date)} · ${booking.time}${booking.end_time ? ` → ${booking.end_time}` : ''}</p>
+    <div class="booking-detail">
+      <header class="booking-detail__header">
+        <div class="booking-detail__header-main">
+          <p class="booking-detail__service">${serviceLabel}</p>
+          <h3 id="bookingDetailTitle" class="booking-detail__title">${subtitle}</h3>
+          <p class="booking-detail__datetime">${dateTimeLabel}</p>
+        </div>
+        <span class="status-pill status-pill--${statusMeta.tone}">${statusMeta.label}</span>
+        <button class="booking-detail__close" type="button" data-close-modal aria-label="Chiudi">&times;</button>
+      </header>
+
+      <div class="booking-detail__body">
+        <div class="booking-detail__content">
+          <section class="booking-detail__section booking-detail__summary">
+            <h4>Riepilogo</h4>
+            <div class="booking-detail__summary-grid">
+              <div class="booking-detail__summary-item">
+                <span>Servizio</span>
+                <p>${serviceFullLabel}</p>
+              </div>
+              <div class="booking-detail__summary-item">
+                <span>Data + Orari</span>
+                <p>${dateTimeLabel}</p>
+              </div>
+              <div class="booking-detail__summary-item">
+                <span>Ospiti</span>
+                <p class="booking-detail__summary-value">${booking.people}</p>
+              </div>
+              <div class="booking-detail__summary-item">
+                <span>Stato</span>
+                <p>${statusMeta.label}</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="booking-detail__section booking-detail__customer">
+            <h4>Cliente</h4>
+            <div class="booking-detail__list">
+              <div>
+                <span>Nome</span>
+                <p>${booking.customer_name}</p>
+              </div>
+              <div>
+                <span>Email</span>
+                <p>${booking.email}</p>
+              </div>
+              <div>
+                <span>Telefono</span>
+                <p>${formatPhone(booking.phone || '') || booking.phone}</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="booking-detail__section booking-detail__notes">
+            <h4>Note</h4>
+            <div class="booking-detail__note">
+              <span>Note cliente</span>
+              <p>${booking.notes || '—'}</p>
+            </div>
+            <div class="booking-detail__note-grid">
+              <label class="booking-detail__field">
+                <span>Messaggio al cliente</span>
+                <textarea id="detailClientMessage" placeholder="Aggiorna il cliente (visibile nel portale prenotazioni)">${booking.client_message || ''}</textarea>
+              </label>
+              <label class="booking-detail__field">
+                <span>Note interne</span>
+                <textarea id="detailInternalNote" placeholder="Solo staff interno">${booking.internal_note || ''}</textarea>
+              </label>
+            </div>
+          </section>
+        </div>
       </div>
-      <span class="status-pill booking-detail__status ${`status-${booking.status.replace(/\s/g, '\\ ')}`}">${booking.status}</span>
-    </div>
-    <div class="booking-detail__grid">
-      <div class="booking-detail__block">
-        <h4>Cliente</h4>
-        <p>${booking.customer_name}</p>
-        <p>${booking.email}</p>
-        <p>${booking.phone}</p>
-      </div>
-      <div class="booking-detail__block">
-        <h4>Servizio</h4>
-        <p>${subtitle}</p>
-        <p>${booking.people} ospiti</p>
-        ${booking.end_time ? `<p>Rientro: ${booking.end_time}</p>` : ''}
-      </div>
-      <div class="booking-detail__block">
-        <h4>Note cliente</h4>
-        <p>${booking.notes || '—'}</p>
-      </div>
-      <div class="booking-detail__block">
-        <h4>Messaggio al cliente</h4>
-        <textarea id="detailClientMessage" placeholder="Aggiorna il cliente (visibile nel portale prenotazioni)">${booking.client_message || ''}</textarea>
-      </div>
-      <div class="booking-detail__block">
-        <h4>Note interne</h4>
-        <textarea id="detailInternalNote" placeholder="Solo staff interno">${booking.internal_note || ''}</textarea>
-      </div>
-    </div>
-    <div class="booking-detail__actions">
-      <select id="detailStatus" class="table-select">
-        ${['da confermare', 'confermato', 'completato', 'annullato'].map((s) => `<option value="${s}" ${booking.status === s ? 'selected' : ''}>${s}</option>`).join('')}
-      </select>
-      <button class="btn outline" type="button" id="detailDelete">Elimina</button>
-      <button class="btn ghost" type="button" data-close-modal>Chiudi</button>
-      <button class="btn primary" type="button" id="detailSave">Salva</button>
+
+      <footer class="booking-detail__actions">
+        <div class="booking-detail__actions-meta">
+          <select id="detailStatus" class="table-select">
+            ${['da confermare', 'confermato', 'completato', 'annullato'].map((s) => `<option value="${s}" ${booking.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+          <button class="btn outline danger" type="button" id="detailDelete">Elimina</button>
+        </div>
+        <div class="booking-detail__actions-main">
+          <button class="btn ghost" type="button" data-close-modal>Chiudi</button>
+          <button class="btn primary" type="button" id="detailSave">Salva</button>
+        </div>
+      </footer>
     </div>
   `;
 
   elements.bookingDetailModal.classList.remove('hidden');
   document.body.classList.add('modal-open');
+  lockBodyScroll();
 
   elements.bookingDetailContent.querySelectorAll('[data-close-modal]').forEach((btn) => {
     btn.addEventListener('click', closeBookingDetail);
@@ -650,8 +1287,8 @@ function openBookingDetail(id) {
     const status = elements.bookingDetailContent.querySelector('#detailStatus')?.value;
     const internalNote = elements.bookingDetailContent.querySelector('#detailInternalNote')?.value || '';
     const clientMessage = elements.bookingDetailContent.querySelector('#detailClientMessage')?.value || '';
-    await updateBooking(id, { status, internalNote, clientMessage, endTime: booking.end_time });
-    closeBookingDetail();
+    const ok = await updateBooking(id, { status, internalNote, clientMessage, endTime: booking.end_time });
+    if (ok) closeBookingDetail();
   });
 
   elements.bookingDetailContent.querySelector('#detailDelete')?.addEventListener('click', () => {
@@ -664,6 +1301,7 @@ function closeBookingDetail() {
   if (!elements.bookingDetailModal) return;
   elements.bookingDetailModal.classList.add('hidden');
   document.body.classList.remove('modal-open');
+  unlockBodyScroll();
 }
 
 function getBookingsByDate(dateStr) {
@@ -676,9 +1314,10 @@ function renderCalendar() {
   const firstDay = new Date(year, month, 1);
   const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Monday first
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayDate = new Date();
+  const todayStr = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
 
-  elements.calendarTitle.textContent = firstDay.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+  elements.calendarTitle.textContent = firstDay.toLocaleDateString(getLocale(), { month: 'long', year: 'numeric' });
   elements.calendarGrid.innerHTML = '';
 
   for (let i = 0; i < startDay; i += 1) {
@@ -691,9 +1330,11 @@ function renderCalendar() {
     const dayEl = document.createElement('button');
     dayEl.type = 'button';
     dayEl.className = 'calendar-day';
-    dayEl.textContent = String(day);
-    const hasEvents = getBookingsByDate(dateStr).length > 0;
-    if (hasEvents) dayEl.classList.add('has-events');
+    const count = getBookingsByDate(dateStr).length;
+    if (count > 0) {
+      dayEl.classList.add('has-events');
+    }
+    dayEl.innerHTML = `<span class="calendar-day__number">${day}</span>`;
     if (dateStr === todayStr) dayEl.classList.add('is-today');
     if (state.calendar.selectedDay === dateStr) dayEl.classList.add('is-active');
     dayEl.addEventListener('click', () => {
@@ -722,36 +1363,102 @@ function renderCalendarDayDetail() {
   const bookings = getBookingsByDate(day);
   elements.calendarDayList.innerHTML = '';
   if (!bookings.length) {
-    elements.calendarDayList.innerHTML = '<li>Nessuna prenotazione.</li>';
+    const message = getCurrentLang() === 'en'
+      ? 'No bookings for this date.'
+      : 'Nessuna prenotazione per questa data.';
+    elements.calendarDayList.innerHTML = `<li class="empty-state">${message}</li>`;
     return;
   }
   bookings.forEach((booking) => {
     const li = document.createElement('li');
     li.className = 'calendar-day-item';
     li.dataset.bookingId = booking.id;
+    const statusMeta = getStatusMeta(booking.status);
+    const lang = getCurrentLang();
+    const t = (it, en) => (lang === 'en' ? en : it);
     li.innerHTML = `
       <strong>${formatDateTime(booking.date, booking.time)}</strong>
       <span>${booking.service_type === 'noleggio' ? booking.boat_model || 'Noleggio' : booking.tour || 'Escursione'}</span>
-      <small>${booking.customer_name} · ${booking.people} ospiti</small>
+      <span class="status-pill status-pill--${statusMeta.tone}">${statusMeta.label}</span>
+      <small>${booking.customer_name} · ${booking.people} ${t('ospiti', 'guests')}</small>
     `;
     li.addEventListener('click', () => openBookingDetail(booking.id));
     elements.calendarDayList.appendChild(li);
   });
 }
 
+function loadStaffNotePins() {
+  try {
+    const stored = localStorage.getItem(STAFF_PINS_KEY);
+    if (!stored) return;
+    const parsed = JSON.parse(stored);
+    if (Array.isArray(parsed)) {
+      state.staffNotePins = new Set(parsed);
+    }
+  } catch (_) {}
+}
+
+function saveStaffNotePins() {
+  try {
+    const values = Array.from(state.staffNotePins);
+    localStorage.setItem(STAFF_PINS_KEY, JSON.stringify(values));
+  } catch (_) {}
+}
+
+function toggleStaffNotePin(noteId) {
+  if (state.staffNotePins.has(noteId)) {
+    state.staffNotePins.delete(noteId);
+  } else {
+    state.staffNotePins.add(noteId);
+  }
+  saveStaffNotePins();
+  renderStaffNotes();
+}
+
 function renderStaffNotes() {
   if (!elements.staffNotesList) return;
   elements.staffNotesList.innerHTML = '';
   if (!state.staffNotes.length) {
-    elements.staffNotesList.innerHTML = '<p class="form-feedback">Nessuna nota interna.</p>';
+    const message = getCurrentLang() === 'en'
+      ? 'No internal notes yet. Add an operational reminder.'
+      : 'Nessuna nota interna. Aggiungi un promemoria operativo.';
+    elements.staffNotesList.innerHTML = `<p class="empty-state">${message}</p>`;
     return;
   }
 
-  state.staffNotes.forEach((note) => {
+  const query = state.staffNoteQuery.trim().toLowerCase();
+  const pinned = state.staffNotePins;
+  const filtered = state.staffNotes.filter((note) => {
+    if (!query) return true;
+    const content = `${note.content || ''} ${note.author || ''}`.toLowerCase();
+    return content.includes(query);
+  });
+
+  if (!filtered.length) {
+    const message = getCurrentLang() === 'en'
+      ? 'No notes match your search.'
+      : 'Nessuna nota corrispondente alla ricerca.';
+    elements.staffNotesList.innerHTML = `<p class="empty-state">${message}</p>`;
+    return;
+  }
+
+  filtered.sort((a, b) => {
+    const pinnedA = pinned.has(a.id);
+    const pinnedB = pinned.has(b.id);
+    if (pinnedA !== pinnedB) return pinnedA ? -1 : 1;
+    const dateA = new Date(a.updated_at || a.created_at || 0).getTime();
+    const dateB = new Date(b.updated_at || b.created_at || 0).getTime();
+    return dateB - dateA;
+  });
+
+  const lang = getCurrentLang();
+  const t = (it, en) => (lang === 'en' ? en : it);
+
+  filtered.forEach((note) => {
     const item = document.createElement('article');
-    item.className = 'staff-note';
-    const created = note.created_at ? new Date(note.created_at).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
-    const updated = note.updated_at ? new Date(note.updated_at).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+    item.className = `staff-note${pinned.has(note.id) ? ' is-pinned' : ''}`;
+    const created = note.created_at ? new Date(note.created_at).toLocaleString(getLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+    const updated = note.updated_at ? new Date(note.updated_at).toLocaleString(getLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
 
     const meta = document.createElement('div');
     meta.className = 'staff-note__meta';
@@ -771,13 +1478,18 @@ function renderStaffNotes() {
     editBtn.type = 'button';
     editBtn.className = 'btn ghost';
     editBtn.dataset.noteEdit = note.id;
-    editBtn.textContent = 'Modifica';
+    editBtn.textContent = t('Modifica', 'Edit');
+    const pinBtn = document.createElement('button');
+    pinBtn.type = 'button';
+    pinBtn.className = 'btn ghost';
+    pinBtn.dataset.notePin = note.id;
+    pinBtn.textContent = pinned.has(note.id) ? t('Rimuovi pin', 'Unpin') : t('Fissa', 'Pin');
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = 'btn outline';
     deleteBtn.dataset.noteDelete = note.id;
-    deleteBtn.textContent = 'Elimina';
-    actions.append(editBtn, deleteBtn);
+    deleteBtn.textContent = t('Elimina', 'Delete');
+    actions.append(editBtn, pinBtn, deleteBtn);
 
     item.append(meta, contentP, actions);
     elements.staffNotesList.appendChild(item);
@@ -795,6 +1507,14 @@ function renderStaffNotes() {
     });
   });
 
+  elements.staffNotesList.querySelectorAll('[data-note-pin]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const noteId = Number(btn.dataset.notePin);
+      if (!Number.isInteger(noteId)) return;
+      toggleStaffNotePin(noteId);
+    });
+  });
+
   elements.staffNotesList.querySelectorAll('[data-note-delete]').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const noteId = Number(btn.dataset.noteDelete);
@@ -805,7 +1525,7 @@ function renderStaffNotes() {
         await fetchJSON(`/api/staff-notes/${noteId}`, { method: 'DELETE' });
         await loadStaffNotes();
       } catch (error) {
-        alert(error.message || 'Impossibile eliminare la nota');
+        showToast(error.message || 'Impossibile eliminare la nota', 'error');
       }
     });
   });
@@ -814,8 +1534,101 @@ function renderAdminStats() {
   if (!state.user || state.user.role !== 'admin') return;
   if (!elements.adminStatTotal || !elements.adminStatPending || !elements.adminStatToday) return;
   elements.adminStatTotal.textContent = state.stats.total ?? 0;
-  elements.adminStatPending.textContent = state.stats.pending ?? 0;
+  elements.adminStatPending.textContent = state.stats.pending ?? state.pendingBookings?.length ?? 0;
   elements.adminStatToday.textContent = state.stats.todayTours ?? 0;
+}
+
+function normalizePhoneForLink(phone = '') {
+  return normalizePhone(phone);
+}
+
+function buildWhatsappLink(phone = '') {
+  const digits = phone.replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.startsWith('39')) return `https://wa.me/${digits}`;
+  if (digits.length <= 10) return `https://wa.me/39${digits}`;
+  return `https://wa.me/${digits}`;
+}
+
+function renderPendingBookings() {
+  if (!state.user || state.user.role !== 'admin') return;
+  if (!elements.adminPendingList) return;
+  const pendingSource = state.pendingBookings?.length ? state.pendingBookings : state.adminBookings;
+  const pending = pendingSource
+    .filter((booking) => booking.status === 'da confermare')
+    .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+  elements.adminPendingList.innerHTML = '';
+  if (elements.adminPendingCount) {
+    elements.adminPendingCount.textContent = String(pending.length);
+  }
+
+  if (!pending.length) {
+    const lang = getCurrentLang();
+    const message = lang === 'en'
+      ? 'No pending requests. All clear.'
+      : 'Nessuna richiesta in attesa. Tutto sotto controllo.';
+    elements.adminPendingList.innerHTML = `<p class="empty-state">${message}</p>`;
+    return;
+  }
+
+  pending.forEach((booking) => {
+    const item = document.createElement('article');
+    item.className = 'pending-item';
+    const lang = getCurrentLang();
+    const t = (it, en) => (lang === 'en' ? en : it);
+    const phoneLink = normalizePhoneForLink(booking.phone || '');
+    const whatsappLink = buildWhatsappLink(booking.phone || '');
+    const serviceLabel = getServiceLabel(booking.service_type);
+    const detailLabel = booking.service_type === 'noleggio' ? booking.boat_model || '—' : booking.tour || '—';
+    item.innerHTML = `
+      <div>
+        <span class="status-pill status-pill--pending">${t('Da confermare', 'Pending')}</span>
+        <h4>${serviceLabel} · ${detailLabel}</h4>
+        <p class="pending-meta">${formatDateTime(booking.date, booking.time)}${booking.end_time ? ` → ${booking.end_time}` : ''}</p>
+        <p class="pending-meta">${booking.customer_name} · ${booking.people} ${t('ospiti', 'guests')}</p>
+      </div>
+      <div class="pending-actions">
+        <button class="btn primary" type="button" data-action="confirm" data-booking-id="${booking.id}">${t('Conferma', 'Confirm')}</button>
+        <button class="btn outline" type="button" data-action="cancel" data-booking-id="${booking.id}">${t('Annulla', 'Cancel')}</button>
+        ${phoneLink ? `<a class="btn ghost" href="tel:${phoneLink}">${t('Chiama', 'Call')}</a>` : ''}
+        ${whatsappLink ? `<a class="btn ghost" href="${whatsappLink}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+      </div>
+    `;
+    elements.adminPendingList.appendChild(item);
+  });
+
+  elements.adminPendingList.querySelectorAll('[data-action="confirm"]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.bookingId);
+      if (!Number.isInteger(id)) return;
+      const ok = await updateBooking(id, { status: 'confermato' });
+      if (ok) showToast('Prenotazione confermata.', 'success');
+    });
+  });
+
+  elements.adminPendingList.querySelectorAll('[data-action="cancel"]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.bookingId);
+      if (!Number.isInteger(id)) return;
+      const ok = await updateBooking(id, { status: 'annullato' });
+      if (ok) showToast('Prenotazione annullata.', 'info');
+    });
+  });
+}
+
+function syncAdminFiltersUI() {
+  if (elements.adminFilterType) {
+    elements.adminFilterType.value = state.filters.type;
+  }
+  if (elements.adminFilterStatus) {
+    elements.adminFilterStatus.value = state.filters.status;
+  }
+  if (elements.adminFilterChips) {
+    elements.adminFilterChips.querySelectorAll('[data-filter-status]').forEach((chip) => {
+      chip.classList.toggle('is-active', chip.dataset.filterStatus === state.filters.status);
+    });
+  }
 }
 
 function renderAdminTable() {
@@ -829,7 +1642,9 @@ function renderAdminTable() {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
     cell.colSpan = 8;
-    cell.textContent = 'Nessuna prenotazione corrispondente ai filtri.';
+    cell.textContent = getCurrentLang() === 'en'
+      ? 'No bookings match the current filters.'
+      : 'Nessuna prenotazione corrispondente ai filtri.';
     row.appendChild(cell);
     tbody.appendChild(row);
     return;
@@ -842,7 +1657,7 @@ function renderAdminTable() {
       <td>
         <strong>${booking.customer_name}</strong><br>
         <small>${booking.email}</small><br>
-        <small>${booking.phone}</small>
+        <small>${formatPhone(booking.phone || '') || booking.phone}</small>
       </td>
       <td>${booking.service_type === 'noleggio' ? 'Noleggio' : 'Escursione'}</td>
       <td>${booking.service_type === 'noleggio' ? (booking.boat_model || '—') : (booking.tour || '—')}</td>
@@ -853,8 +1668,13 @@ function renderAdminTable() {
     `;
 
     const statusCell = row.children[5];
+    const statusWrap = document.createElement('div');
+    statusWrap.className = 'status-control';
+    const statusBadge = createStatusBadgeElement(booking.status);
     const statusSelect = document.createElement('select');
     statusSelect.className = 'table-select';
+    statusSelect.setAttribute('aria-label', 'Stato prenotazione');
+    let currentStatus = booking.status;
     ['da confermare', 'confermato', 'completato', 'annullato'].forEach((status) => {
       const option = document.createElement('option');
       option.value = status;
@@ -862,14 +1682,25 @@ function renderAdminTable() {
       if (booking.status === status) option.selected = true;
       statusSelect.appendChild(option);
     });
-    statusSelect.addEventListener('change', () => {
-      updateBooking(booking.id, { status: statusSelect.value });
+    statusSelect.addEventListener('change', async () => {
+      const nextStatus = statusSelect.value;
+      const ok = await updateBooking(booking.id, { status: nextStatus });
+      if (!ok) {
+        statusSelect.value = currentStatus;
+        return;
+      }
+      currentStatus = nextStatus;
+      const meta = getStatusMeta(nextStatus);
+      statusBadge.className = `status-pill status-pill--${meta.tone}`;
+      statusBadge.textContent = meta.label;
     });
-    statusCell.appendChild(statusSelect);
+    statusWrap.append(statusBadge, statusSelect);
+    statusCell.appendChild(statusWrap);
 
     const noteCell = row.children[6];
     const noteArea = document.createElement('textarea');
     noteArea.className = 'table-note';
+    noteArea.setAttribute('aria-label', 'Note interne');
     noteArea.value = booking.internal_note || '';
     let debounceId;
     noteArea.addEventListener('input', () => {
@@ -904,9 +1735,11 @@ async function updateBooking(id, payload) {
       body: JSON.stringify(payload),
     });
     await Promise.all([loadClientBookings(), loadAdminBookings()]);
+    return true;
   } catch (error) {
     console.error('Errore aggiornamento booking:', error);
-    alert(error.message || 'Impossibile aggiornare la prenotazione');
+    showToast(error.message || 'Impossibile aggiornare la prenotazione', 'error');
+    return false;
   }
 }
 
@@ -918,7 +1751,7 @@ async function deleteBooking(id) {
     await Promise.all([loadClientBookings(), loadAdminBookings()]);
   } catch (error) {
     console.error('Errore cancellazione booking:', error);
-    alert(error.message || 'Impossibile cancellare la prenotazione');
+    showToast(error.message || 'Impossibile cancellare la prenotazione', 'error');
   }
 }
 
@@ -947,15 +1780,33 @@ async function loadAdminBookings() {
   const endpoint = params.toString() ? `/api/bookings?${params.toString()}` : '/api/bookings';
 
   try {
-    const data = await fetchJSON(endpoint);
+    setButtonLoading(elements.adminRefresh, true, getCurrentLang() === 'en' ? 'Refreshing...' : 'Aggiorno...');
+    if (elements.adminTableBody) {
+      elements.adminTableBody.innerHTML = '<tr><td colspan="8">Caricamento prenotazioni...</td></tr>';
+    }
+    if (elements.adminPendingList) {
+      elements.adminPendingList.innerHTML = '<p class="form-feedback">Caricamento richieste...</p>';
+    }
+    const pendingParams = new URLSearchParams();
+    pendingParams.set('status', 'da confermare');
+    const [data, pendingData] = await Promise.all([
+      fetchJSON(endpoint),
+      fetchJSON(`/api/bookings?${pendingParams.toString()}`),
+    ]);
     state.adminBookings = data.bookings || [];
+    state.pendingBookings = pendingData.bookings || [];
     state.stats = data.stats || state.stats;
     renderAdminStats();
     renderAdminTable();
     renderCalendar();
+    renderPendingBookings();
   } catch (error) {
     console.error('Errore caricamento admin bookings:', error);
     renderAdminTable();
+    renderPendingBookings();
+    showToast(error.message || 'Errore caricamento dashboard.', 'error');
+  } finally {
+    setButtonLoading(elements.adminRefresh, false);
   }
 }
 
@@ -968,6 +1819,7 @@ async function loadStaffNotes() {
   } catch (error) {
     console.error('Errore caricamento note staff', error);
     renderStaffNotes();
+    showToast(error.message || 'Errore caricamento note staff.', 'error');
   }
 }
 
@@ -975,37 +1827,50 @@ async function handleBookingSubmit(event) {
   event.preventDefault();
   if (!elements.bookingForm) return;
   resetFeedback(elements.bookingFeedback);
+  clearAllFieldErrors();
 
   const formData = new FormData(elements.bookingForm);
   const payload = Object.fromEntries(formData.entries());
+  const { errors, normalizedPayload } = validateBookingPayload(payload);
 
-  if (!payload.customerName || !payload.phone || !payload.serviceType || !payload.date || !payload.time) {
-    showFeedback(elements.bookingFeedback, 'Completa i campi obbligatori.', 'error');
-    return;
-  }
-
-  if (payload.serviceType === 'noleggio' && !payload.boatModel) {
-    showFeedback(elements.bookingFeedback, 'Seleziona il gommone ZAR per il noleggio.', 'error');
-    return;
-  }
-
-  if (payload.serviceType === 'noleggio' && !payload.endTime) {
-    showFeedback(elements.bookingFeedback, 'Indica l\'orario di rientro per il noleggio.', 'error');
+  if (Object.keys(errors).length) {
+    Object.entries(errors).forEach(([field, message]) => setFieldError(field, message));
+    const message = getCurrentLang() === 'en'
+      ? 'Please review the highlighted fields.'
+      : 'Controlla i campi evidenziati.';
+    showFeedback(elements.bookingFeedback, message, 'error');
+    showToast(message, 'error');
+    const firstField = Object.keys(errors)[0];
+    const wrapper = getFieldWrapper(firstField);
+    const control = wrapper?.querySelector('input, select, textarea');
+    control?.focus();
     return;
   }
 
   try {
+    setButtonLoading(elements.bookingSubmit, true, getCurrentLang() === 'en' ? 'Sending...' : 'Invio in corso...');
+    elements.bookingForm.setAttribute('aria-busy', 'true');
     await fetchJSON('/api/bookings', {
       method: 'POST',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(normalizedPayload),
     });
     elements.bookingForm.reset();
     handleServiceTypeChange('');
+    applyDateConstraints();
     prefillBookingContact();
-    showFeedback(elements.bookingFeedback, 'Prenotazione inviata! Il team ti contatterà a breve.', 'success');
+    const successMessage = getCurrentLang() === 'en'
+      ? 'Booking sent! We will contact you for confirmation.'
+      : 'Prenotazione inviata! Ti contatteremo per conferma.';
+    showFeedback(elements.bookingFeedback, successMessage, 'success');
+    showToast(successMessage, 'success');
     await Promise.all([loadClientBookings(), loadAdminBookings()]);
   } catch (error) {
     showFeedback(elements.bookingFeedback, error.message, 'error');
+    showToast(error.message || 'Errore durante l\'invio.', 'error');
+  } finally {
+    elements.bookingForm.removeAttribute('aria-busy');
+    setButtonLoading(elements.bookingSubmit, false);
+    updateBookingRecap();
   }
 }
 
@@ -1030,6 +1895,7 @@ async function saveStaffNote() {
     return;
   }
   try {
+    setButtonLoading(elements.staffNoteSave, true, getCurrentLang() === 'en' ? 'Saving...' : 'Salvataggio...');
     if (state.staffNoteEditingId) {
       await fetchJSON(`/api/staff-notes/${state.staffNoteEditingId}`, {
         method: 'PATCH',
@@ -1043,8 +1909,12 @@ async function saveStaffNote() {
     }
     toggleStaffNoteForm(false);
     await loadStaffNotes();
+    showToast(getCurrentLang() === 'en' ? 'Note saved.' : 'Nota salvata.', 'success');
   } catch (error) {
     showFeedback(elements.staffNoteFeedback, error.message, 'error');
+    showToast(error.message || 'Errore salvataggio nota.', 'error');
+  } finally {
+    setButtonLoading(elements.staffNoteSave, false);
   }
 }
 
@@ -1125,6 +1995,9 @@ async function handleLogout() {
   } finally {
     state.user = null;
     state.bookings = [];
+    state.adminBookings = [];
+    state.pendingBookings = [];
+    state.staffNotes = [];
     updateUserUI();
     prefillBookingContact();
     renderClientBookings();
@@ -1170,6 +2043,7 @@ async function loadCatalog() {
       });
     }
     populateServiceOptions();
+    syncPeopleConstraints();
   } catch (error) {
     console.error('Errore caricamento catalogo:', error);
   }
@@ -1186,15 +2060,28 @@ function attachEventListeners() {
 
   if (elements.bookingForm) {
     elements.bookingForm.addEventListener('submit', handleBookingSubmit);
+    elements.bookingForm.addEventListener('input', handleBookingFormInput);
+    elements.bookingForm.addEventListener('change', handleBookingFormInput);
+    elements.bookingForm.addEventListener('blur', handlePhoneBlur, true);
   }
 
   elements.tour?.addEventListener('change', enforceExcursionTime);
   elements.tour?.addEventListener('change', renderTourSummary);
+  elements.tour?.addEventListener('change', syncPeopleConstraints);
   elements.boatModel?.addEventListener('change', renderBoatSummary);
+  elements.boatModel?.addEventListener('change', syncPeopleConstraints);
+  elements.bookingForm?.elements?.time?.addEventListener('change', syncTimeConstraints);
+  elements.bookingForm?.elements?.endTime?.addEventListener('change', updateBookingRecap);
+
+  document.querySelectorAll('[data-people-stepper]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const delta = btn.dataset.peopleStepper === 'decrement' ? -1 : 1;
+      adjustPeopleValue(delta);
+    });
+  });
 
   elements.logoutBtn?.addEventListener('click', handleLogout);
   elements.portalAuthTrigger?.addEventListener('click', () => openPortalModal(activePortalTab));
-  elements.guardLogin?.addEventListener('click', () => openPortalModal('login'));
   elements.portalCloseTriggers.forEach((trigger) => {
     trigger.addEventListener('click', closePortalModal);
   });
@@ -1226,6 +2113,7 @@ function attachEventListeners() {
   if (elements.adminFilterType) {
     elements.adminFilterType.addEventListener('change', (event) => {
       state.filters.type = event.target.value;
+      syncAdminFiltersUI();
       loadAdminBookings();
     });
   }
@@ -1233,9 +2121,25 @@ function attachEventListeners() {
   if (elements.adminFilterStatus) {
     elements.adminFilterStatus.addEventListener('change', (event) => {
       state.filters.status = event.target.value;
+      syncAdminFiltersUI();
       loadAdminBookings();
     });
   }
+
+  elements.adminFilterChips?.querySelectorAll('[data-filter-status]').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      state.filters.status = chip.dataset.filterStatus;
+      syncAdminFiltersUI();
+      loadAdminBookings();
+    });
+  });
+
+  elements.adminResetFilters?.addEventListener('click', () => {
+    state.filters.type = 'all';
+    state.filters.status = 'all';
+    syncAdminFiltersUI();
+    loadAdminBookings();
+  });
 
   elements.adminRefresh?.addEventListener('click', () => {
     loadAdminBookings();
@@ -1248,6 +2152,10 @@ function attachEventListeners() {
   elements.addStaffNote?.addEventListener('click', () => toggleStaffNoteForm(true));
   elements.staffNoteCancel?.addEventListener('click', () => toggleStaffNoteForm(false));
   elements.staffNoteSave?.addEventListener('click', saveStaffNote);
+  elements.staffNoteSearch?.addEventListener('input', (event) => {
+    state.staffNoteQuery = event.target.value || '';
+    renderStaffNotes();
+  });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
@@ -1260,12 +2168,25 @@ function attachEventListeners() {
     renderBoatSummary();
     renderTourSummary();
     enforceExcursionTime();
+    renderClientBookings();
+    renderAdminTable();
+    renderCalendar();
+    renderPendingBookings();
+    renderStaffNotes();
+    syncPeopleConstraints();
+    updateBookingRecap();
   });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
   attachEventListeners();
   updateUserUI();
+  applyDateConstraints();
+  syncTimeConstraints();
+  syncPeopleConstraints();
+  updateBookingRecap();
+  loadStaffNotePins();
+  syncAdminFiltersUI();
 
   const portalMenuToggle = document.getElementById('portalMenuToggle');
   const portalNav = document.getElementById('portalNav');
