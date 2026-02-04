@@ -605,29 +605,6 @@ async function checkSession() {
   }
 }
 
-function initScrollReveal() {
-  const reveals = document.querySelectorAll('.scroll-reveal');
-  if (!reveals.length) return;
-
-  if (!('IntersectionObserver' in window)) {
-    reveals.forEach((el) => el.classList.add('in-view'));
-    return;
-  }
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.2,
-    rootMargin: '0px 0px -10% 0px',
-  });
-
-  reveals.forEach((el) => observer.observe(el));
-}
 
 function attachEventListeners() {
   const ensureDemoModal = () => {
@@ -747,6 +724,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   initGalleryCarousel();
   initBoatCards();
   initHomeCardCarousels();
-  initScrollReveal();
   await checkSession();
 });

@@ -14,7 +14,7 @@
   <link rel="shortcut icon" href="assets/favicon/favicon.ico">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="landing">
+<body class="landing excursions-page">
   <header class="topbar">
     <a class="topbar__brand" href="index.html" aria-label="Albatros Tropea Noleggio · Home">
       <img class="brand-logo" src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio">
@@ -62,31 +62,23 @@
   </header>
 
   <main class="landing-main">
-    <section class="hero hero--sub">
+    <section class="hero hero--sub excursion-hero">
       <div class="hero__grid">
         <div class="hero__content">
           <div class="hero__headline">
-            <h1 data-i18n="hero-title">Capo Vaticano Sunset Romance</h1>
+            <h1 class="hero-appear" style="--delay: 0ms" data-i18n="hero-title">Capo Vaticano Sunset Romance</h1>
           </div>
-          <p class="lead" data-i18n="hero-lead">Escursione di 2 ore pensata per coppie e piccoli gruppi (animali non ammessi). Snorkeling allo Scoglio di Riaci, Grotta degli Innamorati al tramonto e aperitivo romantico con musica.</p>
-          <div class="hero__actions">
+          <p class="excursion-meta hero-appear" style="--delay: 80ms" data-i18n="hero-meta">⏱ 2h · 🕒 18:00 · ✅ Skipper incluso</p>
+          <p class="excursion-promise" data-i18n="hero-promise">Due ore al tramonto con snorkeling, grotta e aperitivo romantico.</p>
+          <ul class="excursion-highlights">
+            <li data-i18n="hero-bullet1">🌅 Grotta degli Innamorati al tramonto.</li>
+            <li data-i18n="hero-bullet2">🤿 Snorkeling allo Scoglio di Riaci.</li>
+            <li data-i18n="hero-bullet3">🍹 Aperitivo romantico con musica soft.</li>
+          </ul>
+          <div class="hero__actions hero-appear" style="--delay: 160ms">
             <a class="btn primary" href="portal.html" data-i18n="hero-cta1">Prenota questa escursione</a>
             <a class="btn outline" href="escursioni.html" data-i18n="hero-cta2">Torna alle escursioni</a>
           </div>
-          <ul class="hero__metrics">
-            <li>
-              <strong>2h</strong>
-              <span data-i18n="hero-m1">Durata experience</span>
-            </li>
-            <li>
-              <strong>18:00</strong>
-              <span data-i18n="hero-m2">Partenza dal porto</span>
-            </li>
-            <li>
-              <strong>Aperitivo</strong>
-              <span data-i18n="hero-m3">Bollicine DOC incluse</span>
-            </li>
-          </ul>
         </div>
       </div>
     </section>
@@ -98,34 +90,54 @@
       </header>
       <div class="detail__grid">
         <div class="detail__copy">
-          <p data-i18n="program-copy">Briefing alle 17:30, partenza alle 18:00 verso Capo Vaticano. Snorkeling allo Scoglio di Riaci, sosta alla Grotta degli Innamorati al tramonto, aperitivo romantico e rientro lento con vista sulle Eolie.</p>
           <h4 data-i18n="program-itinerary">Itinerario</h4>
-          <ol>
-            <li data-i18n="it-1">Partenza dal Porto di Tropea.</li>
-            <li data-i18n="it-2">Snorkeling e sosta allo Scoglio di Riaci.</li>
-            <li data-i18n="it-3">Grotta degli Innamorati al tramonto.</li>
-            <li data-i18n="it-4">Aperitivo romantico a bordo con musica soft.</li>
-            <li data-i18n="it-5">Rientro lento con vista sulle Isole Eolie.</li>
+          <ol class="excursion-timeline">
+            <li>
+              <span class="timeline__time">17:30</span>
+              <span class="timeline__text" data-i18n="it-0">Briefing in banchina.</span>
+            </li>
+            <li>
+              <span class="timeline__time">18:00</span>
+              <span class="timeline__text" data-i18n="it-1">Partenza da Tropea.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-2">Snorkeling allo Scoglio di Riaci.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-3">Grotta degli Innamorati al tramonto.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-4">Aperitivo romantico con musica soft.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-5">Rientro lento con vista sulle Eolie.</span>
+            </li>
           </ol>
           <h4 data-i18n="tips-title">Consigli su cosa portare</h4>
           <ul>
-            <li data-i18n="tips-1">Costume, telo mare, crema solare.</li>
-            <li data-i18n="tips-2">Macchina fotografica o smartphone fully charged.</li>
+            <li data-i18n="tips-1">🩱 Costume e telo mare.</li>
+            <li data-i18n="tips-2">🧴 Crema solare.</li>
+            <li data-i18n="tips-3">📷 Fotocamera o smartphone carico.</li>
           </ul>
           <h4 data-i18n="included-title">Incluso</h4>
           <ul>
-            <li data-i18n="inc-1">Aperitivo tipico calabrese e bollicine DOC.</li>
-            <li data-i18n="inc-2">Attrezzatura per snorkeling e cuscini extra.</li>
-            <li data-i18n="inc-3">Skipper dedicato, carburante e playlist curata.</li>
+            <li data-i18n="inc-1">🍹 Aperitivo tipico + bollicine DOC.</li>
+            <li data-i18n="inc-2">🤿 Kit snorkeling + cuscini extra.</li>
+            <li data-i18n="inc-3">✅ Skipper dedicato + carburante.</li>
+            <li data-i18n="inc-4">🎶 Playlist curata a bordo.</li>
           </ul>
           <div class="price-list">
             <h4 data-i18n="price-title">Listino prezzi · Giugno - Settembre</h4>
             <ul>
-              <li><span data-i18n="price-1">Max 2 persone</span><strong>€200</strong></li>
-              <li><span data-i18n="price-2">Max 3 persone</span><strong>€250</strong></li>
-              <li><span data-i18n="price-3">4 - 6 persone</span><strong>€350</strong></li>
-              <li><span data-i18n="price-4">7 - 9 persone</span><strong>€400</strong></li>
-              <li><span data-i18n="price-5">10 - 12 persone</span><strong>€450</strong></li>
+              <li><span data-i18n="price-1">👥 Max 2 persone</span><strong>€200</strong></li>
+              <li><span data-i18n="price-2">👥 Max 3 persone</span><strong>€250</strong></li>
+              <li><span data-i18n="price-3">👥 4 - 6 persone</span><strong>€350</strong></li>
+              <li><span data-i18n="price-4">👥 7 - 9 persone</span><strong>€400</strong></li>
+              <li><span data-i18n="price-5">👥 10 - 12 persone</span><strong>€450</strong></li>
             </ul>
           </div>
         </div>
@@ -280,6 +292,11 @@
           'nav-cta': 'Book',
           'portal-login': 'Access the portal',
           'hero-title': 'Capo Vaticano Sunset Romance',
+          'hero-meta': '⏱ 2h · 🕒 18:00 · ✅ Skipper included',
+          'hero-promise': 'Two sunset hours with snorkeling, cave and romantic aperitif.',
+          'hero-bullet1': '🌅 Lovers’ Cave at sunset.',
+          'hero-bullet2': '🤿 Snorkeling at Riaci Rock.',
+          'hero-bullet3': '🍹 Romantic aperitif with soft music.',
           'hero-lead': '2-hour sunset tour for couples and small groups (no pets). Snorkeling at Riaci Rock, Lovers’ Cave at sunset and romantic aperitif with music.',
           'hero-cta1': 'Book this tour',
           'hero-cta2': 'Back to excursions',
@@ -290,24 +307,27 @@
           'program-title': 'Check-in at 17:30, sail to the lighthouse and return with lit skyline.',
           'program-copy': 'Briefing at 17:30, departure at 18:00 toward Capo Vaticano. Snorkeling at Riaci Rock, stop at Lovers’ Cave at sunset, romantic aperitif and slow return with view of the Aeolian Islands.',
           'program-itinerary': 'Itinerary',
-          'it-1': 'Departure from Tropea harbor.',
-          'it-2': 'Snorkeling and stop at Riaci Rock.',
+          'it-0': 'Briefing on the pier.',
+          'it-1': 'Departure from Tropea.',
+          'it-2': 'Snorkeling at Riaci Rock.',
           'it-3': 'Lovers’ Cave at sunset.',
-          'it-4': 'Romantic aperitif on board with soft music.',
-          'it-5': 'Slow return with view of the Aeolian Islands.',
+          'it-4': 'Romantic aperitif with soft music.',
+          'it-5': 'Slow return with Aeolian Islands view.',
           'tips-title': 'What to bring',
-          'tips-1': 'Swimsuit, beach towel, sunscreen.',
-          'tips-2': 'Camera or fully charged smartphone.',
+          'tips-1': '🩱 Swimsuit and beach towel.',
+          'tips-2': '🧴 Sunscreen.',
+          'tips-3': '📷 Camera or charged smartphone.',
           'included-title': 'Included',
-          'inc-1': 'Calabrian aperitif and DOC bubbles.',
-          'inc-2': 'Snorkeling gear and extra cushions.',
-          'inc-3': 'Dedicated skipper, fuel and curated playlist.',
+          'inc-1': '🍹 Local aperitif + DOC bubbles.',
+          'inc-2': '🤿 Snorkeling kit + extra cushions.',
+          'inc-3': '✅ Dedicated skipper + fuel.',
+          'inc-4': '🎶 Curated playlist on board.',
           'price-title': 'Price list · June - September',
-          'price-1': 'Max 2 guests',
-          'price-2': 'Max 3 guests',
-          'price-3': '4 - 6 guests',
-          'price-4': '7 - 9 guests',
-          'price-5': '10 - 12 guests',
+          'price-1': '👥 Max 2 guests',
+          'price-2': '👥 Max 3 guests',
+          'price-3': '👥 4 - 6 guests',
+          'price-4': '👥 7 - 9 guests',
+          'price-5': '👥 10 - 12 guests',
           'amenities-eyebrow': 'What is included',
           'amenities-title': 'Sunset experience for couples and small groups.',
           'am1-label': 'Tasting',

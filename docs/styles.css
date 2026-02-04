@@ -382,6 +382,16 @@ h1, h2, h3, h4 {
   max-width: 18ch;
 }
 
+.hero__eyebrow {
+  margin: 0 0 12px;
+}
+
+.hero__reassure {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
 .lead {
   font-size: 1.1rem;
   max-width: 56ch;
@@ -960,6 +970,228 @@ h1, h2, h3, h4 {
   border-radius: 0;
 }
 
+body.fleet-page {
+  --page-pad-x: clamp(16px, 3.5vw, 72px);
+}
+
+.fleet-page .fleet-hero {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  min-height: auto;
+  overflow: visible;
+}
+
+.fleet-page .fleet-hero .hero__grid {
+  grid-template-columns: 1fr;
+  gap: clamp(24px, 5vw, 40px);
+  align-items: stretch;
+}
+
+.fleet-page .fleet-hero .hero__headline {
+  margin: 0 0 clamp(16px, 3vw, 24px);
+  border: 0;
+  box-shadow: none;
+  background: none;
+  overflow: visible;
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.fleet-page .fleet-hero .hero__headline::after {
+  content: none;
+}
+
+.fleet-page .fleet-hero .hero__headline h1 {
+  padding: 0;
+  display: block;
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.fleet-page .fleet-hero .hero__headline h1::after,
+.fleet-page .fleet-hero .hero__headline h1::before {
+  content: none;
+}
+
+.fleet-section {
+  gap: clamp(20px, 4vw, 32px);
+}
+
+.fleet-section .section__header {
+  max-width: none;
+}
+
+body.excursions-page {
+  --page-pad-x: clamp(16px, 3.5vw, 72px);
+}
+
+body.excursions-page .hero--sub {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  min-height: auto;
+  overflow: visible;
+}
+
+body.excursions-page .hero__grid {
+  grid-template-columns: 1fr;
+  gap: clamp(24px, 5vw, 40px);
+  align-items: stretch;
+}
+
+body.excursions-page .hero__headline {
+  margin: 0 0 clamp(16px, 3vw, 24px);
+  border: 0;
+  box-shadow: none;
+  background: none;
+  overflow: visible;
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+body.excursions-page .hero__headline::after {
+  content: none;
+}
+
+body.excursions-page .hero__headline h1 {
+  padding: 0;
+  display: block;
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+body.excursions-page .hero__headline h1::after,
+body.excursions-page .hero__headline h1::before {
+  content: none;
+}
+
+body.excursions-page .excursion-detail {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+body.excursions-page .finale {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding: clamp(24px, 4vw, 40px);
+}
+
+body.excursions-page .landing-main {
+  gap: clamp(72px, 12vw, 150px);
+}
+
+body.excursions-page .section {
+  justify-items: center;
+  text-align: center;
+}
+
+body.excursions-page .section__header {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+body.excursions-page .section__header .eyebrow {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.excursions-page .detail__grid {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+body.excursions-page .detail__copy {
+  max-width: 720px;
+  text-align: center;
+}
+
+body.excursions-page .detail__media {
+  max-width: 860px;
+  width: 100%;
+  justify-self: center;
+}
+
+body.excursions-page .detail__copy h4 {
+  text-align: center;
+}
+
+body.excursions-page .detail__copy ul,
+body.excursions-page .detail__copy ol {
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+body.excursions-page .excursion-highlights,
+body.excursions-page .excursion-timeline {
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.excursions-page .excursion-timeline {
+  text-align: left;
+}
+
+body.excursions-page .price-list {
+  width: 100%;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+body.excursions-page .price-list ul {
+  text-align: center;
+  width: 100%;
+}
+
+body.excursions-page .price-list li {
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+
+body.excursions-page .price-list li span {
+  font-weight: 600;
+  font-size: 0.98rem;
+}
+
+body.excursions-page .price-list li strong {
+  font-size: 1.2rem;
+}
+
+body.excursions-page .amenity-card,
+body.excursions-page .finale__content,
+body.excursions-page .boat-gallery__grid figcaption {
+  text-align: center;
+}
+
+body.excursions-page .amenity-card .label {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.excursions-page .finale__content .hero__actions {
+  justify-content: center;
+}
+
 .fleet-intro {
   display: flex;
   flex-wrap: wrap;
@@ -1464,6 +1696,156 @@ h1, h2, h3, h4 {
   background: linear-gradient(135deg, rgba(26, 125, 219, 0.1), rgba(231, 244, 255, 0.95));
 }
 
+.excursion-hero .hero__content {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.excursion-hero .hero__headline {
+  text-align: center;
+  width: 100%;
+}
+
+.excursion-hero .hero__headline h1 {
+  font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.excursion-meta {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.06em;
+  color: var(--primary-dark);
+  text-align: center;
+}
+
+.excursion-promise {
+  margin: 0;
+  font-size: 1.05rem;
+  max-width: 56ch;
+  width: min(56ch, 100%);
+  justify-self: stretch;
+  color: var(--primary-dark);
+}
+
+.excursion-highlights {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  max-width: 56ch;
+  width: min(56ch, 100%);
+  justify-self: center;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--primary-dark);
+}
+
+.excursion-highlights li {
+  position: relative;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(26, 125, 219, 0.06);
+  border: 1px solid rgba(26, 125, 219, 0.12);
+}
+
+.excursion-highlights li::before {
+  content: none;
+}
+
+.excursion-hero .hero__actions {
+  margin-top: 6px;
+}
+
+.excursion-timeline {
+  margin: 0;
+  padding: 0 0 0 18px;
+  list-style: none;
+  border-left: 1px solid rgba(26, 125, 219, 0.18);
+  display: grid;
+  gap: 14px;
+}
+
+.excursion-timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(64px, auto) 1fr;
+  gap: 12px;
+  padding-left: 12px;
+  color: var(--primary-dark);
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.excursion-timeline li::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 0.65em;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(26, 125, 219, 0.85);
+}
+
+.timeline__time {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-dark);
+}
+
+.timeline__time::after {
+  content: '•';
+  margin-left: 6px;
+  color: var(--primary);
+}
+
+.timeline__time.is-empty {
+  opacity: 0;
+}
+
+.timeline__time.is-empty::after {
+  content: '';
+}
+
+.timeline__text {
+  font-size: 0.98rem;
+}
+
+.hero-appear {
+  animation: excursionRise 0.28s ease both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes excursionRise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-appear {
+    animation: none;
+  }
+}
+
 .excursion-detail {
   background: linear-gradient(135deg, rgba(26, 125, 219, 0.05), rgba(139, 210, 255, 0.12));
   border-radius: var(--radius-lg);
@@ -1486,10 +1868,18 @@ h1, h2, h3, h4 {
 
 .detail__copy ul {
   margin: 0;
-  padding-left: 18px;
+  padding: 0;
+  list-style: none;
   display: grid;
-  gap: 6px;
+  gap: 10px;
   font-size: 0.95rem;
+}
+
+.detail__copy ul li {
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(26, 125, 219, 0.05);
+  border: 1px solid rgba(26, 125, 219, 0.12);
 }
 
 .detail__copy h4 {
@@ -1504,7 +1894,7 @@ h1, h2, h3, h4 {
   margin: 0;
   padding-left: 20px;
   display: grid;
-  gap: 6px;
+  gap: 10px;
   color: var(--primary-dark);
   font-size: 0.95rem;
 }
@@ -1540,10 +1930,23 @@ h1, h2, h3, h4 {
   border: 1px solid rgba(26, 125, 219, 0.16);
   color: var(--primary-dark);
   font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .price-list li span {
   font-weight: 500;
+}
+
+@media (hover: hover) {
+  .excursion-highlights li:hover,
+  .detail__copy ul li:hover,
+  .price-list li:hover,
+  .excursion-timeline li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(12, 74, 132, 0.12);
+    border-color: rgba(26, 125, 219, 0.22);
+    background: rgba(26, 125, 219, 0.1);
+  }
 }
 
 @media (max-width: 480px) {
@@ -1551,6 +1954,15 @@ h1, h2, h3, h4 {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+  }
+
+  body.excursions-page .price-list {
+    max-width: 100%;
+  }
+
+  body.excursions-page .price-list li {
+    align-items: center;
+    gap: 6px;
   }
 }
 
@@ -2610,6 +3022,29 @@ body.modal-open {
   }
 
   .hero__content {
+    text-align: center;
+  }
+
+  .hero__reassure {
+    text-align: center;
+    font-size: 0.86rem;
+  }
+
+  body.excursions-page .excursion-hero .excursion-meta {
+    font-size: 0.82rem;
+  }
+
+  body.excursions-page .excursion-hero .excursion-promise {
+    text-align: center;
+    justify-self: center;
+  }
+
+  body.excursions-page .excursion-hero .excursion-highlights {
+    text-align: left;
+    justify-self: center;
+  }
+
+  body.excursions-page .excursion-detail .section__header {
     text-align: center;
   }
 

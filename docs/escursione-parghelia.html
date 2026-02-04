@@ -14,7 +14,7 @@
   <link rel="shortcut icon" href="assets/favicon/favicon.ico">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="landing">
+<body class="landing excursions-page">
   <header class="topbar">
     <a class="topbar__brand" href="index.html" aria-label="Albatros Tropea Noleggio · Home">
       <img class="brand-logo" src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio">
@@ -62,31 +62,23 @@
   </header>
 
   <main class="landing-main">
-    <section class="hero hero--sub">
+    <section class="hero hero--sub excursion-hero">
       <div class="hero__grid">
         <div class="hero__content">
           <div class="hero__headline">
-            <h1 data-i18n="hero-title">Parghelia · Zambrone · Briatico</h1>
+            <h1 class="hero-appear" style="--delay: 0ms" data-i18n="hero-title">Parghelia · Zambrone · Briatico</h1>
           </div>
-          <p class="lead" data-i18n="hero-lead">Tour privato di 3 ore dedicato a grandi e bambini (animali non ammessi). Dal porto di Tropea alle baie selvagge di Parghelia, Zambrone e Briatico con snorkeling guidato e aperitivo tipico.</p>
-          <div class="hero__actions">
+          <p class="excursion-meta hero-appear" style="--delay: 80ms" data-i18n="hero-meta">⏱ 3h · 🕒 09:30 · ✅ Skipper incluso</p>
+          <p class="excursion-promise" data-i18n="hero-promise">Tre ore tra Parghelia, Zambrone e Briatico con snorkeling e aperitivo.</p>
+          <ul class="excursion-highlights">
+            <li data-i18n="hero-bullet1">🏝️ Baie di Parghelia, Zambrone e Briatico.</li>
+            <li data-i18n="hero-bullet2">🤿 Snorkeling guidato durante le soste.</li>
+            <li data-i18n="hero-bullet3">🍹 Aperitivo tipico a bordo.</li>
+          </ul>
+          <div class="hero__actions hero-appear" style="--delay: 160ms">
             <a class="btn primary" href="portal.html" data-i18n="hero-cta1">Prenota questa escursione</a>
             <a class="btn outline" href="escursioni.html" data-i18n="hero-cta2">Torna alle escursioni</a>
           </div>
-          <ul class="hero__metrics">
-            <li>
-              <strong>3h</strong>
-              <span data-i18n="hero-m1">Durata experience</span>
-            </li>
-            <li>
-              <strong>09:30</strong>
-              <span data-i18n="hero-m2">Partenza dal porto</span>
-            </li>
-            <li>
-              <strong>Skipper</strong>
-              <span data-i18n="hero-m3">Supporto dedicato</span>
-            </li>
-          </ul>
         </div>
       </div>
     </section>
@@ -98,34 +90,56 @@
       </header>
       <div class="detail__grid">
         <div class="detail__copy">
-          <p data-i18n="program-copy">Welcome alle 09:00 in banchina con briefing sicurezza. Navigazione verso le baie selvagge del litorale nord, soste per snorkeling e relax in spiagge raggiungibili solo via mare.</p>
           <h4 data-i18n="program-itinerary">Itinerario</h4>
-          <ol>
-            <li data-i18n="it-1">Partenza dal Porto di Tropea.</li>
-            <li data-i18n="it-2">Caletta di Vardanello e snorkeling alla spiaggia di Michelino.</li>
-            <li data-i18n="it-3">Scoglio della Pizzuta e visita alla cava di granito.</li>
-            <li data-i18n="it-4">Baia della Tonnara con sosta aperitivo.</li>
-            <li data-i18n="it-5">Baia delle Sirene e Scoglio della Galea.</li>
-            <li data-i18n="it-6">Paradiso del Sub a Briatico e rientro a Tropea.</li>
+          <ol class="excursion-timeline">
+            <li>
+              <span class="timeline__time">09:00</span>
+              <span class="timeline__text" data-i18n="it-0">Briefing in banchina.</span>
+            </li>
+            <li>
+              <span class="timeline__time">09:30</span>
+              <span class="timeline__text" data-i18n="it-1">Partenza dal Porto di Tropea.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-2">Vardanello + snorkeling a Michelino.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-3">Scoglio della Pizzuta e cava di granito.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-4">Baia della Tonnara, sosta aperitivo.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-5">Baia delle Sirene e Scoglio della Galea.</span>
+            </li>
+            <li>
+              <span class="timeline__time is-empty" aria-hidden="true">—</span>
+              <span class="timeline__text" data-i18n="it-6">Paradiso del Sub a Briatico, rientro.</span>
+            </li>
           </ol>
           <h4 data-i18n="tips-title">Consigli su cosa portare</h4>
           <ul>
-            <li data-i18n="tips-1">Costume, telo mare, crema solare.</li>
-            <li data-i18n="tips-2">Macchina fotografica o action cam.</li>
+            <li data-i18n="tips-1">🩱 Costume e telo mare.</li>
+            <li data-i18n="tips-2">🧴 Crema solare.</li>
+            <li data-i18n="tips-3">📷 Fotocamera o action cam.</li>
           </ul>
           <h4 data-i18n="included-title">Incluso</h4>
           <ul>
-            <li data-i18n="inc-1">Aperitivo tipico calabrese servito a bordo.</li>
-            <li data-i18n="inc-2">Attrezzatura completa per snorkeling.</li>
-            <li data-i18n="inc-3">Skipper dedicato e carburante.</li>
+            <li data-i18n="inc-1">✅ Aperitivo tipico a bordo.</li>
+            <li data-i18n="inc-2">🤿 Kit snorkeling completo.</li>
+            <li data-i18n="inc-3">⛽ Skipper dedicato + carburante.</li>
           </ul>
           <div class="price-list">
             <h4 data-i18n="price-title">Listino prezzi · Giugno - Settembre</h4>
             <ul>
-              <li><span data-i18n="price-1">1 - 3 persone</span><strong>€280</strong></li>
-              <li><span data-i18n="price-2">4 - 6 persone</span><strong>€370</strong></li>
-              <li><span data-i18n="price-3">7 - 9 persone</span><strong>€460</strong></li>
-              <li><span data-i18n="price-4">10 - 12 persone</span><strong>€540</strong></li>
+              <li><span data-i18n="price-1">👥 1 - 3 persone</span><strong>€280</strong></li>
+              <li><span data-i18n="price-2">👥 4 - 6 persone</span><strong>€370</strong></li>
+              <li><span data-i18n="price-3">👥 7 - 9 persone</span><strong>€460</strong></li>
+              <li><span data-i18n="price-4">👥 10 - 12 persone</span><strong>€540</strong></li>
             </ul>
           </div>
         </div>
@@ -288,6 +302,11 @@
           'nav-cta': 'Book',
           'portal-login': 'Access the portal',
           'hero-title': 'Parghelia · Zambrone · Briatico',
+          'hero-meta': '⏱ 3h · 🕒 09:30 · ✅ Skipper included',
+          'hero-promise': 'Three hours across Parghelia, Zambrone and Briatico with snorkeling and aperitif.',
+          'hero-bullet1': '🏝️ Bays of Parghelia, Zambrone and Briatico.',
+          'hero-bullet2': '🤿 Guided snorkeling during the stops.',
+          'hero-bullet3': '🍹 Local aperitif on board.',
           'hero-lead': '3-hour private tour for groups and families (no pets). From Tropea harbor to wild bays of Parghelia, Zambrone and Briatico with guided snorkeling and local aperitif.',
           'hero-cta1': 'Book this tour',
           'hero-cta2': 'Back to excursions',
@@ -298,24 +317,26 @@
           'program-title': 'Departure from Tropea harbor and full loop to Paradiso del Sub.',
           'program-copy': 'Welcome at 09:00 on the pier with safety briefing. Sail toward wild bays on the north coast, stops for snorkeling and relax on beaches only reachable by sea.',
           'program-itinerary': 'Itinerary',
-          'it-1': 'Departure from Tropea harbor.',
-          'it-2': 'Vardanello cove and snorkeling at Michelino beach.',
-          'it-3': 'Scoglio della Pizzuta and visit to the granite quarry.',
-          'it-4': 'Baia della Tonnara with aperitif stop.',
+          'it-0': 'Briefing on the pier.',
+          'it-1': 'Departure from Tropea.',
+          'it-2': 'Vardanello cove + snorkeling at Michelino.',
+          'it-3': 'Scoglio della Pizzuta and granite quarry.',
+          'it-4': 'Baia della Tonnara, aperitif stop.',
           'it-5': 'Baia delle Sirene and Scoglio della Galea.',
-          'it-6': 'Paradiso del Sub in Briatico and return to Tropea.',
+          'it-6': 'Paradiso del Sub in Briatico, return.',
           'tips-title': 'What to bring',
-          'tips-1': 'Swimsuit, beach towel, sunscreen.',
-          'tips-2': 'Camera or action cam.',
+          'tips-1': '🩱 Swimsuit and beach towel.',
+          'tips-2': '🧴 Sunscreen.',
+          'tips-3': '📷 Camera or action cam.',
           'included-title': 'Included',
-          'inc-1': 'Local aperitif served on board.',
-          'inc-2': 'Full snorkeling equipment.',
-          'inc-3': 'Dedicated skipper and fuel.',
+          'inc-1': '✅ Local aperitif on board.',
+          'inc-2': '🤿 Full snorkeling kit.',
+          'inc-3': '⛽ Dedicated skipper + fuel.',
           'price-title': 'Price list · June - September',
-          'price-1': '1 - 3 guests',
-          'price-2': '4 - 6 guests',
-          'price-3': '7 - 9 guests',
-          'price-4': '10 - 12 guests',
+          'price-1': '👥 1 - 3 guests',
+          'price-2': '👥 4 - 6 guests',
+          'price-3': '👥 7 - 9 guests',
+          'price-4': '👥 10 - 12 guests',
           'amenities-eyebrow': 'What is included',
           'amenities-title': 'Local aperitif, snorkeling kit and coastal storytelling.',
           'am1-label': 'Snorkeling',
