@@ -2,6 +2,13 @@ const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
+let argon2 = null;
+try {
+  // Optional dependency; preferred when available
+  argon2 = require('argon2');
+} catch (_error) {
+  argon2 = null;
+}
 const helmet = require('helmet');
 const cors = require('cors');
 const createDatabase = require('./db');
@@ -17,6 +24,10 @@ const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_REGEX = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 const PHONE_REGEX = /^[+0-9\s().-]{6,20}$/;
 const BOOKING_STATUSES = new Set(['da confermare', 'confermato', 'completato', 'annullato']);
+const PASSWORD_MIN_LENGTH = 8;
+const BCRYPT_COST = 12;
+const LOGIN_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_LIMIT_MAX = 6;
 const MAX_FULLNAME_LENGTH = 120;
 const MAX_GENERIC_LENGTH = 160;
 const MAX_NOTE_LENGTH = 1000;
@@ -24,6 +35,16 @@ const MAX_INTERNAL_NOTE_LENGTH = 2000;
 const MAX_PHONE_LENGTH = 32;
 const MAX_STAFF_NOTE_LENGTH = 3000;
 const MAX_CLIENT_MESSAGE_LENGTH = 2000;
+
+const loginAttempts = new Map();
+
+const USER_SCHEMA = {
+  hasLegacyPassword: false,
+  hasPasswordAlgo: false,
+  hasPasswordUpdatedAt: false,
+};
+
+const PASSWORD_ALGO = argon2 ? 'argon2id' : 'bcrypt';
 
 function normalizeEmail(email = '') {
   return email.trim().toLowerCase();
@@ -43,7 +64,121 @@ function sanitizePhone(phone = '') {
   return phone.replace(/[^+\d().\-\s]/g, '').trim().slice(0, MAX_PHONE_LENGTH);
 }
 
-function bootstrapDatabase() {
+function getTableColumns(table) {
+  const rows = db.prepare(`PRAGMA table_info(${table})`).all();
+  return new Set(rows.map((row) => row.name));
+}
+
+function ensureUserSchema() {
+  const columns = getTableColumns('users');
+
+  if (!columns.has('password_hash')) {
+    db.prepare('ALTER TABLE users ADD COLUMN password_hash TEXT').run();
+  }
+  if (!columns.has('password_algo')) {
+    db.prepare('ALTER TABLE users ADD COLUMN password_algo TEXT').run();
+  }
+  if (!columns.has('password_updated_at')) {
+    db.prepare('ALTER TABLE users ADD COLUMN password_updated_at TEXT').run();
+  }
+
+  USER_SCHEMA.hasLegacyPassword = columns.has('password');
+  USER_SCHEMA.hasPasswordAlgo = true;
+  USER_SCHEMA.hasPasswordUpdatedAt = true;
+}
+
+async function hashPassword(plainText) {
+  if (argon2) {
+    return argon2.hash(plainText, {
+      type: argon2.argon2id,
+      timeCost: 3,
+      memoryCost: 2 ** 16,
+      parallelism: 1,
+    });
+  }
+  return Promise.resolve(bcrypt.hashSync(plainText, BCRYPT_COST));
+}
+
+async function verifyPassword(plainText, user) {
+  if (!user) return false;
+  if (user.password_hash) {
+    if (user.password_hash.startsWith('$argon2')) {
+      return argon2 ? argon2.verify(user.password_hash, plainText) : false;
+    }
+    if (user.password_hash.startsWith('$2')) {
+      return Promise.resolve(bcrypt.compareSync(plainText, user.password_hash));
+    }
+    return Promise.resolve(bcrypt.compareSync(plainText, user.password_hash));
+  }
+  if (USER_SCHEMA.hasLegacyPassword && user.password) {
+    return plainText === user.password;
+  }
+  return false;
+}
+
+async function upgradePasswordIfNeeded(user, plainText) {
+  if (!user) return;
+  const usesLegacy = USER_SCHEMA.hasLegacyPassword && user.password && !user.password_hash;
+  const needsAlgoUpgrade = user.password_hash && PASSWORD_ALGO === 'argon2id' && user.password_hash.startsWith('$2');
+  if (!usesLegacy && !needsAlgoUpgrade) return;
+
+  const nextHash = await hashPassword(plainText);
+  const updates = ['password_hash = @passwordHash'];
+  const params = {
+    passwordHash: nextHash,
+    id: user.id,
+  };
+
+  if (USER_SCHEMA.hasPasswordAlgo) {
+    updates.push('password_algo = @passwordAlgo');
+    params.passwordAlgo = PASSWORD_ALGO;
+  }
+  if (USER_SCHEMA.hasPasswordUpdatedAt) {
+    updates.push('password_updated_at = @passwordUpdatedAt');
+    params.passwordUpdatedAt = new Date().toISOString();
+  }
+  if (USER_SCHEMA.hasLegacyPassword) {
+    updates.push('password = NULL');
+  }
+
+  db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = @id`).run(params);
+}
+
+function registerLoginFailure(ip) {
+  const now = Date.now();
+  const entry = loginAttempts.get(ip) || { count: 0, resetAt: now + LOGIN_LIMIT_WINDOW_MS };
+  if (now > entry.resetAt) {
+    entry.count = 0;
+    entry.resetAt = now + LOGIN_LIMIT_WINDOW_MS;
+  }
+  entry.count += 1;
+  loginAttempts.set(ip, entry);
+  return entry.count > LOGIN_LIMIT_MAX;
+}
+
+function clearLoginFailures(ip) {
+  loginAttempts.delete(ip);
+}
+
+function isLoginRateLimited(ip) {
+  const entry = loginAttempts.get(ip);
+  if (!entry) return false;
+  if (Date.now() > entry.resetAt) {
+    loginAttempts.delete(ip);
+    return false;
+  }
+  return entry.count >= LOGIN_LIMIT_MAX;
+}
+
+function getClientIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string' && forwarded.length) {
+    return forwarded.split(',')[0].trim();
+  }
+  return req.ip || 'unknown';
+}
+
+async function bootstrapDatabase() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,6 +222,8 @@ function bootstrapDatabase() {
     );
   `);
 
+  ensureUserSchema();
+
   try {
     db.prepare("ALTER TABLE bookings ADD COLUMN client_message TEXT DEFAULT ''").run();
   } catch (error) {
@@ -105,24 +242,24 @@ function bootstrapDatabase() {
 
   if (!adminExists.count) {
     const password = process.env.ADMIN_PASSWORD || 'admin123';
-    const hash = bcrypt.hashSync(password, 10);
+    const hash = await hashPassword(password);
     db.prepare(`
-      INSERT INTO users (full_name, email, password_hash, role, phone)
-      VALUES (@fullName, @email, @password, 'admin', @phone)
+      INSERT INTO users (full_name, email, password_hash, password_algo, password_updated_at, role, phone)
+      VALUES (@fullName, @email, @passwordHash, @passwordAlgo, @passwordUpdatedAt, 'admin', @phone)
     `).run({
       fullName: 'Admin Tropea Wave',
       email: process.env.ADMIN_EMAIL || 'admin@tropeawavecharter.it',
-      password: hash,
+      passwordHash: hash,
+      passwordAlgo: PASSWORD_ALGO,
+      passwordUpdatedAt: new Date().toISOString(),
       phone: '+39 328 000 0000',
     });
 
     console.log('Admin account created:');
     console.log(`  email   : ${process.env.ADMIN_EMAIL || 'admin@tropeawavecharter.it'}`);
-    console.log(`  password: ${process.env.ADMIN_PASSWORD || 'admin123'}`);
+    console.log('  password: (set via ADMIN_PASSWORD env var)');
   }
 }
-
-bootstrapDatabase();
 
 const app = express();
 
@@ -141,7 +278,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     sameSite: 'lax',
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
   },
 }));
 
@@ -208,7 +345,7 @@ const catalog = {
 
 function sanitizeUser(user) {
   if (!user) return null;
-  const { password_hash, ...rest } = user;
+  const { password_hash, password, password_algo, password_updated_at, ...rest } = user;
   return rest;
 }
 
@@ -240,7 +377,7 @@ function requireAdmin(req, res, next) {
   return next();
 }
 
-app.post('/api/register', (req, res) => {
+app.post('/api/register', async (req, res) => {
   const { fullName, email, password, phone } = req.body || {};
   const sanitizedFullName = sanitizeName(typeof fullName === 'string' ? fullName : '');
   const normalizedEmail = normalizeEmail(typeof email === 'string' ? email : '');
@@ -255,7 +392,7 @@ app.post('/api/register', (req, res) => {
     return res.status(400).json({ error: 'Formato email non valido' });
   }
 
-  if (passwordValue.length < 8) {
+  if (passwordValue.length < PASSWORD_MIN_LENGTH) {
     return res.status(400).json({ error: 'La password deve contenere almeno 8 caratteri' });
   }
 
@@ -268,15 +405,23 @@ app.post('/api/register', (req, res) => {
     return res.status(409).json({ error: 'Email già registrata' });
   }
 
-  const passwordHash = bcrypt.hashSync(passwordValue, 10);
+  let passwordHash = '';
+  try {
+    passwordHash = await hashPassword(passwordValue);
+  } catch (error) {
+    console.error('Errore hashing password', error);
+    return res.status(500).json({ error: 'Errore salvataggio utente' });
+  }
   try {
     const result = db.prepare(`
-      INSERT INTO users (full_name, email, password_hash, role, phone)
-      VALUES (@fullName, @email, @passwordHash, 'user', @phone)
+      INSERT INTO users (full_name, email, password_hash, password_algo, password_updated_at, role, phone)
+      VALUES (@fullName, @email, @passwordHash, @passwordAlgo, @passwordUpdatedAt, 'user', @phone)
     `).run({
       fullName: sanitizedFullName,
       email: normalizedEmail,
       passwordHash,
+      passwordAlgo: PASSWORD_ALGO,
+      passwordUpdatedAt: new Date().toISOString(),
       phone: rawPhone ? sanitizePhone(rawPhone) : null,
     });
 
@@ -290,10 +435,11 @@ app.post('/api/register', (req, res) => {
   return res.status(201).json({ user: sanitizeUser(user) });
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { email, password } = req.body || {};
   const normalizedEmail = normalizeEmail(typeof email === 'string' ? email : '');
   const passwordValue = typeof password === 'string' ? password : '';
+  const clientIp = getClientIp(req);
 
   if (!normalizedEmail || !passwordValue) {
     return res.status(400).json({ error: 'Inserisci email e password' });
@@ -303,15 +449,19 @@ app.post('/api/login', (req, res) => {
     return res.status(400).json({ error: 'Formato email non valido' });
   }
 
+  if (isLoginRateLimited(clientIp)) {
+    return res.status(429).json({ error: 'Troppi tentativi. Riprova più tardi.' });
+  }
+
   const user = loadUserByEmail(normalizedEmail);
-  if (!user) {
+  const valid = await verifyPassword(passwordValue, user);
+  if (!user || !valid) {
+    registerLoginFailure(clientIp);
     return res.status(401).json({ error: 'Credenziali non valide' });
   }
 
-  const valid = bcrypt.compareSync(passwordValue, user.password_hash);
-  if (!valid) {
-    return res.status(401).json({ error: 'Credenziali non valide' });
-  }
+  await upgradePasswordIfNeeded(user, passwordValue);
+  clearLoginFailures(clientIp);
 
   req.session.userId = user.id;
   return res.json({ user: sanitizeUser(user) });
@@ -687,6 +837,16 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Errore interno del server' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server avviato su http://localhost:${PORT}`);
-});
+async function startServer() {
+  try {
+    await bootstrapDatabase();
+    app.listen(PORT, () => {
+      console.log(`Server avviato su http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Errore avvio server', error);
+    process.exit(1);
+  }
+}
+
+startServer();
