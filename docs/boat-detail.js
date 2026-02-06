@@ -72,6 +72,8 @@
       'footer-legal': '© 2025 Albatros Tropea Noleggio · VAT 01234567890',
       'footer-privacy': 'Privacy',
       'footer-cookie': 'Cookie Policy',
+
+      'footer-cookie-settings': 'Manage cookies',
       'site-credit': 'Built by Luca Marastoni Digital Solutions',
     },
   };

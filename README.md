@@ -70,6 +70,3 @@ Errori in JSON con messaggi in italiano; validazioni su email, telefono, data (`
 - `db.js` — init SQLite con pragma sicuri
 - `docs/` — front-end statico (landing + portale)
 - `data.sqlite` — database (generato)
-
-email: admin@tropeawavecharter.it
-password: admin123
