@@ -1910,6 +1910,63 @@ body.excursions-page .finale__content .hero__actions {
   }
 }
 
+@media (min-width: 1024px) {
+  body.excursions-page .landing-main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px clamp(32px, 6vw, 80px) 88px;
+    gap: 64px;
+  }
+
+  body.excursions-page .hero--sub {
+    padding: 24px 0 8px;
+  }
+
+  body.excursions-page .hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    align-items: center;
+  }
+
+  body.excursions-page .hero__content {
+    max-width: 720px;
+    text-align: center;
+  }
+
+  body.excursions-page .hero__headline,
+  body.excursions-page .hero__headline h1 {
+    text-align: center;
+  }
+
+  body.excursions-page .hero__actions {
+    justify-content: center;
+  }
+
+  body.excursions-page .hero__metrics {
+    justify-content: center;
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  body.excursions-page .hero__metrics li {
+    text-align: center;
+    min-width: 120px;
+  }
+
+  body.excursions-page .section.excursions {
+    padding-top: 0;
+  }
+
+  body.excursions-page .section__header {
+    margin-bottom: 12px;
+  }
+
+  body.excursions-page .excursions__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .boat-highlight-card,
   .boat-gallery__item img,
