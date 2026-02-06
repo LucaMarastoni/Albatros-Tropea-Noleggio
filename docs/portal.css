@@ -459,62 +459,6 @@ a {
   min-width: 0;
 }
 
-.admin-pending {
-  display: grid;
-  gap: 16px;
-}
-
-.pending-count {
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(115, 199, 255, 0.22);
-  border: 1px solid rgba(115, 199, 255, 0.4);
-  color: var(--primary-dark);
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.pending-list {
-  display: grid;
-  gap: 12px;
-  max-height: 420px;
-  overflow-y: auto;
-  padding-right: 6px;
-}
-
-.pending-item {
-  border-radius: 16px;
-  border: 1px solid rgba(26, 125, 219, 0.12);
-  background: #fff;
-  padding: 14px;
-  display: grid;
-  gap: 10px;
-}
-
-.pending-item h4 {
-  margin: 6px 0 0;
-  color: var(--primary-dark);
-}
-
-.pending-meta {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.86rem;
-  display: grid;
-  gap: 4px;
-}
-
-.pending-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.pending-actions .btn {
-  min-height: 40px;
-  padding: 0 14px;
-  font-size: 0.8rem;
-}
 
 .admin-table {
   padding: 0;
@@ -2060,7 +2004,6 @@ body.modal-open {
   .booking-panel,
   .bookings-panel,
   .admin-summary,
-  .admin-pending,
   .admin-table,
   .admin-calendar,
   .admin-notes {

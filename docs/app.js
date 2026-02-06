@@ -19,8 +19,6 @@ const elements = {
   userMenu: document.getElementById('userMenu'),
   userDisplayName: document.getElementById('userDisplayName'),
   logoutBtn: document.getElementById('logoutBtn'),
-  openDemo: document.getElementById('openDemo'),
-  demoModal: document.getElementById('demoModal'),
   galleryViewport: document.querySelector('.ig-carousel__viewport'),
   galleryTrack: document.getElementById('galleryTrack'),
   galleryNext: document.getElementById('galleryNext'),
@@ -569,6 +567,12 @@ function initBoatCards() {
         handleOpen();
       }
     });
+
+    card.querySelectorAll('.boat-card__actions a').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.stopPropagation();
+      });
+    });
   });
 
   prevBtn?.addEventListener('click', () => changeSlide(-1));
@@ -607,34 +611,7 @@ async function checkSession() {
 
 
 function attachEventListeners() {
-  const ensureDemoModal = () => {
-    if (elements.demoModal) return;
-    const modal = document.createElement('div');
-    modal.className = 'modal hidden';
-    modal.id = 'demoModal';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('aria-labelledby', 'demoModalTitle');
-    modal.innerHTML = `
-      <div class="modal-backdrop" data-close-modal></div>
-      <div class="modal-window demo-window">
-        <button class="modal-close" type="button" data-close-modal aria-label="Chiudi demo">&times;</button>
-        <article>
-          <h3 id="demoModalTitle">Accesso demo</h3>
-          <p>Accedi come amministratore con le credenziali di default:</p>
-          <pre>email: admin@tropeawavecharter.it
-password: admin123</pre>
-          <p>Ricorda di aggiornare password e utenti prima del go-live.</p>
-          <button class="btn primary" type="button" data-close-modal>Ho capito</button>
-        </article>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    elements.demoModal = modal;
-  };
-
   const openAuthModal = () => openModal(elements.authModal);
-  ensureDemoModal();
 
   elements.authTrigger?.addEventListener('click', openAuthModal);
 
@@ -654,9 +631,6 @@ password: admin123</pre>
 
   elements.logoutBtn?.addEventListener('click', handleLogout);
 
-  document.querySelectorAll('[data-open-demo]').forEach((trigger) => {
-    trigger.addEventListener('click', () => openModal(elements.demoModal));
-  });
 
   document.querySelectorAll('[data-close-modal]').forEach((trigger) => {
     trigger.addEventListener('click', () => {

@@ -1508,6 +1508,28 @@ body.excursions-page .finale__content .hero__actions {
   padding: 14px 16px 18px;
 }
 
+.boat-card__actions {
+  margin-top: 6px;
+  display: grid;
+  gap: 10px;
+}
+
+.boat-card__actions .btn {
+  width: 100%;
+  min-height: 44px;
+}
+
+.btn.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@media (min-width: 720px) {
+  .boat-card__actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .boat-card__body h3 {
   margin: 0;
   display: inline-flex;

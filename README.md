@@ -71,3 +71,5 @@ Errori in JSON con messaggi in italiano; validazioni su email, telefono, data (`
 - `docs/` — front-end statico (landing + portale)
 - `data.sqlite` — database (generato)
 
+email: admin@tropeawavecharter.it
+password: admin123

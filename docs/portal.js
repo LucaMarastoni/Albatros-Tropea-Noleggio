@@ -6,7 +6,6 @@ const state = {
   },
   bookings: [],
   adminBookings: [],
-  pendingBookings: [],
   staffNotes: [],
   staffNoteQuery: '',
   staffNotePins: new Set(),
@@ -176,10 +175,7 @@ const elements = {
   adminResetFilters: document.getElementById('adminResetFilters'),
   adminRefresh: document.getElementById('adminRefresh'),
   adminStatTotal: document.getElementById('adminStatTotal'),
-  adminStatPending: document.getElementById('adminStatPending'),
   adminStatToday: document.getElementById('adminStatToday'),
-  adminPendingList: document.getElementById('adminPendingList'),
-  adminPendingCount: document.getElementById('adminPendingCount'),
   adminTableBody: document.getElementById('adminTableBody'),
   adminNavLinks: Array.from(document.querySelectorAll('[data-role="admin"]')),
   calendarGrid: document.getElementById('calendarGrid'),
@@ -1532,10 +1528,12 @@ function renderStaffNotes() {
 }
 function renderAdminStats() {
   if (!state.user || state.user.role !== 'admin') return;
-  if (!elements.adminStatTotal || !elements.adminStatPending || !elements.adminStatToday) return;
-  elements.adminStatTotal.textContent = state.stats.total ?? 0;
-  elements.adminStatPending.textContent = state.stats.pending ?? state.pendingBookings?.length ?? 0;
-  elements.adminStatToday.textContent = state.stats.todayTours ?? 0;
+  if (elements.adminStatTotal) {
+    elements.adminStatTotal.textContent = state.stats.total ?? 0;
+  }
+  if (elements.adminStatToday) {
+    elements.adminStatToday.textContent = state.stats.todayTours ?? 0;
+  }
 }
 
 function normalizePhoneForLink(phone = '') {
@@ -1548,73 +1546,6 @@ function buildWhatsappLink(phone = '') {
   if (digits.startsWith('39')) return `https://wa.me/${digits}`;
   if (digits.length <= 10) return `https://wa.me/39${digits}`;
   return `https://wa.me/${digits}`;
-}
-
-function renderPendingBookings() {
-  if (!state.user || state.user.role !== 'admin') return;
-  if (!elements.adminPendingList) return;
-  const pendingSource = state.pendingBookings?.length ? state.pendingBookings : state.adminBookings;
-  const pending = pendingSource
-    .filter((booking) => booking.status === 'da confermare')
-    .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
-
-  elements.adminPendingList.innerHTML = '';
-  if (elements.adminPendingCount) {
-    elements.adminPendingCount.textContent = String(pending.length);
-  }
-
-  if (!pending.length) {
-    const lang = getCurrentLang();
-    const message = lang === 'en'
-      ? 'No pending requests. All clear.'
-      : 'Nessuna richiesta in attesa. Tutto sotto controllo.';
-    elements.adminPendingList.innerHTML = `<p class="empty-state">${message}</p>`;
-    return;
-  }
-
-  pending.forEach((booking) => {
-    const item = document.createElement('article');
-    item.className = 'pending-item';
-    const lang = getCurrentLang();
-    const t = (it, en) => (lang === 'en' ? en : it);
-    const phoneLink = normalizePhoneForLink(booking.phone || '');
-    const whatsappLink = buildWhatsappLink(booking.phone || '');
-    const serviceLabel = getServiceLabel(booking.service_type);
-    const detailLabel = booking.service_type === 'noleggio' ? booking.boat_model || '—' : booking.tour || '—';
-    item.innerHTML = `
-      <div>
-        <span class="status-pill status-pill--pending">${t('Da confermare', 'Pending')}</span>
-        <h4>${serviceLabel} · ${detailLabel}</h4>
-        <p class="pending-meta">${formatDateTime(booking.date, booking.time)}${booking.end_time ? ` → ${booking.end_time}` : ''}</p>
-        <p class="pending-meta">${booking.customer_name} · ${booking.people} ${t('ospiti', 'guests')}</p>
-      </div>
-      <div class="pending-actions">
-        <button class="btn primary" type="button" data-action="confirm" data-booking-id="${booking.id}">${t('Conferma', 'Confirm')}</button>
-        <button class="btn outline" type="button" data-action="cancel" data-booking-id="${booking.id}">${t('Annulla', 'Cancel')}</button>
-        ${phoneLink ? `<a class="btn ghost" href="tel:${phoneLink}">${t('Chiama', 'Call')}</a>` : ''}
-        ${whatsappLink ? `<a class="btn ghost" href="${whatsappLink}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-      </div>
-    `;
-    elements.adminPendingList.appendChild(item);
-  });
-
-  elements.adminPendingList.querySelectorAll('[data-action="confirm"]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const id = Number(btn.dataset.bookingId);
-      if (!Number.isInteger(id)) return;
-      const ok = await updateBooking(id, { status: 'confermato' });
-      if (ok) showToast('Prenotazione confermata.', 'success');
-    });
-  });
-
-  elements.adminPendingList.querySelectorAll('[data-action="cancel"]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const id = Number(btn.dataset.bookingId);
-      if (!Number.isInteger(id)) return;
-      const ok = await updateBooking(id, { status: 'annullato' });
-      if (ok) showToast('Prenotazione annullata.', 'info');
-    });
-  });
 }
 
 function syncAdminFiltersUI() {
@@ -1784,26 +1715,15 @@ async function loadAdminBookings() {
     if (elements.adminTableBody) {
       elements.adminTableBody.innerHTML = '<tr><td colspan="8">Caricamento prenotazioni...</td></tr>';
     }
-    if (elements.adminPendingList) {
-      elements.adminPendingList.innerHTML = '<p class="form-feedback">Caricamento richieste...</p>';
-    }
-    const pendingParams = new URLSearchParams();
-    pendingParams.set('status', 'da confermare');
-    const [data, pendingData] = await Promise.all([
-      fetchJSON(endpoint),
-      fetchJSON(`/api/bookings?${pendingParams.toString()}`),
-    ]);
+    const data = await fetchJSON(endpoint);
     state.adminBookings = data.bookings || [];
-    state.pendingBookings = pendingData.bookings || [];
     state.stats = data.stats || state.stats;
     renderAdminStats();
     renderAdminTable();
     renderCalendar();
-    renderPendingBookings();
   } catch (error) {
     console.error('Errore caricamento admin bookings:', error);
     renderAdminTable();
-    renderPendingBookings();
     showToast(error.message || 'Errore caricamento dashboard.', 'error');
   } finally {
     setButtonLoading(elements.adminRefresh, false);
@@ -1996,7 +1916,6 @@ async function handleLogout() {
     state.user = null;
     state.bookings = [];
     state.adminBookings = [];
-    state.pendingBookings = [];
     state.staffNotes = [];
     updateUserUI();
     prefillBookingContact();
@@ -2047,6 +1966,26 @@ async function loadCatalog() {
   } catch (error) {
     console.error('Errore caricamento catalogo:', error);
   }
+}
+
+function applyBoatPreselect() {
+  if (!elements.serviceType || !elements.boatModel) return;
+  const params = new URLSearchParams(window.location.search);
+  const boatParam = params.get('boat');
+  if (!boatParam) return;
+
+  elements.serviceType.value = 'noleggio';
+  handleServiceTypeChange('noleggio');
+
+  const boats = state.catalog?.boats || [];
+  const matched = boats.find((boat) => boat?.id === boatParam || boat?.label === boatParam);
+  const nextValue = matched?.label || boatParam;
+  if ([...elements.boatModel.options].some((opt) => opt.value === nextValue)) {
+    elements.boatModel.value = nextValue;
+  }
+
+  renderBoatSummary();
+  syncPeopleConstraints();
 }
 
 function attachEventListeners() {
@@ -2171,7 +2110,6 @@ function attachEventListeners() {
     renderClientBookings();
     renderAdminTable();
     renderCalendar();
-    renderPendingBookings();
     renderStaffNotes();
     syncPeopleConstraints();
     updateBookingRecap();
@@ -2224,5 +2162,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (elements.serviceType) handleServiceTypeChange('');
   await loadCatalog();
+  applyBoatPreselect();
   await checkSession();
 });
