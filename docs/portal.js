@@ -126,6 +126,12 @@ const FORM_LIMITS = {
   maxTime: '20:00',
 };
 
+const RENTAL_TIME_SLOTS = {
+  MORNING: { start: '09:00', end: '14:30', label: { it: 'Mattina', en: 'Morning' } },
+  AFTERNOON: { start: '14:30', end: '20:00', label: { it: 'Pomeriggio', en: 'Afternoon' } },
+  FULL_DAY: { start: '09:00', end: '20:00', label: { it: 'Intera giornata', en: 'Full day' } },
+};
+
 const STAFF_PINS_KEY = 'staffNotePins';
 const TOAST_DURATION = 4200;
 
@@ -164,6 +170,9 @@ const elements = {
   boatModel: document.getElementById('boatModel'),
   tourField: document.getElementById('tourField'),
   tour: document.getElementById('tour'),
+  timeField: document.getElementById('timeField'),
+  timeSlotField: document.getElementById('timeSlotField'),
+  timeSlotInputs: Array.from(document.querySelectorAll('input[name="timeSlot"]')),
   endTimeField: document.getElementById('endTimeField'),
   boatSummary: document.getElementById('boatSummary'),
   tourSummary: document.getElementById('tourSummary'),
@@ -340,19 +349,7 @@ function inferMaxPeopleFromTour(tour) {
   if (!tour) return null;
   const explicit = Number(tour.maxPeople ?? tour.max_people ?? tour.capacity);
   if (Number.isFinite(explicit) && explicit > 0) return explicit;
-  const capacityMatches = [
-    ...extractCapacityFromText(tour.label),
-    ...(tour.features || []).flatMap((feature) => extractCapacityFromText(feature)),
-  ];
-  if (capacityMatches.length) {
-    return Math.max(...capacityMatches);
-  }
-  const fallbackCandidates = [
-    ...extractNumbersFromText(tour.label),
-    ...(tour.features || []).flatMap((feature) => extractNumbersFromText(feature)),
-  ].filter((value) => value > 0 && value <= 20);
-  if (!fallbackCandidates.length) return null;
-  return Math.max(...fallbackCandidates);
+  return null;
 }
 
 function resolvePeopleLimits({ serviceType, boatValue, tourValue } = {}) {
@@ -505,12 +502,37 @@ function renderTourSummary() {
   toggleHidden(elements.tourSummary, false);
 }
 
+function applyTimeSlotSelection(slotValue) {
+  const form = elements.bookingForm;
+  if (!form) return;
+  const timeInput = form.elements.time;
+  const endInput = form.elements.endTime;
+  if (!timeInput || !endInput) return;
+  const slot = getSlotInfo(slotValue || form.elements.timeSlot?.value || '');
+  if (!slot) {
+    timeInput.value = '';
+    endInput.value = '';
+    return;
+  }
+  timeInput.value = slot.start;
+  endInput.value = slot.end;
+  syncTimeConstraints();
+}
+
+function clearTimeSlotSelection() {
+  elements.timeSlotInputs?.forEach((input) => {
+    input.checked = false;
+  });
+  applyTimeSlotSelection('');
+}
+
 function enforceExcursionTime() {
   const timeInput = elements.bookingForm?.elements?.time;
   if (!timeInput) return;
 
   const isTour = elements.serviceType?.value === 'escursione';
   if (!isTour) {
+    if (elements.serviceType?.value === 'noleggio') return;
     timeInput.readOnly = false;
     timeInput.value = timeInput.value || '';
     renderTourSummary();
@@ -810,9 +832,22 @@ function validateBookingPayload(payload = {}) {
     errors.date = t('La data non può essere nel passato.', 'Date cannot be in the past.');
   }
 
+  const isRental = payload.serviceType === 'noleggio';
+  if (isRental) {
+    const slotInfo = getSlotInfo(payload.timeSlot);
+    if (!slotInfo) {
+      errors.timeSlot = t('Seleziona una fascia oraria.', 'Select a time slot.');
+    } else {
+      payload.time = slotInfo.start;
+      payload.endTime = slotInfo.end;
+    }
+  }
+
   if (!payload.time) {
-    errors.time = t('Indica l\'orario di partenza.', 'Select a departure time.');
-  } else {
+    if (!isRental) {
+      errors.time = t('Indica l\'orario di partenza.', 'Select a departure time.');
+    }
+  } else if (!isRental) {
     const timeValue = timeToMinutes(payload.time);
     const minTime = timeToMinutes(FORM_LIMITS.minTime);
     const maxTime = timeToMinutes(FORM_LIMITS.maxTime);
@@ -824,18 +859,6 @@ function validateBookingPayload(payload = {}) {
   if (payload.serviceType === 'noleggio') {
     if (!payload.boatModel) {
       errors.boatModel = t('Seleziona il gommone per il noleggio.', 'Select the RIB for rental.');
-    }
-    if (!payload.endTime) {
-      errors.endTime = t('Indica l\'orario di rientro.', 'Add the expected return time.');
-    } else {
-      const startMinutes = timeToMinutes(payload.time);
-      const endMinutes = timeToMinutes(payload.endTime);
-      const maxTime = timeToMinutes(FORM_LIMITS.maxTime);
-      if (startMinutes !== null && endMinutes !== null && endMinutes <= startMinutes) {
-        errors.endTime = t('Il rientro deve essere successivo alla partenza.', 'Return time must be after departure.');
-      } else if (endMinutes !== null && maxTime !== null && endMinutes > maxTime) {
-        errors.endTime = t('Il rientro deve essere entro le 20:00.', 'Return time must be by 20:00.');
-      }
     }
   }
 
@@ -878,6 +901,7 @@ function updateBookingRecap() {
   const date = form.elements.date?.value || '';
   const time = form.elements.time?.value || '';
   const endTime = form.elements.endTime?.value || '';
+  const timeSlot = form.elements.timeSlot?.value || '';
   const people = form.elements.people?.value || '';
   const notes = form.elements.notes?.value.trim() || '';
 
@@ -885,16 +909,15 @@ function updateBookingRecap() {
   const serviceLabel = serviceType ? `${getServiceLabel(serviceType)}${serviceDetail ? ` · ${serviceDetail}` : ''}` : '—';
 
   const formattedPhone = formatPhone(phone) || phone;
+  const slotLabel = timeSlot ? formatSlotLabel(timeSlot, getCurrentLang()) : '';
+  const timeDisplay = serviceType === 'noleggio' ? (slotLabel || '—') : (time || '—');
+
   const summaryItems = [
     { label: getSummaryLabel('contact'), value: [name, formattedPhone].filter(Boolean).join(' · ') || '—' },
     { label: getSummaryLabel('service'), value: serviceLabel || '—' },
     { label: getSummaryLabel('date'), value: date ? formatDateLabel(date) : '—' },
-    { label: getSummaryLabel('time'), value: time || '—' },
+    { label: getSummaryLabel('time'), value: timeDisplay },
   ];
-
-  if (serviceType === 'noleggio') {
-    summaryItems.push({ label: getSummaryLabel('endTime'), value: endTime || '—' });
-  }
 
   summaryItems.push({ label: getSummaryLabel('guests'), value: people || '—' });
   summaryItems.push({ label: getSummaryLabel('notes'), value: notes || '—' });
@@ -903,8 +926,9 @@ function updateBookingRecap() {
     .map((item) => `<div class="booking-recap__item"><span>${item.label}</span><strong>${item.value}</strong></div>`)
     .join('');
 
-  const missingRequired = !name || !phone || !serviceType || !date || !time
-    || (serviceType === 'noleggio' && (!boat || !endTime))
+  const missingRequired = !name || !phone || !serviceType || !date
+    || (serviceType === 'noleggio' && (!boat || !timeSlot))
+    || (serviceType === 'escursione' && !time)
     || (serviceType === 'escursione' && !tour);
   if (elements.bookingRecapStatus) {
     elements.bookingRecapStatus.textContent = missingRequired
@@ -946,6 +970,9 @@ function handleBookingFormInput(event) {
   if (!fieldName) return;
   if (fieldName === 'people') {
     syncPeopleConstraints();
+  } else if (fieldName === 'timeSlot') {
+    applyTimeSlotSelection();
+    setFieldError('timeSlot', '');
   } else {
     setFieldError(fieldName, '');
   }
@@ -1044,7 +1071,14 @@ function handleServiceTypeChange(value) {
   const isTour = value === 'escursione';
   toggleHidden(elements.boatField, !isRental);
   toggleHidden(elements.tourField, !isTour);
-  toggleHidden(elements.endTimeField, !isRental);
+  toggleHidden(elements.timeSlotField, !isRental);
+  toggleHidden(elements.timeField, isRental);
+  toggleHidden(elements.endTimeField, true);
+  if (isRental) {
+    applyTimeSlotSelection();
+  } else {
+    clearTimeSlotSelection();
+  }
   enforceExcursionTime();
   renderBoatSummary();
   renderTourSummary();
@@ -1071,6 +1105,41 @@ function formatDateLabel(date) {
   const parsed = new Date(date);
   if (Number.isNaN(parsed.getTime())) return date;
   return parsed.toLocaleDateString(getLocale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function getSlotInfo(slotValue = '') {
+  return RENTAL_TIME_SLOTS[slotValue] || null;
+}
+
+function getSlotByTimes(start = '', end = '') {
+  return Object.values(RENTAL_TIME_SLOTS).find((slot) => slot.start === start && slot.end === end) || null;
+}
+
+function formatSlotLabel(slotValue, lang) {
+  const slot = getSlotInfo(slotValue);
+  if (!slot) return '';
+  const label = slot.label[lang] || slot.label.it;
+  return `${slot.start}–${slot.end} (${label})`;
+}
+
+function formatSlotLabelFromTimes(start = '', end = '', lang) {
+  const slot = getSlotByTimes(start, end);
+  if (!slot) return '';
+  const label = slot.label[lang] || slot.label.it;
+  return `${slot.start}–${slot.end} (${label})`;
+}
+
+function formatBookingDateTime(booking) {
+  const lang = getCurrentLang();
+  if (!booking?.date) return '—';
+  if (booking.service_type === 'noleggio') {
+    const slotLabel = formatSlotLabelFromTimes(booking.time, booking.end_time, lang);
+    const dateLabel = formatDateLabel(booking.date);
+    if (slotLabel) return `${dateLabel} · ${slotLabel}`;
+    const fallback = booking.end_time ? `${booking.time} → ${booking.end_time}` : booking.time;
+    return `${dateLabel} · ${fallback}`;
+  }
+  return formatDateTime(booking.date, booking.time);
 }
 
 function renderClientBookings() {
@@ -1108,7 +1177,7 @@ function renderClientBookings() {
       <header class="booking-card__header">
         <p class="booking-card__eyebrow">${serviceLabel}</p>
         <h3>${subtitle}</h3>
-        <p class="booking-card__time">${formatDateTime(booking.date, booking.time)}</p>
+        <p class="booking-card__time">${formatBookingDateTime(booking)}</p>
       </header>
       <div class="booking-meta">
         <p><strong>${t('Ospiti', 'Guests')}</strong><span>${booking.people}</span></p>
@@ -1179,7 +1248,7 @@ function openBookingDetail(id) {
   const statusMeta = getStatusMeta(booking.status);
   const serviceLabel = getServiceLabel(booking.service_type);
 
-  const dateTimeLabel = `${formatDateLabel(booking.date)} · ${booking.time}${booking.end_time ? ` → ${booking.end_time}` : ''}`;
+  const dateTimeLabel = formatBookingDateTime(booking);
   const serviceFullLabel = `${serviceLabel}${subtitle ? ` · ${subtitle}` : ''}`;
 
   elements.bookingDetailContent.innerHTML = `
@@ -1373,7 +1442,7 @@ function renderCalendarDayDetail() {
     const lang = getCurrentLang();
     const t = (it, en) => (lang === 'en' ? en : it);
     li.innerHTML = `
-      <strong>${formatDateTime(booking.date, booking.time)}</strong>
+      <strong>${formatBookingDateTime(booking)}</strong>
       <span>${booking.service_type === 'noleggio' ? booking.boat_model || 'Noleggio' : booking.tour || 'Escursione'}</span>
       <span class="status-pill status-pill--${statusMeta.tone}">${statusMeta.label}</span>
       <small>${booking.customer_name} · ${booking.people} ${t('ospiti', 'guests')}</small>
@@ -1584,7 +1653,7 @@ function renderAdminTable() {
   state.adminBookings.forEach((booking) => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${formatDateTime(booking.date, booking.time)}${booking.end_time ? `<br><small>Rientro ${booking.end_time}</small>` : ''}</td>
+      <td>${formatBookingDateTime(booking)}</td>
       <td>
         <strong>${booking.customer_name}</strong><br>
         <small>${booking.email}</small><br>
@@ -1971,6 +2040,8 @@ async function loadCatalog() {
 function applyBoatPreselect() {
   if (!elements.serviceType || !elements.boatModel) return;
   const params = new URLSearchParams(window.location.search);
+  const tourParam = params.get('tour') || params.get('escursione');
+  if (tourParam) return;
   const boatParam = params.get('boat');
   if (!boatParam) return;
 
@@ -1986,6 +2057,27 @@ function applyBoatPreselect() {
 
   renderBoatSummary();
   syncPeopleConstraints();
+}
+
+function applyTourPreselect() {
+  if (!elements.serviceType || !elements.tour) return;
+  const params = new URLSearchParams(window.location.search);
+  const tourParam = params.get('tour') || params.get('escursione');
+  if (!tourParam) return;
+
+  elements.serviceType.value = 'escursione';
+  handleServiceTypeChange('escursione');
+
+  const tours = state.catalog?.tours || [];
+  const matched = tours.find((tour) => tour?.id === tourParam || tour?.label === tourParam);
+  const nextValue = matched?.label || tourParam;
+  if ([...elements.tour.options].some((opt) => opt.value === nextValue)) {
+    elements.tour.value = nextValue;
+  }
+
+  renderTourSummary();
+  syncPeopleConstraints();
+  updateBookingRecap();
 }
 
 function attachEventListeners() {
@@ -2163,5 +2255,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (elements.serviceType) handleServiceTypeChange('');
   await loadCatalog();
   applyBoatPreselect();
+  applyTourPreselect();
   await checkSession();
 });

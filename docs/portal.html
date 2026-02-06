@@ -104,7 +104,7 @@
             <fieldset class="form-section" aria-labelledby="sectionTimeTitle">
               <div class="form-section__header">
                 <h3 id="sectionTimeTitle" data-i18n="section-time">Data e orario</h3>
-                <p data-i18n="section-time-sub">Indica quando vuoi partire e rientrare.</p>
+                <p data-i18n="section-time-sub">Seleziona data e fascia oraria.</p>
               </div>
               <div class="field-grid">
                 <div class="field" data-field="date">
@@ -113,7 +113,29 @@
                   <span class="field__hint" id="dateHint" data-i18n="hint-date">Scegli una data disponibile.</span>
                   <span class="field__error" id="dateError" aria-live="polite"></span>
                 </div>
-                <div class="field" data-field="time">
+                <div id="timeSlotField" class="field full hidden" data-field="timeSlot">
+                  <span class="field__label" data-i18n="label-slot">Fascia oraria</span>
+                  <div class="slot-grid" role="radiogroup" aria-describedby="timeSlotHint timeSlotError">
+                    <label class="slot-option">
+                      <input type="radio" name="timeSlot" value="MORNING" data-slot-start="09:00" data-slot-end="14:30">
+                      <span class="slot-option__title" data-i18n="slot-morning">Mattina</span>
+                      <span class="slot-option__time">09:00–14:30</span>
+                    </label>
+                    <label class="slot-option">
+                      <input type="radio" name="timeSlot" value="AFTERNOON" data-slot-start="14:30" data-slot-end="20:00">
+                      <span class="slot-option__title" data-i18n="slot-afternoon">Pomeriggio</span>
+                      <span class="slot-option__time">14:30–20:00</span>
+                    </label>
+                    <label class="slot-option">
+                      <input type="radio" name="timeSlot" value="FULL_DAY" data-slot-start="09:00" data-slot-end="20:00">
+                      <span class="slot-option__title" data-i18n="slot-fullday">Intera giornata</span>
+                      <span class="slot-option__time">09:00–20:00</span>
+                    </label>
+                  </div>
+                  <span class="field__hint" id="timeSlotHint" data-i18n="hint-slot">Seleziona una fascia oraria.</span>
+                  <span class="field__error" id="timeSlotError" aria-live="polite"></span>
+                </div>
+                <div id="timeField" class="field" data-field="time">
                   <label for="bookingTime" data-i18n="label-start">Partenza</label>
                   <input id="bookingTime" type="time" name="time" required aria-describedby="timeHint timeError">
                   <span class="field__hint" id="timeHint" data-i18n="hint-time">Fascia consigliata 08:00 - 20:00.</span>
@@ -323,13 +345,18 @@
           'hint-boat': 'Select the available RIB for rental.',
           'hint-tour': 'Choose the preferred itinerary.',
           'section-time': 'Date & time',
-          'section-time-sub': 'Tell us when you want to depart and return.',
+          'section-time-sub': 'Pick the date and the preferred time window.',
           'label-date': 'Date',
+          'label-slot': 'Time slot',
           'label-start': 'Departure',
           'label-end': 'Return',
           'hint-date': 'Pick an available date.',
           'hint-time': 'Suggested window 08:00 - 20:00.',
           'hint-end': 'For rentals, add the expected return time.',
+          'hint-slot': 'Choose one of the available slots.',
+          'slot-morning': 'Morning',
+          'slot-afternoon': 'Afternoon',
+          'slot-fullday': 'Full day',
           'section-people': 'Guests',
           'section-people-sub': 'Total people on board.',
           'label-people': 'Guests',

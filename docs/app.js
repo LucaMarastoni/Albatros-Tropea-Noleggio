@@ -583,6 +583,35 @@ function initBoatCards() {
   });
 }
 
+function applyBoatImageMapping() {
+  if (typeof window.getBoatImage !== 'function') return;
+  document.querySelectorAll('.boat-card').forEach((card) => {
+    const id = card.dataset.boatId;
+    if (!id) return;
+    const mapped = window.getBoatImage(id);
+    if (!mapped) return;
+    card.dataset.boatImages = mapped;
+    const img = card.querySelector('.boat-card__media img');
+    if (img) {
+      img.src = mapped;
+      img.alt = card.dataset.boatTitle || img.alt || 'Gommone Albatros';
+    }
+  });
+
+  document.querySelectorAll('.excursion-card[data-boat-id]').forEach((card) => {
+    const id = card.dataset.boatId;
+    if (!id) return;
+    const mapped = window.getBoatImage(id);
+    if (!mapped) return;
+    card.dataset.inlineImages = mapped;
+    const img = card.querySelector('img');
+    if (img) {
+      img.src = mapped;
+      img.alt = img.alt || 'Gommone Albatros';
+    }
+  });
+}
+
 function initHomeCardCarousels() {
   const homeFleetCards = document.querySelectorAll('#boats .excursion-card');
   const excursionCards = document.querySelectorAll('#escursioni .excursion-card');
@@ -696,6 +725,7 @@ function attachEventListeners() {
 document.addEventListener('DOMContentLoaded', async () => {
   attachEventListeners();
   initGalleryCarousel();
+  applyBoatImageMapping();
   initBoatCards();
   initHomeCardCarousels();
   await checkSession();

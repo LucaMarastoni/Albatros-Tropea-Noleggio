@@ -102,7 +102,7 @@
                   </ul>
                   <div class="boat-card__actions">
                     <a class="btn primary" href="portal.html?boat=zar50-2025" data-i18n="boat-cta-book">Prenotalo</a>
-                    <a class="btn outline is-disabled" href="#" aria-disabled="true" data-i18n="boat-cta-details">Vedi scheda</a>
+                    <a class="btn outline" href="flotta/zar50-2025.html" data-i18n="boat-cta-details">Vedi scheda</a>
                   </div>
                 </div>
               </article>
@@ -128,7 +128,7 @@
                   </ul>
                   <div class="boat-card__actions">
                     <a class="btn primary" href="portal.html?boat=zar65" data-i18n="boat-cta-book">Prenotalo</a>
-                    <a class="btn outline is-disabled" href="#" aria-disabled="true" data-i18n="boat-cta-details">Vedi scheda</a>
+                    <a class="btn outline" href="flotta/zar65.html" data-i18n="boat-cta-details">Vedi scheda</a>
                   </div>
                 </div>
               </article>
@@ -153,7 +153,7 @@
                   </ul>
                   <div class="boat-card__actions">
                     <a class="btn primary" href="portal.html?boat=zar53" data-i18n="boat-cta-book">Prenotalo</a>
-                    <a class="btn outline is-disabled" href="#" aria-disabled="true" data-i18n="boat-cta-details">Vedi scheda</a>
+                    <a class="btn outline" href="flotta/zar53.html" data-i18n="boat-cta-details">Vedi scheda</a>
                   </div>
                 </div>
               </article>
@@ -177,7 +177,7 @@
                   </ul>
                   <div class="boat-card__actions">
                     <a class="btn primary" href="portal.html?boat=zar49" data-i18n="boat-cta-book">Prenotalo</a>
-                    <a class="btn outline is-disabled" href="#" aria-disabled="true" data-i18n="boat-cta-details">Vedi scheda</a>
+                    <a class="btn outline" href="flotta/zar49.html" data-i18n="boat-cta-details">Vedi scheda</a>
                   </div>
                 </div>
               </article>
@@ -448,26 +448,7 @@
   <div class="site-credit">
     <a href="https://lucamarastoni.eu" target="_blank" rel="noopener" data-i18n="site-credit">Realizzato da Luca Marastoni Digital Solutions</a>
   </div>
-  <div class="modal hidden" id="boatModal" role="dialog" aria-modal="true" aria-labelledby="boatModalTitle">
-    <div class="modal-backdrop" data-boat-close></div>
-    <div class="modal-window boat-modal">
-      <button class="modal-close" type="button" aria-label="Chiudi popup" data-boat-close data-i18n-aria="boat-modal-close">×</button>
-      <div class="boat-modal__header">
-        <p class="eyebrow" data-i18n="boat-modal-eyebrow">ZAR Fleet</p>
-        <h3 id="boatModalTitle"></h3>
-        <p id="boatModalDesc" class="boat-modal__desc"></p>
-      </div>
-      <div class="boat-carousel">
-        <button class="boat-carousel__control" id="boatCarouselPrev" aria-label="Immagine precedente" data-i18n-aria="boat-modal-prev">‹</button>
-        <div class="boat-carousel__viewport">
-          <div class="boat-carousel__track" id="boatCarouselTrack"></div>
-        </div>
-        <button class="boat-carousel__control" id="boatCarouselNext" aria-label="Immagine successiva" data-i18n-aria="boat-modal-next">›</button>
-      </div>
-      <div class="boat-carousel__dots" id="boatCarouselDots" aria-label="Seleziona immagine"></div>
-    </div>
-  </div>
-
+  <script src="boats-images.js"></script>
   <script src="app.js" type="module"></script>
   <script>
     (() => {

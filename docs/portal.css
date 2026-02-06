@@ -1089,6 +1089,59 @@ a {
   color: var(--muted);
 }
 
+.field__label {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.slot-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.slot-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(26, 125, 219, 0.18);
+  background: rgba(255, 255, 255, 0.94);
+  cursor: pointer;
+  min-height: 56px;
+}
+
+.slot-option input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.slot-option__title {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.slot-option__time {
+  margin-left: auto;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.slot-option:focus-within {
+  border-color: rgba(26, 125, 219, 0.45);
+  box-shadow: 0 0 0 3px rgba(26, 125, 219, 0.12);
+}
+
+@media (min-width: 900px) {
+  .slot-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .field__hint {
   font-size: 0.78rem;
   color: var(--muted);

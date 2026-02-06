@@ -145,6 +145,8 @@ app.use(session({
   },
 }));
 
+const TOUR_MAX_PEOPLE = 12;
+
 const catalog = {
   boats: [
     {
@@ -183,6 +185,7 @@ const catalog = {
       image: 'assets/img/6.jpg',
       features: ['3 ore tra Tropea e Capo Vaticano', 'Snorkeling allo Scoglio di Riaci', 'Soste in calette accessibili solo via mare'],
       time: '09:00',
+      maxPeople: TOUR_MAX_PEOPLE,
     },
     {
       id: 'sunset-romance',
@@ -190,6 +193,7 @@ const catalog = {
       image: 'assets/img/7.jpg',
       features: ['Tour al tramonto', 'Grotta degli Innamorati', 'Aperitivo romantico a bordo'],
       time: '18:00',
+      maxPeople: TOUR_MAX_PEOPLE,
     },
     {
       id: 'parghelia-tour',
@@ -197,6 +201,7 @@ const catalog = {
       image: 'assets/img/9.jpg',
       features: ['3 ore di tour personalizzato', 'Vardanello, Michelino e Baia della Tonnara', 'Snorkeling e acque trasparenti'],
       time: '09:30',
+      maxPeople: TOUR_MAX_PEOPLE,
     },
   ],
 };
