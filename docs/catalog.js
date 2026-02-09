@@ -14,8 +14,8 @@ window.CATALOG = {
       label: 'ZAR 53 (8 posti)',
       power: '90 cv',
       features: ['Doccia', 'Tendalino', 'Ancora', 'Ecoscandaglio', '8 posti comodi'],
-      image: 'assets/img/FotoGommone/53.jpg',
-      heroImage: 'assets/img/FotoGommone/53.jpg',
+      image: 'assets/img/FotoGommone/53.jpeg',
+      heroImage: 'assets/img/FotoGommone/53.jpeg',
     },
     {
       id: 'zar49',
