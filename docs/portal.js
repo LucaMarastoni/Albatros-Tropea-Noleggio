@@ -125,6 +125,29 @@ function normalizePhone(value = '') {
   return cleaned;
 }
 
+function getSeasonBounds(baseDate = new Date()) {
+  const year = baseDate.getFullYear();
+  const seasonStart = `${year}-06-01`;
+  const seasonEnd = `${year}-10-01`;
+  const today = new Date(baseDate);
+  const seasonEndDate = new Date(`${seasonEnd}T23:59:59`);
+  if (today > seasonEndDate) {
+    const nextYear = year + 1;
+    return { min: `${nextYear}-06-01`, max: `${nextYear}-10-01` };
+  }
+  return { min: seasonStart, max: seasonEnd };
+}
+
+function isDateInSeason(dateStr = '') {
+  if (!dateStr) return false;
+  const selected = new Date(`${dateStr}T00:00:00`);
+  if (Number.isNaN(selected.getTime())) return false;
+  const { min, max } = getSeasonBounds(new Date());
+  const minDate = new Date(`${min}T00:00:00`);
+  const maxDate = new Date(`${max}T23:59:59`);
+  return selected >= minDate && selected <= maxDate;
+}
+
 function formatPhone(value = '') {
   const normalized = normalizePhone(value);
   const digits = normalized.replace(/\D/g, '');
@@ -367,11 +390,11 @@ function applyDateConstraints() {
   if (!elements.bookingForm) return;
   const dateInput = elements.bookingForm.elements.date;
   if (!dateInput) return;
-  const now = new Date();
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  dateInput.min = today;
-  if (dateInput.value && dateInput.value < today) {
-    dateInput.value = today;
+  const { min, max } = getSeasonBounds(new Date());
+  dateInput.min = min;
+  dateInput.max = max;
+  if (dateInput.value && (dateInput.value < min || dateInput.value > max)) {
+    dateInput.value = min;
   }
 }
 
@@ -492,6 +515,8 @@ function validateBookingPayload(payload = {}) {
 
   if (!payload.date) {
     errors.date = t('Seleziona una data.', 'Select a date.');
+  } else if (!isDateInSeason(payload.date)) {
+    errors.date = t('Prenotazioni disponibili dal 1 Giugno al 1 Ottobre.', 'Bookings available from June 1 to October 1.');
   }
 
   const isRental = payload.serviceType === 'noleggio';
@@ -593,6 +618,17 @@ function handleBookingFormInput(event) {
   if (!fieldName) return;
   if (fieldName === 'people') {
     syncPeopleConstraints();
+  } else if (fieldName === 'date') {
+    const dateValue = event.target.value;
+    if (dateValue && !isDateInSeason(dateValue)) {
+      setFieldError('date', getCurrentLang() === 'en'
+        ? 'Bookings available from June 1 to October 1.'
+        : 'Prenotazioni disponibili dal 1 Giugno al 1 Ottobre.');
+      elements.bookingSubmit?.setAttribute('disabled', 'disabled');
+    } else {
+      setFieldError('date', '');
+      elements.bookingSubmit?.removeAttribute('disabled');
+    }
   } else if (fieldName === 'timeSlot') {
     applyTimeSlotSelection();
     setFieldError('timeSlot', '');
