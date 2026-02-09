@@ -43,7 +43,9 @@
       'boat-notfound-title': 'Boat not found',
       'boat-notfound-copy': 'The requested model is not available. Go back to the fleet to choose another boat.',
       'boat-notfound-cta': 'Go to fleet',
-      'boat65-spec1': '👥 9/10 seats',
+      'pricing-from': 'From',
+      'pricing-fuel': 'fuel not included',
+      'boat65-spec1': '👥 10/12 seats',
       'boat65-spec2': '⚓ Electric anchor + windlass',
       'boat65-spec3': '🚿 Shower + teak platforms',
       'boat65-spec4': '☀️ XL bimini',
@@ -55,6 +57,7 @@
       'boat49-spec1': '👥 6 seats',
       'boat49-spec2': '☀️ Bimini + sunpad',
       'boat49-spec3': '🚿 Onboard shower',
+      'boat49-spec4': '🧭 Fishfinder for safe depths',
       'footer-title': 'Albatros Tropea Noleggio',
       'footer-address': 'Viale Raf Vallone, 89861 Tropea (VV) · Italy',
       'footer-desc': 'Premium nautical hub with signature RIBs, tailored experiences and dedicated crew.',
@@ -97,12 +100,17 @@
     notFound: document.getElementById('boatNotFound'),
     langToggle: document.getElementById('langToggle'),
     backBtn: document.getElementById('boatBackBtn'),
+    priceSection: document.querySelector('.boat-pricing'),
+    priceLine: null,
+    heroCtas: document.querySelector('.boat-hero__cta'),
   };
 
   const state = {
     lang: 'it',
     boat: null,
     images: [],
+    minPrice: null,
+    fuelExcluded: false,
   };
 
   const getSavedLang = () => {
@@ -123,6 +131,15 @@
     if (!key) return fallback;
     if (lang !== 'en') return fallback;
     return translations.en[key] || fallback;
+  };
+
+  const needsParentBase = window.location.pathname.includes('/flotta/');
+  const normalizeSrc = (src = '') => {
+    const trimmed = src.trim();
+    if (!trimmed) return '';
+    if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith('/')) return trimmed;
+    if (needsParentBase && trimmed.startsWith('assets/')) return `../${trimmed}`;
+    return trimmed;
   };
 
   const applyTranslations = (lang) => {
@@ -185,7 +202,7 @@
       const descEn = card.dataset.boatDescEn || descIt;
       const images = (card.dataset.boatImages || '')
         .split('|')
-        .map((src) => src.trim())
+        .map((src) => normalizeSrc(src))
         .filter(Boolean);
       const highlights = [...card.querySelectorAll('.boats__specs li')]
         .map((item) => ({
@@ -250,7 +267,56 @@
 
   const getMappedImage = (id) => {
     if (typeof window.getBoatImage !== 'function') return '';
-    return window.getBoatImage(id) || '';
+    return normalizeSrc(window.getBoatImage(id) || '');
+  };
+
+  const parsePriceValue = (text = '') => {
+    const match = String(text).match(/([0-9]+(?:[.,][0-9]+)?)/);
+    if (!match) return null;
+    return Number.parseFloat(match[1].replace(',', '.'));
+  };
+
+  const extractPricingData = () => {
+    const values = [...document.querySelectorAll('.boat-pricing .price-list strong')]
+      .map((node) => parsePriceValue(node.textContent))
+      .filter((value) => Number.isFinite(value));
+    state.minPrice = values.length ? Math.min(...values) : null;
+    state.fuelExcluded = Boolean(document.querySelector('.boat-pricing .price-list__note'));
+  };
+
+  const hideLegacyPriceLists = () => {
+    document.querySelectorAll('.boat-pricing .price-list').forEach((node) => node.classList.add('hidden'));
+    elements.priceSection?.classList.add('hidden');
+  };
+
+  const renderCompactPricing = () => {
+    if (!elements.priceSection) return;
+
+    if (!elements.priceLine) {
+      elements.priceLine = document.createElement('p');
+      elements.priceLine.className = 'price-line';
+      if (elements.heroCtas) {
+        elements.heroCtas.insertAdjacentElement('afterend', elements.priceLine);
+      } else {
+        elements.priceSection.prepend(elements.priceLine);
+      }
+    }
+
+    if (!state.minPrice) {
+      elements.priceLine.classList.add('hidden');
+      return;
+    }
+
+    const fromLabel = state.lang === 'en' ? t(state.lang, 'pricing-from', 'From') : 'A partire da';
+    const fuelLabel = state.lang === 'en' ? t(state.lang, 'pricing-fuel', 'fuel not included') : 'carburante escluso';
+
+    let line = `${fromLabel} ${state.minPrice}€`;
+    if (state.fuelExcluded) {
+      line += ` · ${fuelLabel}`;
+    }
+
+    elements.priceLine.textContent = line;
+    elements.priceLine.classList.remove('hidden');
   };
 
   const renderBoat = () => {
@@ -283,6 +349,7 @@
     const highlights = boat.highlights.map((item) => t(lang, item.key, item.text));
     renderHighlights(highlights);
     renderGallery(state.images, title);
+    renderCompactPricing();
 
     document.title = `${title} · Albatros Tropea Noleggio`;
   };
@@ -312,7 +379,9 @@
 
     state.boat = boat;
     const mappedImage = getMappedImage(boat.id);
-    state.images = mappedImage ? [mappedImage] : [];
+    state.images = Array.isArray(boat.images) && boat.images.length
+      ? boat.images.map(normalizeSrc)
+      : (mappedImage ? [mappedImage] : []);
 
     const bookingUrl = `../portal.html?boat=${encodeURIComponent(boat.id)}`;
     if (elements.primaryCta) elements.primaryCta.href = bookingUrl;
@@ -321,6 +390,8 @@
     applyTranslations(state.lang);
   };
 
+  extractPricingData();
+  hideLegacyPriceLists();
   state.lang = getSavedLang();
   applyTranslations(state.lang);
 

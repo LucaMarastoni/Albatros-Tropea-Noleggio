@@ -481,6 +481,54 @@ h1, h2, h3, h4 {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
+.price-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(26, 125, 219, 0.14), rgba(115, 199, 255, 0.18));
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 1.18rem;
+  letter-spacing: -0.01em;
+  box-shadow: 0 8px 26px rgba(12, 74, 132, 0.18);
+  position: relative;
+  overflow: hidden;
+  margin-top: 14px;
+  animation: price-pop 420ms ease-out;
+}
+
+.price-line::before {
+  content: '●';
+  font-size: 12px;
+  color: var(--primary);
+  filter: drop-shadow(0 0 6px rgba(26, 125, 219, 0.6));
+}
+
+.price-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 40%, rgba(255, 255, 255, 0.3), transparent 40%);
+  pointer-events: none;
+}
+
+@keyframes price-pop {
+  0% {
+    transform: translateY(8px) scale(0.98);
+    opacity: 0;
+  }
+  70% {
+    transform: translateY(-2px) scale(1.02);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
 .hero__pricing .price-list {
   margin: 0;
   padding: clamp(22px, 5vw, 28px);
@@ -561,7 +609,7 @@ h1, h2, h3, h4 {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(7, 16, 28, 0.15), rgba(5, 18, 32, 0.25));
+  background: none;
   z-index: -1;
 }
 

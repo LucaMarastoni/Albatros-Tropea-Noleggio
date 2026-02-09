@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta property="og:image" content="https://tropeawavecharter.it/assets/img/albatros-preview.png">
+  <meta property="og:image:alt" content="Albatros Tropea Noleggio · preview">
+  <meta name="twitter:image" content="https://tropeawavecharter.it/assets/img/albatros-preview.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tour Palmi Bagnara Scilla · Escursione luxury</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+  <link rel="manifest" href="assets/favicon/site.webmanifest">
+  <link rel="shortcut icon" href="assets/favicon/favicon.ico">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing excursions-page">
+  <header class="topbar">
+    <a class="topbar__brand" href="index.html" aria-label="Albatros Tropea Noleggio · Home">
+      <img class="brand-logo" src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio">
+      <span class="brand-copy--short">Albatros</span>
+      <span class="brand-copy">
+        <strong>Albatros Tropea Noleggio</strong>
+        <small>Gommoni·Escursioni·Esperienze</small>
+      </span>
+    </a>
+    <a class="topbar__whatsapp" href="https://wa.me/393715328451" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
+      <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+        <path d="M20.52 3.48A11.73 11.73 0 0 0 12 0C5.373 0 0 5.373 0 12c0 2.1.55 4.15 1.64 5.96L0 24l6.38-1.67A11.9 11.9 0 0 0 12 24c6.627 0 12-5.373 12-12 0-3.18-1.24-6.17-3.48-8.52Zm-8.51 18.49h-.01c-1.83 0-3.62-.49-5.18-1.42l-.37-.22-3.79 1 1.02-3.86-.25-.39A9.95 9.95 0 0 1 2.02 12C2 6.48 6.48 2 12 2c2.68 0 5.19 1.04 7.07 2.93A9.9 9.9 0 0 1 22 12c0 5.52-4.48 10-9.99 10Zm5.47-7.55c-.29-.15-1.72-.85-1.99-.94-.27-.1-.46-.15-.65.14-.19.29-.75.94-.92 1.13-.17.2-.34.22-.63.07-.29-.15-1.23-.45-2.33-1.46-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.5.14-.17.19-.29.28-.48.09-.19.04-.35-.02-.49-.07-.15-.64-1.54-.88-2.12-.24-.58-.49-.5-.66-.51-.17-.01-.36-.01-.56-.01-.2 0-.52.07-.8.37-.27.3-1.05 1.03-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.1 3.2 5.1 4.33.7.3 1.27.48 1.7.62.7.23 1.35.2 1.86.12.56-.08 1.74-.7 1.98-1.39.24-.69.24-1.26.17-1.38-.08-.12-.26-.2-.55-.35Z"/>
+      </svg>
+      <span>WhatsApp</span>
+    </a>
+    <button class="btn outline topbar__lang" id="langToggle" aria-label="Cambia lingua">ENG</button>
+    <button class="topbar__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Apri il menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="topbar__nav" id="primaryNav">
+      <a href="index.html#hero" data-i18n="nav-home">Home</a>
+      <a href="boats.html" data-i18n="nav-fleet">Flotta</a>
+      <a href="escursioni.html" aria-current="page" data-i18n="nav-tours">Escursioni</a>
+      <a href="index.html#location" data-i18n="nav-location">Dove siamo</a>
+      <div class="topbar__dropdown-actions">
+        <a class="btn portal-accent" href="portal.html" data-i18n="portal-login">Accedi al portale</a>
+      </div>
+    </nav>
+    <div class="topbar__actions">
+      <a class="btn portal-accent" href="portal.html" data-i18n="portal-login">Accedi al portale</a>
+      <div class="user-menu hidden" id="userMenu">
+        <span class="user-avatar">⛵</span>
+        <div>
+          <span class="user-name" id="userDisplayName"></span>
+          <small data-i18n="session-active">Sessione attiva</small>
+        </div>
+        <button class="btn tiny" id="logoutBtn" data-i18n="logout-btn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-main">
+    <section class="hero hero--sub excursion-hero">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <div class="hero__headline">
+            <h1 class="hero-appear" style="--delay: 0ms" data-i18n="hero-title">Tour Palmi Bagnara Scilla</h1>
+          </div>
+          <p class="excursion-meta hero-appear" style="--delay: 80ms" data-i18n="hero-meta">Intera giornata · 10:00–18:00 · Luxury experience</p>
+          <p class="excursion-promise" data-i18n="hero-promise">Full day sulla Costa Viola con pranzo a Scilla e rientro slow.</p>
+          <ul class="excursion-highlights">
+            <li data-i18n="hero-bullet1">🌊 Costa Viola e borghi marinari.</li>
+            <li data-i18n="hero-bullet2">🍽️ Sosta pranzo a Scilla.</li>
+            <li data-i18n="hero-bullet3">⚓ Navigazione premium, rientro slow.</li>
+          </ul>
+          <div class="hero__actions hero-appear" style="--delay: 160ms">
+            <a class="btn primary" href="portal.html?tour=palmi-bagnara-scilla" data-i18n="hero-cta1">Prenota questa escursione</a>
+            <a class="btn outline" href="escursioni.html" data-i18n="hero-cta2">Torna alle escursioni</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section detail">
+      <div class="detail__grid">
+        <div class="detail__content">
+          <header class="section__header">
+            <p class="eyebrow" data-i18n="program-eyebrow">Itinerario luxury</p>
+            <h2 data-i18n="program-title">Costa Viola, pranzo a Scilla e rientro slow.</h2>
+          </header>
+          <p class="lead" data-i18n="program-copy">Crociera full day sulla rotta Palmi – Bagnara – Scilla con skipper dedicato, soste scenografiche e pranzo libero nel borgo di Scilla.</p>
+          <ol class="timeline">
+            <li>
+              <span class="timeline__time">10:00</span>
+              <span class="timeline__text" data-i18n="it-0">Partenza verso la Costa Viola.</span>
+            </li>
+            <li>
+              <span class="timeline__time">11:30</span>
+              <span class="timeline__text" data-i18n="it-1">Soste tra Palmi e Bagnara.</span>
+            </li>
+            <li>
+              <span class="timeline__time">13:00</span>
+              <span class="timeline__text" data-i18n="it-2">Pranzo a Scilla (libero, non incluso).</span>
+            </li>
+            <li>
+              <span class="timeline__time">15:30</span>
+              <span class="timeline__text" data-i18n="it-3">Possibile pesca del pesce spada (se disponibile).</span>
+            </li>
+            <li>
+              <span class="timeline__time">18:00</span>
+              <span class="timeline__text" data-i18n="it-4">Rientro slow lungo costa.</span>
+            </li>
+          </ol>
+          <h4 data-i18n="included-title">Cosa è incluso</h4>
+          <ul>
+            <li data-i18n="inc-1">✅ Skipper dedicato.</li>
+            <li data-i18n="inc-3">🧭 Briefing rotte e safety.</li>
+            <li data-i18n="inc-4">⛽ Carburante incluso.</li>
+          </ul>
+          <p class="note" data-i18n="optional-note">Possibile avvistare la pesca del pesce spada (in base al periodo/disponibilità).</p>
+          <div class="price-list hidden">
+            <h4 data-i18n="price-title">Prezzo</h4>
+            <ul>
+              <li><span data-i18n="price-1">A partire da</span><strong>€180</strong></li>
+            </ul>
+          </div>
+        </div>
+        <figure class="detail__media">
+          <img src="assets/img/FotoPaesaggio/scilla1.jpeg" alt="Costa Viola e Scilla vista dal mare">
+        </figure>
+      </div>
+    </section>
+
+    <section class="section amenities">
+      <header class="section__header">
+        <p class="eyebrow" data-i18n="amenities-eyebrow">Cosa è incluso</p>
+        <h2 data-i18n="amenities-title">Servizio premium per una giornata intera sulla Costa Viola.</h2>
+      </header>
+      <div class="amenities-grid">
+        <article class="amenity-card">
+          <span class="label" data-i18n="am1-label">Accoglienza</span>
+          <h3 data-i18n="am1-title">Skipper dedicato & briefing</h3>
+          <p data-i18n="am1-copy">Rotte, sicurezza e meteo condivisi prima della partenza.</p>
+        </article>
+        <article class="amenity-card">
+          <span class="label" data-i18n="am2-label">Costa Viola</span>
+          <h3 data-i18n="am2-title">Full day tra Palmi e Scilla</h3>
+          <p data-i18n="am2-copy">Navigazione premium e soste scenografiche lungo la Costa Viola.</p>
+        </article>
+        <article class="amenity-card">
+          <span class="label" data-i18n="am3-label">Experience</span>
+          <h3 data-i18n="am3-title">Pranzo libero a Scilla</h3>
+          <p data-i18n="am3-copy">Tempo dedicato nel borgo di Scilla per il pranzo (non incluso).</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section boat-gallery">
+      <header class="section__header">
+        <p class="eyebrow" data-i18n="gallery-eyebrow">Gallery</p>
+        <h2 data-i18n="gallery-title">Scilla, Costa Viola e rientro slow.</h2>
+      </header>
+      <div class="boat-gallery__grid">
+        <figure><img src="assets/img/FotoPaesaggio/scilla1.jpeg" alt="Vista mare su Scilla"></figure>
+        <figure><img src="assets/img/FotoPaesaggio/scilla2.jpeg" alt="Costa Viola in navigazione"></figure>
+        <figure><img src="assets/img/FotoPaesaggio/scilla3.jpeg" alt="Scilla dal mare"></figure>
+        <figure><img src="assets/img/FotoPaesaggio/scilla4.jpeg" alt="Rocce della Costa Viola"></figure>
+        <figure><img src="assets/img/FotoPaesaggio/scilla5.jpeg" alt="Case di Scilla sul mare"></figure>
+        <figure><img src="assets/img/FotoPaesaggio/scilla6.jpeg" alt="Tratto di costa verso Bagnara"></figure>
+        <figure><img src="assets/img/FotoPaesaggio/scilla7.jpeg" alt="Vista notturna di Scilla"></figure>
+        <figure><img src="assets/img/FotoPaesaggio/scilla8.jpeg" alt="Rientro slow al tramonto"></figure>
+      </div>
+    </section>
+
+    <section class="section finale finale--alt">
+      <div class="finale__content">
+        <p class="eyebrow" data-i18n="cta-eyebrow">Blocca il tuo slot</p>
+        <h2 data-i18n="cta-title">Tour premium sulla Costa Viola, posti limitati.</h2>
+        <p data-i18n="cta-copy">Seleziona la data, aggiungi note per il pranzo a Scilla e conferma dal portale.</p>
+        <div class="hero__actions">
+          <a class="btn primary" href="portal.html?tour=palmi-bagnara-scilla" data-i18n="cta-btn1">Prenota questa escursione</a>
+          <a class="btn outline" href="escursioni.html" data-i18n="cta-btn2">Torna alle escursioni</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="assets/img/albatros_logo.png" alt="Albatros Tropea Noleggio" class="footer__logo">
+        <div>
+          <h4 data-i18n="footer-title">Albatros Tropea Noleggio</h4>
+          <p data-i18n="footer-address">Viale Raf Vallone, 89861 Tropea (VV) · Italia</p>
+        </div>
+        <p data-i18n="footer-desc">Hub nautico premium con gommoni signature, esperienze sartoriali e crew dedicata.</p>
+      </div>
+      <div class="footer__group">
+        <h4 data-i18n="footer-fast">Contatti rapidi</h4>
+        <ul class="footer__list">
+          <li>
+            <span data-i18n="footer-desk-label">Desk operativo</span>
+            <a href="tel:+393715328451">+39 371 53 28 451</a>
+          </li>
+          <li>
+            <span data-i18n="footer-email-label">Email concierge</span>
+            <a href="mailto:info@albatrostropeanoleggio.it">info@albatrostropeanoleggio.it</a>
+          </li>
+          <li>
+            <span data-i18n="footer-wa-label">WhatsApp crew</span>
+            <a href="https://wa.me/393715328451" target="_blank" rel="noopener">+39 371 53 28 451</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4 data-i18n="footer-ops-title">Operation desk</h4>
+        <ul class="footer__list">
+          <li>
+            <span data-i18n="footer-ops-hours-label">Fasce attive</span>
+            <p data-i18n="footer-ops-hours">Daily concierge · 08:00 - 20:00</p>
+          </li>
+          <li>
+            <span data-i18n="footer-ops-emergency-label">Linee emergenza</span>
+            <p data-i18n="footer-ops-emergency">Skipper &amp; safety team · 24/7</p>
+          </li>
+          <li>
+            <span data-i18n="footer-ops-portal-label">Portale clienti</span>
+            <a href="portal.html" data-i18n="footer-ops-portal-link">Accedi al controllo prenotazioni</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__group">
+        <h4 data-i18n="footer-social-title">Social signals</h4>
+        <ul class="footer__social">
+          <li><a href="https://www.instagram.com" target="_blank" rel="noopener" data-i18n="footer-social-ig">Instagram</a></li>
+          <li><a href="https://www.tiktok.com" target="_blank" rel="noopener" data-i18n="footer-social-tt">TikTok</a></li>
+          <li><a href="https://www.tripadvisor.com" target="_blank" rel="noopener" data-i18n="footer-social-ta">TripAdvisor</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener" data-i18n="footer-social-yt">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span data-i18n="footer-legal">© 2025 Albatros Tropea Noleggio · P.IVA 01234567890</span>
+      <span><a href="privacy-policy.html" data-i18n="footer-privacy">Privacy</a> · <a href="cookie-policy.html" data-i18n="footer-cookie">Cookie Policy</a> · <a href="#" class="js-cookie-settings" data-i18n="footer-cookie-settings">Gestisci cookie</a></span>
+    </div>
+  </footer>
+
+  <div class="site-credit">
+    <a href="https://lucamarastoni.eu" target="_blank" rel="noopener" data-i18n="site-credit">Realizzato da Luca Marastoni Digital Solutions</a>
+  </div>
+  <script src="app.js" type="module"></script>
+  <script>
+    (() => {
+      const translations = {
+        en: {
+          'nav-home': 'Home',
+          'nav-fleet': 'Fleet',
+          'nav-tours': 'Excursions',
+          'nav-location': 'Where we are',
+          'nav-cta': 'Book',
+          'portal-login': 'Access the portal',
+          'hero-title': 'Palmi · Bagnara · Scilla Tour',
+          'hero-meta': 'Full day · 10:00–18:00 · Luxury experience',
+          'hero-promise': 'Full-day on the Violet Coast with lunch in Scilla and a slow return.',
+          'hero-bullet1': '🌊 Violet Coast and seaside towns.',
+          'hero-bullet2': '🍽️ Lunch stop in Scilla.',
+          'hero-bullet3': '⚓ Premium navigation, slow return.',
+          'hero-cta1': 'Book this excursion',
+          'hero-cta2': 'Back to excursions',
+          'program-eyebrow': 'Luxury itinerary',
+          'program-title': 'Violet Coast, lunch in Scilla and slow return.',
+          'program-copy': 'Full-day cruise on the Palmi – Bagnara – Scilla route with dedicated skipper, scenic stops and free-time lunch in Scilla.',
+          'it-0': 'Departure toward the Violet Coast.',
+          'it-1': 'Stops between Palmi and Bagnara.',
+          'it-2': 'Lunch in Scilla (not included).',
+          'it-3': 'Possible swordfish fishing sighting (if available).',
+          'it-4': 'Slow coastal return.',
+          'included-title': 'What is included',
+          'inc-1': '✅ Dedicated skipper.',
+          'inc-3': '🧭 Route and safety briefing.',
+          'inc-4': '⛽ Fuel included.',
+          'amenities-eyebrow': 'What is included',
+          'amenities-title': 'Premium service for a full day on the Violet Coast.',
+          'am1-label': 'Welcome',
+          'am1-title': 'Dedicated skipper & briefing',
+          'am1-copy': 'Routes, safety and weather shared before departure.',
+          'am2-label': 'Violet Coast',
+          'am2-title': 'Full day between Palmi and Scilla',
+          'am2-copy': 'Premium navigation and scenic stops along the Violet Coast.',
+          'am3-label': 'Experience',
+          'am3-title': 'Free-time lunch in Scilla',
+          'am3-copy': 'Time in Scilla village for lunch (not included).',
+          'optional-note': 'Possible swordfish fishing sighting (depending on season/availability).',
+          'price-title': 'Price',
+          'price-1': 'From',
+          'pricing-from': 'From',
+          'pricing-per': 'per person',
+          'gallery-eyebrow': 'Gallery',
+          'gallery-title': 'Scilla, Violet Coast and slow return.',
+          'cta-eyebrow': 'Reserve your slot',
+          'cta-title': 'Premium tour on the Violet Coast, limited spots.',
+          'cta-copy': 'Choose the date, add notes for lunch in Scilla and confirm via the portal.',
+          'cta-btn1': 'Book this excursion',
+          'cta-btn2': 'Back to excursions',
+          'footer-title': 'Albatros Tropea Noleggio',
+          'footer-address': 'Viale Raf Vallone, 89861 Tropea (VV) · Italy',
+          'footer-desc': 'Premium nautical hub with signature RIBs, tailored experiences and dedicated crew.',
+          'footer-fast': 'Quick contacts',
+          'footer-desk-label': 'Ops desk',
+          'footer-email-label': 'Concierge email',
+          'footer-wa-label': 'WhatsApp crew',
+          'footer-ops-title': 'Operation desk',
+          'footer-ops-hours-label': 'Active hours',
+          'footer-ops-hours': 'Daily concierge · 08:00 - 20:00',
+          'footer-ops-emergency-label': 'Emergency lines',
+          'footer-ops-emergency': 'Skipper & safety team · 24/7',
+          'footer-ops-portal-label': 'Client portal',
+          'footer-ops-portal-link': 'Access booking control',
+          'footer-social-title': 'Social signals',
+          'footer-social-ig': 'Instagram',
+          'footer-social-tt': 'TikTok',
+          'footer-social-ta': 'TripAdvisor',
+          'footer-social-yt': 'YouTube',
+          'footer-legal': '© 2025 Albatros Tropea Noleggio · VAT 01234567890',
+          'site-credit': 'Built by Luca Marastoni Digital Solutions',
+          'footer-privacy': 'Privacy',
+          'footer-cookie': 'Cookie Policy',
+          'footer-cookie-settings': 'Manage cookies',
+        },
+      };
+
+      const langToggle = document.getElementById('langToggle');
+      const storageKey = 'siteLang';
+
+      const parsePriceValue = (text = '') => {
+        const match = String(text).match(/([0-9]+(?:[.,][0-9]+)?)/);
+        if (!match) return null;
+        return Number.parseFloat(match[1].replace(',', '.'));
+      };
+
+      const priceValues = [...document.querySelectorAll('.price-list strong')]
+        .map((node) => parsePriceValue(node.textContent))
+        .filter((value) => Number.isFinite(value));
+      const minPrice = priceValues.length ? Math.min(...priceValues) : null;
+
+      const priceLine = document.createElement('p');
+      priceLine.className = 'price-line';
+      const pricingMountPoint = document.querySelector('.amenities') || document.querySelector('.detail__content');
+      if (pricingMountPoint && minPrice) {
+        pricingMountPoint.insertAdjacentElement('afterend', priceLine);
+      }
+      document.querySelectorAll('.price-list').forEach((node) => node.classList.add('hidden'));
+
+      const getSavedLang = () => {
+        try {
+          const saved = localStorage.getItem(storageKey);
+          if (saved === 'en' || saved === 'it') return saved;
+        } catch (_) {}
+        return 'it';
+      };
+
+      const persistLang = (lang) => {
+        try {
+          localStorage.setItem(storageKey, lang);
+        } catch (_) {}
+      };
+
+      const renderPriceLine = (lang) => {
+        if (!minPrice || !priceLine.isConnected) return;
+        const fromLabel = lang === 'en' ? translations.en['pricing-from'] : 'A partire da';
+        const perLabel = lang === 'en' ? translations.en['pricing-per'] : 'a persona';
+        priceLine.textContent = `${fromLabel} ${minPrice}€ ${perLabel}`;
+        priceLine.classList.remove('hidden');
+      };
+
+      const applyTranslations = (lang) => {
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          const key = el.dataset.i18n;
+          if (!el.dataset.defaultText) {
+            el.dataset.defaultText = el.textContent;
+          }
+          const translation = lang === 'en' ? translations.en[key] : el.dataset.defaultText;
+          if (translation) el.textContent = translation;
+        });
+
+        langToggle.textContent = lang === 'en' ? 'ITA' : 'ENG';
+        langToggle.setAttribute('aria-label', lang === 'en' ? 'Switch to Italian' : 'Switch to English');
+        document.documentElement.lang = lang === 'en' ? 'en' : 'it';
+        renderPriceLine(lang);
+      };
+
+      langToggle?.addEventListener('click', () => {
+        const current = document.documentElement.lang === 'en' ? 'en' : 'it';
+        const next = current === 'en' ? 'it' : 'en';
+        persistLang(next);
+        applyTranslations(next);
+      });
+
+      applyTranslations(getSavedLang());
+    })();
+  </script>
+  <script src="cookie-consent.js"></script>
+</body>
+</html>

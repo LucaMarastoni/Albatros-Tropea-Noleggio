@@ -34,6 +34,7 @@ const TOUR_SCHEDULE = {
   'Costa degli Dei Explorer': '09:00',
   'Capo Vaticano Sunset Romance': '18:00',
   'Parghelia · Zambrone · Briatico': '09:30',
+  'Tour Palmi Bagnara Scilla': '10:00',
 };
 
 const optionTranslations = {
@@ -47,7 +48,7 @@ const optionTranslations = {
 const REMOVED_BOATS = new Set(['Gommone senza patente (2 posti)', 'zar50-2025', 'zar50-2024']);
 
 const boatLabelTranslations = {
-  'ZAR 65 (9/10 posti)': 'ZAR 65 (9/10 seats)',
+  'ZAR 65 (10/12 posti)': 'ZAR 65 (10/12 seats)',
   'ZAR 53 (8 posti)': 'ZAR 53 (8 seats)',
   'ZAR 49 (6 posti)': 'ZAR 49 (6 seats)',
 };
@@ -62,7 +63,7 @@ const boatFeatureTranslations = {
   'GPS cartografico': 'Chartplotter GPS',
   Tendalino: 'Bimini top',
   'Ancora elettrica': 'Electric anchor',
-  '9/10 posti comodi': '9/10 comfy seats',
+  '10/12 posti comodi': '10/12 comfy seats',
   '8 posti comodi': '8 comfy seats',
   '6 posti comodi': '6 comfy seats',
   Ancora: 'Anchor',
@@ -73,6 +74,7 @@ const tourLabelTranslations = {
   'Costa degli Dei Explorer': 'Coast of the Gods Explorer',
   'Capo Vaticano Sunset Romance': 'Capo Vaticano Sunset Romance',
   'Parghelia · Zambrone · Briatico': 'Parghelia · Zambrone · Briatico',
+  'Tour Palmi Bagnara Scilla': 'Palmi · Bagnara · Scilla tour',
 };
 
 const tourFeatureTranslations = {
@@ -85,6 +87,11 @@ const tourFeatureTranslations = {
   '3 ore di tour personalizzato': '3-hour custom tour',
   'Vardanello, Michelino e Baia della Tonnara': 'Vardanello, Michelino and Baia della Tonnara',
   'Snorkeling e acque trasparenti': 'Snorkeling and crystal waters',
+  'Full day Costa Viola': 'Full day on the Violet Coast',
+  'Sosta pranzo a Scilla': 'Lunch stop in Scilla',
+  '10:00–18:00': '10:00–18:00',
+  'Rientro slow sulla costa': 'Slow return along the coast',
+  'Possibile avvistare la pesca del pesce spada (in base al periodo/disponibilità)': 'Possible swordfish fishing sighting (seasonal/availability)',
 };
 
 const STATUS_META = {

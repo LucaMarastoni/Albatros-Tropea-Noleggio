@@ -333,6 +333,14 @@ const catalog = {
       time: '09:30',
       maxPeople: TOUR_MAX_PEOPLE,
     },
+    {
+      id: 'palmi-bagnara-scilla',
+      label: 'Tour Palmi Bagnara Scilla',
+      image: 'assets/img/FotoPaesaggio/scilla1.jpeg',
+      features: ['Full day Costa Viola', 'Sosta pranzo a Scilla', '10:00–18:00', 'Rientro slow sulla costa'],
+      time: '10:00',
+      maxPeople: TOUR_MAX_PEOPLE,
+    },
   ],
 };
 

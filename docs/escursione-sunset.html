@@ -328,6 +328,8 @@
           'price-3': '👥 4 - 6 guests',
           'price-4': '👥 7 - 9 guests',
           'price-5': '👥 10 - 12 guests',
+          'pricing-from': 'From',
+          'pricing-fuel': 'fuel not included',
           'amenities-eyebrow': 'What is included',
           'amenities-title': 'Sunset experience for couples and small groups.',
           'am1-label': 'Tasting',
@@ -382,6 +384,26 @@
       const langToggle = document.getElementById('langToggle');
       const storageKey = 'siteLang';
 
+      const parsePriceValue = (text = '') => {
+        const match = String(text).match(/([0-9]+(?:[.,][0-9]+)?)/);
+        if (!match) return null;
+        return Number.parseFloat(match[1].replace(',', '.'));
+      };
+
+      const priceValues = [...document.querySelectorAll('.price-list strong')]
+        .map((node) => parsePriceValue(node.textContent))
+        .filter((value) => Number.isFinite(value));
+      const minPrice = priceValues.length ? Math.min(...priceValues) : null;
+      const fuelExcluded = Boolean(document.querySelector('.price-list__note'));
+
+      const priceLine = document.createElement('p');
+      priceLine.className = 'price-line';
+      const pricingMountPoint = document.querySelector('.amenities') || document.querySelector('.hero__content');
+      if (pricingMountPoint && minPrice) {
+        pricingMountPoint.insertAdjacentElement('afterend', priceLine);
+      }
+      document.querySelectorAll('.price-list').forEach((node) => node.classList.add('hidden'));
+
       const getSavedLang = () => {
         try {
           const saved = localStorage.getItem(storageKey);
@@ -394,6 +416,16 @@
         try {
           localStorage.setItem(storageKey, lang);
         } catch (_) {}
+      };
+
+      const renderPriceLine = (lang) => {
+        if (!minPrice || !priceLine.isConnected) return;
+        const fromLabel = lang === 'en' ? translations.en['pricing-from'] : 'A partire da';
+        const fuelLabel = lang === 'en' ? translations.en['pricing-fuel'] : 'carburante escluso';
+        let line = `${fromLabel} ${minPrice}€`;
+        if (fuelExcluded) line += ` · ${fuelLabel}`;
+        priceLine.textContent = line;
+        priceLine.classList.remove('hidden');
       };
 
       const applyTranslations = (lang) => {
@@ -409,6 +441,7 @@
         langToggle.textContent = lang === 'en' ? 'ITA' : 'ENG';
         langToggle.setAttribute('aria-label', lang === 'en' ? 'Switch to Italian' : 'Switch to English');
         document.documentElement.lang = lang === 'en' ? 'en' : 'it';
+        renderPriceLine(lang);
       };
 
       langToggle?.addEventListener('click', () => {
