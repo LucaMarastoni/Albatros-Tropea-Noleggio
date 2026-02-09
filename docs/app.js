@@ -1,24 +1,4 @@
-const state = {
-  user: null,
-};
-
 const elements = {
-  authTrigger: document.getElementById('authTrigger'),
-  authModal: document.getElementById('authModal'),
-  authCard: document.getElementById('authCard'),
-  tabs: document.querySelectorAll('.tab'),
-  tabPanels: document.querySelectorAll('.tab-panel'),
-  loginEmail: document.getElementById('loginEmail'),
-  loginPassword: document.getElementById('loginPassword'),
-  loginFeedback: document.getElementById('loginFeedback'),
-  registerName: document.getElementById('registerName'),
-  registerEmail: document.getElementById('registerEmail'),
-  registerPhone: document.getElementById('registerPhone'),
-  registerPassword: document.getElementById('registerPassword'),
-  registerFeedback: document.getElementById('registerFeedback'),
-  userMenu: document.getElementById('userMenu'),
-  userDisplayName: document.getElementById('userDisplayName'),
-  logoutBtn: document.getElementById('logoutBtn'),
   galleryViewport: document.querySelector('.ig-carousel__viewport'),
   galleryTrack: document.getElementById('galleryTrack'),
   galleryNext: document.getElementById('galleryNext'),
@@ -35,35 +15,19 @@ const elements = {
 let activeModal = null;
 let lastFocusedElement = null;
 
-async function fetchJSON(url, options = {}) {
-  const response = await fetch(url, {
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    ...options,
-  });
-  const contentType = response.headers.get('content-type');
-  const body = contentType && contentType.includes('application/json')
-    ? await response.json()
-    : null;
+const galleryCarouselState = {
+  index: 0,
+  position: 0,
+  total: 0,
+  autoplayTimer: null,
+  prefersReducedMotion: false,
+  isAnimating: false,
+};
 
-  if (!response.ok) {
-    const error = new Error(body?.error || 'Richiesta non riuscita');
-    error.status = response.status;
-    throw error;
-  }
-
-  return body;
-}
-
-function resetFeedback(...nodes) {
-  nodes.forEach((node) => {
-    if (!node) return;
-    node.textContent = '';
-    node.classList.remove('success', 'error');
-  });
-}
+const boatCarouselState = {
+  index: 0,
+  images: [],
+};
 
 function openModal(modal) {
   if (!modal || modal === activeModal) return;
@@ -74,7 +38,7 @@ function openModal(modal) {
   modal.classList.remove('hidden');
   document.body.classList.add('modal-open');
   activeModal = modal;
-  const focusable = modal.querySelector('input, button, select, textarea, [tabindex]:not([tabindex="-1"])');
+  const focusable = modal.querySelector('input, button, select, textarea, [tabindex]:not([tabindex=\"-1\"])');
   focusable?.focus();
 }
 
@@ -82,11 +46,6 @@ function closeModal(modal) {
   if (!modal) return;
   modal.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  if (modal === elements.authModal) {
-    resetFeedback(elements.loginFeedback, elements.registerFeedback);
-    elements.authCard.reset();
-    switchTab('login');
-  }
   if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
     lastFocusedElement.focus();
   }
@@ -94,13 +53,6 @@ function closeModal(modal) {
     activeModal = null;
   }
   lastFocusedElement = null;
-}
-
-function showFeedback(node, message, type = 'error') {
-  if (!node) return;
-  node.textContent = message;
-  node.classList.remove('success', 'error');
-  node.classList.add(type);
 }
 
 function buildInlineCarousel(card, {
@@ -162,108 +114,6 @@ function buildInlineCarousel(card, {
 
   window.setInterval(rotate, interval);
 }
-
-function switchTab(tabName) {
-  elements.tabs.forEach((tab) => {
-    tab.classList.toggle('active', tab.dataset.tab === tabName);
-  });
-  elements.tabPanels.forEach((panel) => {
-    panel.classList.toggle('active', panel.dataset.panel === tabName);
-  });
-}
-
-function updateTopbar() {
-  const userLogged = Boolean(state.user);
-  if (elements.authTrigger) {
-    elements.authTrigger.classList.toggle('hidden', userLogged);
-  }
-  if (elements.userMenu) {
-    elements.userMenu.classList.toggle('hidden', !userLogged);
-  }
-  if (elements.userDisplayName) {
-    elements.userDisplayName.textContent = userLogged
-      ? (state.user.full_name || state.user.email)
-      : '';
-  }
-}
-
-async function handleLogin() {
-  resetFeedback(elements.loginFeedback);
-  const email = elements.loginEmail.value.trim();
-  const password = elements.loginPassword.value;
-
-  if (!email || !password) {
-    showFeedback(elements.loginFeedback, 'Inserisci email e password.', 'error');
-    return;
-  }
-
-  try {
-    const { user } = await fetchJSON('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
-    state.user = user;
-    closeModal(elements.authModal);
-    updateTopbar();
-  } catch (error) {
-    showFeedback(elements.loginFeedback, error.message, 'error');
-  }
-}
-
-async function handleRegister() {
-  resetFeedback(elements.registerFeedback);
-  const fullName = elements.registerName.value.trim();
-  const email = elements.registerEmail.value.trim();
-  const phone = elements.registerPhone.value.trim();
-  const password = elements.registerPassword.value;
-
-  if (!fullName || !email || !password) {
-    showFeedback(elements.registerFeedback, 'Compila i campi obbligatori.', 'error');
-    return;
-  }
-
-  try {
-    const { user } = await fetchJSON('/api/register', {
-      method: 'POST',
-      body: JSON.stringify({
-        fullName,
-        email,
-        phone,
-        password,
-      }),
-    });
-    state.user = user;
-    closeModal(elements.authModal);
-    updateTopbar();
-  } catch (error) {
-    showFeedback(elements.registerFeedback, error.message, 'error');
-  }
-}
-
-async function handleLogout() {
-  try {
-    await fetchJSON('/api/logout', { method: 'POST' });
-  } catch (error) {
-    console.error('Errore logout', error);
-  } finally {
-    state.user = null;
-    updateTopbar();
-  }
-}
-
-const galleryCarouselState = {
-  index: 0,
-  position: 0,
-  total: 0,
-  autoplayTimer: null,
-  prefersReducedMotion: false,
-  isAnimating: false,
-};
-
-const boatCarouselState = {
-  index: 0,
-  images: [],
-};
 
 function initGalleryCarousel() {
   const track = elements.galleryTrack;
@@ -578,7 +428,7 @@ function initBoatCards() {
   prevBtn?.addEventListener('click', () => changeSlide(-1));
   nextBtn?.addEventListener('click', () => changeSlide(1));
 
-  modal.querySelectorAll('[data-boat-close]').forEach((node) => {
+  modal?.querySelectorAll('[data-boat-close]').forEach((node) => {
     node.addEventListener('click', () => closeModal(modal));
   });
 }
@@ -626,41 +476,7 @@ function initHomeCardCarousels() {
   });
 }
 
-async function checkSession() {
-  try {
-    const { user } = await fetchJSON('/api/session');
-    state.user = user;
-  } catch (error) {
-    console.warn('Impossibile recuperare la sessione corrente:', error);
-    state.user = null;
-  } finally {
-    updateTopbar();
-  }
-}
-
-
 function attachEventListeners() {
-  const openAuthModal = () => openModal(elements.authModal);
-
-  elements.authTrigger?.addEventListener('click', openAuthModal);
-
-  elements.tabs.forEach((tab) => {
-    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
-  });
-
-  elements.authCard?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const activeTab = [...elements.tabs].find((tab) => tab.classList.contains('active'))?.dataset.tab;
-    if (activeTab === 'register') {
-      handleRegister();
-    } else {
-      handleLogin();
-    }
-  });
-
-  elements.logoutBtn?.addEventListener('click', handleLogout);
-
-
   document.querySelectorAll('[data-close-modal]').forEach((trigger) => {
     trigger.addEventListener('click', () => {
       const modal = trigger.closest('.modal');
@@ -708,7 +524,7 @@ function attachEventListeners() {
     handleViewportChange();
   }
 
-  document.querySelectorAll('a[href^="index.html#"]').forEach((link) => {
+  document.querySelectorAll('a[href^=\"index.html#\"]').forEach((link) => {
     link.addEventListener('click', (event) => {
       const [, hash] = link.getAttribute('href').split('#');
       if (!hash) return;
@@ -722,11 +538,10 @@ function attachEventListeners() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   attachEventListeners();
   initGalleryCarousel();
   applyBoatImageMapping();
   initBoatCards();
   initHomeCardCarousels();
-  await checkSession();
 });

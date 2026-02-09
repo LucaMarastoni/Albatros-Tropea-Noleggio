@@ -1,0 +1,67 @@
+// Single source of truth for boats and tours data (static, no backend needed)
+window.CATALOG = {
+  boats: [
+    {
+      id: 'zar65',
+      label: 'ZAR 65 (10/12 posti)',
+      power: '150 cv',
+      features: ['Doccia', 'GPS cartografico', 'Tendalino', 'Ancora elettrica', '10/12 posti comodi'],
+      image: 'assets/img/FotoGommone/65.jpg',
+      heroImage: 'assets/img/FotoGommone/65.jpg',
+    },
+    {
+      id: 'zar53',
+      label: 'ZAR 53 (8 posti)',
+      power: '90 cv',
+      features: ['Doccia', 'Tendalino', 'Ancora', 'Ecoscandaglio', '8 posti comodi'],
+      image: 'assets/img/FotoGommone/53.jpg',
+      heroImage: 'assets/img/FotoGommone/53.jpg',
+    },
+    {
+      id: 'zar49',
+      label: 'ZAR 49 (6 posti)',
+      power: '40 cv',
+      features: ['Doccia', 'Ecoscandaglio', 'Tendalino', '6 posti comodi'],
+      image: 'assets/img/FotoGommone/49.jpg',
+      heroImage: 'assets/img/FotoGommone/49.jpg',
+    },
+  ],
+  tours: [
+    {
+      id: 'costa-degli-dei',
+      label: 'Costa degli Dei Explorer',
+      image: 'assets/img/6.jpg',
+      heroImage: 'assets/img/6.jpg',
+      features: ['3 ore tra Tropea e Capo Vaticano', 'Snorkeling allo Scoglio di Riaci', 'Soste in calette accessibili solo via mare'],
+      time: '09:00',
+      maxPeople: 12,
+    },
+    {
+      id: 'sunset-romance',
+      label: 'Capo Vaticano Sunset Romance',
+      image: 'assets/img/7.jpg',
+      heroImage: 'assets/img/7.jpg',
+      features: ['Tour al tramonto', 'Grotta degli Innamorati', 'Aperitivo romantico a bordo'],
+      time: '18:00',
+      maxPeople: 12,
+    },
+    {
+      id: 'parghelia-tour',
+      label: 'Parghelia · Zambrone · Briatico',
+      image: 'assets/img/9.jpg',
+      heroImage: 'assets/img/9.jpg',
+      features: ['3 ore di tour personalizzato', 'Vardanello, Michelino e Baia della Tonnara', 'Snorkeling e acque trasparenti'],
+      time: '09:30',
+      maxPeople: 12,
+    },
+    {
+      id: 'palmi-bagnara-scilla',
+      label: 'Tour Palmi Bagnara Scilla',
+      image: 'assets/img/FotoPaesaggio/scilla1.jpeg',
+      heroImage: 'assets/img/FotoPaesaggio/scilla1.jpeg',
+      features: ['Full day Costa Viola', 'Sosta pranzo a Scilla', '10:00–18:00', 'Rientro slow sulla costa'],
+      time: '10:00',
+      maxPeople: 12,
+    },
+  ],
+};

@@ -237,15 +237,7 @@
       </div>
     </nav>
     <div class="topbar__actions">
-      <a class="btn portal-accent" href="portal.html" data-i18n="portal-login">Accedi al portale</a>
-      <div class="user-menu hidden" id="userMenu">
-        <span class="user-avatar">⛵</span>
-        <div>
-          <span class="user-name" id="userDisplayName"></span>
-          <small>Sessione attiva</small>
-        </div>
-        <button class="btn tiny" id="logoutBtn">Esci</button>
-      </div>
+      <a class="btn portal-accent" href="portal.html" data-i18n="portal-login">Prenota</a>
     </div>
   </header>
 
@@ -492,55 +484,6 @@
 
   <div class="site-credit">
     <a href="https://lucamarastoni.eu" target="_blank" rel="noopener" data-i18n="site-credit">Realizzato da Luca Marastoni Digital Solutions</a>
-  </div>
-
-  <div class="modal hidden" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
-    <div class="modal-backdrop" data-close-modal></div>
-    <div class="modal-window">
-      <button class="modal-close" type="button" data-close-modal aria-label="Chiudi accesso">&times;</button>
-      <form class="auth-card" id="authCard" novalidate>
-        <header>
-          <h3 id="authModalTitle">Area riservata</h3>
-          <p>Accedi o crea un account per prenotare e gestire le uscite.</p>
-        </header>
-        <div class="tabs">
-          <button type="button" class="tab active" data-tab="login">Accesso</button>
-          <button type="button" class="tab" data-tab="register">Registrati</button>
-        </div>
-        <section data-panel="login" class="tab-panel active">
-          <label>
-            Email
-            <input type="email" id="loginEmail" required placeholder="tuo@email.com">
-          </label>
-          <label>
-            Password
-            <input type="password" id="loginPassword" required placeholder="••••••••">
-          </label>
-          <button type="submit" class="btn primary full" id="loginSubmit">Accedi</button>
-          <p class="form-feedback" id="loginFeedback" aria-live="polite"></p>
-        </section>
-        <section data-panel="register" class="tab-panel">
-          <label>
-            Nome completo
-            <input type="text" id="registerName" required placeholder="Nome Cognome">
-          </label>
-          <label>
-            Email
-            <input type="email" id="registerEmail" required placeholder="tuo@email.com">
-          </label>
-          <label>
-            Telefono
-            <input type="tel" id="registerPhone" placeholder="+39 333 1234567">
-          </label>
-          <label>
-            Password
-            <input type="password" id="registerPassword" required placeholder="Almeno 8 caratteri">
-          </label>
-          <button type="submit" class="btn primary full" id="registerSubmit">Crea account</button>
-          <p class="form-feedback" id="registerFeedback" aria-live="polite"></p>
-        </section>
-      </form>
-    </div>
   </div>
 
   <script src="boats-images.js"></script>
