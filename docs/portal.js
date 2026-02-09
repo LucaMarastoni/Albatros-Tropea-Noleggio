@@ -44,8 +44,9 @@ const optionTranslations = {
   tour: { it: 'Escursione guidata', en: 'Guided excursion' },
 };
 
+const REMOVED_BOATS = new Set(['Gommone senza patente (2 posti)', 'zar50-2025', 'zar50-2024']);
+
 const boatLabelTranslations = {
-  'Gommone senza patente (2 posti)': 'No-license RIB (2 seats)',
   'ZAR 65 (9/10 posti)': 'ZAR 65 (9/10 seats)',
   'ZAR 53 (8 posti)': 'ZAR 53 (8 seats)',
   'ZAR 49 (6 posti)': 'ZAR 49 (6 seats)',
@@ -270,6 +271,19 @@ function translateBoatFeature(feature) {
   const lang = getCurrentLang();
   if (lang !== 'en') return feature;
   return boatFeatureTranslations[feature] || feature;
+}
+
+function isRemovedBoat(value = '') {
+  return REMOVED_BOATS.has(String(value).trim());
+}
+
+function removedBoatLabel() {
+  return getCurrentLang() === 'en' ? 'Boat removed' : 'Imbarcazione rimossa';
+}
+
+function getRentalDisplayLabel(value = '') {
+  if (isRemovedBoat(value) || !value) return removedBoatLabel();
+  return translateBoatLabel(value);
 }
 
 function translateTourLabel(label) {
@@ -1192,6 +1206,9 @@ function renderClientBookings() {
 }
 
 function getBookingImage(booking) {
+  if (booking.service_type === 'noleggio' && isRemovedBoat(booking.boat_model)) {
+    return 'assets/img/14.jpg';
+  }
   if (booking.service_type === 'escursione') {
     const matchTour = state.catalog.tours.find((tour) => tour.label === booking.tour || tour.id === booking.tour);
     if (matchTour?.image) return matchTour.image;
@@ -1207,7 +1224,7 @@ function getBookingSubtitle(booking) {
   if (booking.service_type === 'escursione') {
     return booking.tour || (getCurrentLang() === 'en' ? 'Guided excursion' : 'Escursione guidata');
   }
-  return booking.boat_model || (getCurrentLang() === 'en' ? 'RIB rental' : 'Noleggio gommone');
+  return getRentalDisplayLabel(booking.boat_model);
 }
 
 const scrollLock = {
@@ -1443,7 +1460,7 @@ function renderCalendarDayDetail() {
     const t = (it, en) => (lang === 'en' ? en : it);
     li.innerHTML = `
       <strong>${formatBookingDateTime(booking)}</strong>
-      <span>${booking.service_type === 'noleggio' ? booking.boat_model || 'Noleggio' : booking.tour || 'Escursione'}</span>
+      <span>${booking.service_type === 'noleggio' ? getRentalDisplayLabel(booking.boat_model) : booking.tour || 'Escursione'}</span>
       <span class="status-pill status-pill--${statusMeta.tone}">${statusMeta.label}</span>
       <small>${booking.customer_name} · ${booking.people} ${t('ospiti', 'guests')}</small>
     `;
@@ -1651,6 +1668,9 @@ function renderAdminTable() {
   }
 
   state.adminBookings.forEach((booking) => {
+    const displayServiceDetail = booking.service_type === 'noleggio'
+      ? getRentalDisplayLabel(booking.boat_model)
+      : (booking.tour || '—');
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${formatBookingDateTime(booking)}</td>
@@ -1660,7 +1680,7 @@ function renderAdminTable() {
         <small>${formatPhone(booking.phone || '') || booking.phone}</small>
       </td>
       <td>${booking.service_type === 'noleggio' ? 'Noleggio' : 'Escursione'}</td>
-      <td>${booking.service_type === 'noleggio' ? (booking.boat_model || '—') : (booking.tour || '—')}</td>
+      <td>${displayServiceDetail}</td>
       <td>${booking.people}</td>
       <td></td>
       <td></td>

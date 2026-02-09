@@ -287,13 +287,6 @@ const TOUR_MAX_PEOPLE = 12;
 const catalog = {
   boats: [
     {
-      id: 'zar50-2024',
-      label: 'Gommone senza patente (2 posti)',
-      power: '40 cv',
-      features: ['Stereo bluetooth', 'GPS cartografico', 'Ecoscandaglio', '2 posti'],
-      image: 'assets/img/30.jpg',
-    },
-    {
       id: 'zar65',
       label: 'ZAR 65 (9/10 posti)',
       power: '150 cv',
@@ -540,6 +533,13 @@ app.post('/api/bookings', requireAuth, (req, res) => {
     }
     if (!TIME_REGEX.test(sanitizedEndTime)) {
       return res.status(400).json({ error: 'Orario di rientro non valido' });
+    }
+    const allowedBoats = new Set([
+      ...catalog.boats.map((boat) => boat.label),
+      ...catalog.boats.map((boat) => boat.id),
+    ]);
+    if (!sanitizedBoatModel || !allowedBoats.has(sanitizedBoatModel)) {
+      return res.status(400).json({ error: 'Modello gommone non disponibile' });
     }
   }
 
