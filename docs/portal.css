@@ -1077,9 +1077,14 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.field-grid .full {
+  grid-column: 1 / -1;
+}
+
 .field {
   display: grid;
   gap: 8px;
+  scroll-margin-top: 120px;
 }
 
 .field label {
@@ -1152,6 +1157,37 @@ a {
   color: var(--danger);
   min-height: 1em;
 }
+
+.field.attention-highlight label {
+  color: var(--primary-dark);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.field.attention-highlight select,
+.field.attention-highlight input,
+.field.attention-highlight textarea {
+  border: 2px solid rgba(26, 125, 219, 0.78);
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(12, 74, 132, 0.14), 0 0 0 3px rgba(26, 125, 219, 0.14);
+  background: linear-gradient(180deg, rgba(115, 199, 255, 0.06), #ffffff 60%);
+}
+
+.field.attention-animate {
+  animation: popAttention 0.48s ease, glowOnce 1.2s ease-out;
+}
+
+@keyframes popAttention {
+  0% { opacity: 0; transform: translateY(5px) scale(0.99); }
+  60% { opacity: 1; transform: translateY(0) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes glowOnce {
+  0% { box-shadow: 0 0 0 0 rgba(26, 125, 219, 0.26); }
+  100% { box-shadow: 0 0 0 8px rgba(26, 125, 219, 0); }
+}
+
 
 .field.is-error input,
 .field.is-error select,

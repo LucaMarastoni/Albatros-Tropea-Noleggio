@@ -82,6 +82,50 @@ const elements = {
   toastContainer: document.getElementById('toastContainer'),
 };
 
+const autoScrollState = { boat: false, tour: false };
+
+function addAttentionHighlight(fieldEl, withAnimation = false) {
+  if (!fieldEl) return;
+  fieldEl.classList.add('attention-highlight');
+  if (withAnimation) {
+    fieldEl.classList.remove('attention-animate');
+    // force reflow to restart animation
+    // eslint-disable-next-line no-unused-expressions
+    fieldEl.offsetWidth;
+    fieldEl.classList.add('attention-animate');
+  }
+}
+
+function removeAttentionHighlight(fieldEl) {
+  if (!fieldEl) return;
+  fieldEl.classList.remove('attention-highlight', 'attention-animate');
+}
+
+function ensureAttentionHighlight(fieldEl) {
+  if (!fieldEl) return;
+  const select = fieldEl.querySelector('select');
+  const value = select?.value?.trim() || '';
+  if (!value) {
+    addAttentionHighlight(fieldEl);
+  } else {
+    removeAttentionHighlight(fieldEl);
+  }
+}
+
+function smartScrollToField(fieldEl, key = '') {
+  if (!fieldEl) return;
+  const rect = fieldEl.getBoundingClientRect();
+  const inView = rect.top >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+  if (key) {
+    if (!inView && !autoScrollState[key]) {
+      autoScrollState[key] = true;
+      fieldEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  } else if (!inView) {
+    fieldEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
 function getCurrentLang() {
   try {
     const saved = localStorage.getItem(LANG_STORAGE_KEY);
@@ -632,6 +676,10 @@ function handleBookingFormInput(event) {
   } else if (fieldName === 'timeSlot') {
     applyTimeSlotSelection();
     setFieldError('timeSlot', '');
+  } else if (fieldName === 'boatModel') {
+    ensureAttentionHighlight(elements.boatField);
+  } else if (fieldName === 'tour') {
+    ensureAttentionHighlight(elements.tourField);
   } else {
     setFieldError(fieldName, '');
   }
@@ -705,6 +753,22 @@ function handleServiceTypeChange(value) {
   } else {
     clearTimeSlotSelection();
   }
+
+  if (isRental) {
+    addAttentionHighlight(elements.boatField, true);
+    ensureAttentionHighlight(elements.boatField);
+    smartScrollToField(elements.boatField, 'boat');
+    removeAttentionHighlight(elements.tourField);
+  } else if (isTour) {
+    addAttentionHighlight(elements.tourField, true);
+    ensureAttentionHighlight(elements.tourField);
+    smartScrollToField(elements.tourField, 'tour');
+    removeAttentionHighlight(elements.boatField);
+  } else {
+    removeAttentionHighlight(elements.boatField);
+    removeAttentionHighlight(elements.tourField);
+  }
+
   enforceExcursionTime();
   renderBoatSummary();
   renderTourSummary();
@@ -735,6 +799,8 @@ async function handleBookingSubmit(event) {
     const wrapper = elements.bookingForm.querySelector(`[data-field=\"${firstField}\"]`);
     const control = wrapper?.querySelector('input, select, textarea');
     control?.focus();
+    addAttentionHighlight(wrapper);
+    smartScrollToField(wrapper);
     return;
   }
 
@@ -816,6 +882,8 @@ function applyServicePreselect() {
   }
   renderBoatSummary();
   renderTourSummary();
+  ensureAttentionHighlight(elements.boatField);
+  ensureAttentionHighlight(elements.tourField);
   syncPeopleConstraints();
   updateBookingRecap();
 }
@@ -835,8 +903,10 @@ function attachEventListeners() {
   elements.tour?.addEventListener('change', enforceExcursionTime);
   elements.tour?.addEventListener('change', renderTourSummary);
   elements.tour?.addEventListener('change', syncPeopleConstraints);
+  elements.tour?.addEventListener('change', () => ensureAttentionHighlight(elements.tourField));
   elements.boatModel?.addEventListener('change', renderBoatSummary);
   elements.boatModel?.addEventListener('change', syncPeopleConstraints);
+  elements.boatModel?.addEventListener('change', () => ensureAttentionHighlight(elements.boatField));
   elements.bookingForm?.elements?.time?.addEventListener('change', syncTimeConstraints);
 
   document.querySelectorAll('[data-people-stepper]').forEach((btn) => {
