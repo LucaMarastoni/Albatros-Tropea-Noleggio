@@ -4,7 +4,7 @@ const state = {
 
 const portalPage = document.body?.dataset?.portalPage || 'booking';
 const LANG_STORAGE_KEY = 'siteLang';
-const EXCURSION_WHATSAPP_PHONE = '393486646762';
+const EXCURSION_WHATSAPP_PHONE = '3715328451';
 
 const optionTranslations = {
   select: { it: 'Seleziona', en: 'Select' },
