@@ -222,6 +222,13 @@ function findTourByValue(value) {
   return state.catalog.tours.find((tour) => tour.label === value || tour.id === value) || null;
 }
 
+function resolveTourTimeBySelection(value = '') {
+  if (!value) return '';
+  const matchedTour = findTourByValue(value);
+  if (matchedTour?.time) return matchedTour.time;
+  return TOUR_SCHEDULE[value] || '';
+}
+
 function resolvePeopleLimits({ serviceType, boatValue, tourValue } = {}) {
   const min = FORM_LIMITS.minPeople;
   let max = FORM_LIMITS.maxPeople;
@@ -452,9 +459,9 @@ function enforceExcursionTime() {
     updateBookingRecap();
     return;
   }
-  const selectedTour = elements.tour?.value;
-  const fixedTime = selectedTour && TOUR_SCHEDULE[selectedTour] ? TOUR_SCHEDULE[selectedTour] : '09:00';
-  timeInput.value = fixedTime;
+  const selectedTour = elements.tour?.value || '';
+  const fixedTime = resolveTourTimeBySelection(selectedTour);
+  timeInput.value = fixedTime || '';
   timeInput.readOnly = true;
   syncTimeConstraints();
   updateBookingRecap();
@@ -846,6 +853,9 @@ async function loadCatalog() {
         if (tour?.label && tour?.time) {
           TOUR_SCHEDULE[tour.label] = tour.time;
         }
+        if (tour?.id && tour?.time) {
+          TOUR_SCHEDULE[tour.id] = tour.time;
+        }
       });
     }
     populateServiceOptions();
@@ -882,6 +892,7 @@ function applyServicePreselect() {
   }
   renderBoatSummary();
   renderTourSummary();
+  enforceExcursionTime();
   ensureAttentionHighlight(elements.boatField);
   ensureAttentionHighlight(elements.tourField);
   syncPeopleConstraints();
