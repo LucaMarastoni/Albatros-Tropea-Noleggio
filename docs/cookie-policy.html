@@ -60,12 +60,13 @@
         <p class="eyebrow" data-i18n="cookie-eyebrow">Cookie</p>
         <h1 data-i18n="cookie-title">Cookie Policy</h1>
         <p class="lead" data-i18n="cookie-intro">Qui trovi il dettaglio dei cookie e delle preferenze disponibili.</p>
+        <p data-i18n="cookie-updated">Ultimo aggiornamento: 28 luglio 2026.</p>
       </header>
       <div class="policy__content">
         <h3 data-i18n="cookie-overview-title">Panoramica</h3>
-        <p data-i18n="cookie-overview-copy">Usiamo cookie tecnici essenziali per la navigazione e il portale prenotazioni. I cookie facoltativi sono disattivati di default e attivabili solo con consenso.</p>
+        <p data-i18n="cookie-overview-copy">Usiamo cookie e tecnologie analoghe essenziali per la navigazione, le preferenze del sito e il servizio di prenotazione. Il widget Holidoit utilizza inoltre tecnologie di terze parti, incluse quelle di Stripe necessarie per i pagamenti, la sicurezza e la prevenzione delle frodi. I cookie facoltativi sono disattivati di default e attivabili solo con consenso.</p>
 
-        <h3 data-i18n="cookie-table-title">Elenco cookie</h3>
+        <h3 data-i18n="cookie-table-title">Elenco cookie e tecnologie analoghe</h3>
         <div class="policy-table">
           <div class="policy-table__row policy-table__head">
             <div data-i18n="cookie-col-name">Nome</div>
@@ -91,16 +92,44 @@
             <div data-i18n="cookie-consent-duration">Fino a revoca</div>
             <div data-i18n="cookie-consent-purpose">Memorizza le preferenze cookie.</div>
           </div>
+          <div class="policy-table__row">
+            <div>_holidoit_payment_session</div>
+            <div data-i18n="cookie-holidoit-payment-type">Essenziali</div>
+            <div data-i18n="cookie-holidoit-payment-duration">Fino al completamento del pagamento o alla cancellazione manuale</div>
+            <div data-i18n="cookie-holidoit-payment-purpose">Consente di ripristinare la prenotazione dopo il reindirizzamento al pagamento.</div>
+          </div>
+          <div class="policy-table__row">
+            <div>holidoit_analytics_dedupe_keys</div>
+            <div data-i18n="cookie-holidoit-events-type">Tecnici</div>
+            <div data-i18n="cookie-holidoit-events-duration">Sessione</div>
+            <div data-i18n="cookie-holidoit-events-purpose">Evita la duplicazione degli eventi tecnici del widget.</div>
+          </div>
+          <div class="policy-table__row">
+            <div>m, __stripe_mid, __stripe_sid e storage correlato</div>
+            <div data-i18n="cookie-stripe-type">Essenziali · sicurezza e antifrode</div>
+            <div data-i18n="cookie-stripe-duration">Sessione / fino a 2 anni, secondo la tecnologia utilizzata</div>
+            <div data-i18n="cookie-stripe-purpose">Aiuta Stripe a rendere sicuro il pagamento e a valutare il rischio di frode.</div>
+          </div>
         </div>
 
+        <h3 data-i18n="cookie-third-party-title">Prenotazioni, pagamenti e servizi terzi</h3>
+        <p data-i18n="cookie-third-party-copy">Il widget di prenotazione è caricato dai domini di Holidoit e incorpora Stripe.js. Di conseguenza, quando visiti una pagina che contiene il widget, il browser può comunicare con domini controllati da Holidoit e Stripe e ricevere cookie o altre tecnologie di memorizzazione. Nomi e durate possono cambiare quando i fornitori aggiornano i propri servizi.</p>
+        <p>
+          <span data-i18n="cookie-provider-links-intro">Consulta le informative di</span>
+          <a href="https://www.holidoit.com/t/privacy-policy" target="_blank" rel="noopener" data-i18n="cookie-holidoit-link">Holidoit</a>,
+          <a href="https://stripe.com/privacy" target="_blank" rel="noopener" data-i18n="cookie-stripe-privacy-link">Stripe</a>
+          <span data-i18n="cookie-provider-links-and">e l’elenco aggiornato dei cookie di</span>
+          <a href="https://stripe.com/cookie-settings" target="_blank" rel="noopener" data-i18n="cookie-stripe-cookies-link">Stripe</a>.
+        </p>
+
         <h3 data-i18n="cookie-functional-title">Cookie funzionali</h3>
-        <p data-i18n="cookie-functional-copy">Se attivati, salvano preferenze UI e migliorano l’esperienza senza finalita di tracciamento.</p>
+        <p data-i18n="cookie-functional-copy">Se attivati, salvano preferenze dell’interfaccia e migliorano l’esperienza senza finalità di profilazione.</p>
 
         <h3 data-i18n="cookie-analytics-title">Cookie analytics</h3>
-        <p data-i18n="cookie-analytics-copy">Non usiamo cookie analytics di terze parti. Se in futuro attivati, saranno anonimi e richiederanno consenso.</p>
+        <p data-i18n="cookie-analytics-copy">Il sito non attiva autonomamente cookie analytics facoltativi di terze parti. Holidoit e Stripe possono tuttavia trattare eventi tecnici e dati relativi al funzionamento, alla sicurezza e alle prestazioni dei rispettivi servizi secondo le proprie informative. Eventuali analytics facoltativi saranno attivati solo con consenso quando richiesto.</p>
 
         <h3 data-i18n="cookie-marketing-title">Cookie marketing</h3>
-        <p data-i18n="cookie-marketing-copy">Non utilizziamo cookie di marketing o profilazione.</p>
+        <p data-i18n="cookie-marketing-copy">Il sito non configura cookie di marketing o profilazione tramite il widget di prenotazione. Eventuali tecnologie facoltative di questo tipo saranno attivate solo dopo aver raccolto il consenso, quando richiesto.</p>
 
         <h3 data-i18n="cookie-manage-title">Gestione preferenze</h3>
         <p data-i18n="cookie-manage-copy">Puoi aggiornare le preferenze in qualsiasi momento tramite il link “Gestisci cookie” nel footer.</p>
@@ -187,9 +216,10 @@
           'cookie-eyebrow': 'Cookies',
           'cookie-title': 'Cookie Policy',
           'cookie-intro': 'Details about cookies and available preferences.',
+          'cookie-updated': 'Last updated: July 28, 2026.',
           'cookie-overview-title': 'Overview',
-          'cookie-overview-copy': 'We use essential cookies for navigation and the booking portal. Optional cookies are disabled by default and enabled only with consent.',
-          'cookie-table-title': 'Cookie list',
+          'cookie-overview-copy': 'We use essential cookies and similar technologies for navigation, site preferences and the booking service. The Holidoit widget also uses third-party technologies, including Stripe technologies required for payments, security and fraud prevention. Optional cookies are disabled by default and enabled only with consent.',
+          'cookie-table-title': 'Cookie and similar technology list',
           'cookie-col-name': 'Name',
           'cookie-col-type': 'Category',
           'cookie-col-duration': 'Duration',
@@ -204,12 +234,28 @@
           'cookie-consent-type': 'Essential',
           'cookie-consent-duration': 'Until revoked',
           'cookie-consent-purpose': 'Stores cookie preferences.',
+          'cookie-holidoit-payment-type': 'Essential',
+          'cookie-holidoit-payment-duration': 'Until payment is completed or the data is manually deleted',
+          'cookie-holidoit-payment-purpose': 'Restores the booking after the payment redirect.',
+          'cookie-holidoit-events-type': 'Technical',
+          'cookie-holidoit-events-duration': 'Session',
+          'cookie-holidoit-events-purpose': 'Prevents duplicate technical widget events.',
+          'cookie-stripe-type': 'Essential · security and fraud prevention',
+          'cookie-stripe-duration': 'Session / up to 2 years, depending on the technology used',
+          'cookie-stripe-purpose': 'Helps Stripe secure payments and assess fraud risk.',
+          'cookie-third-party-title': 'Bookings, payments and third-party services',
+          'cookie-third-party-copy': 'The booking widget is loaded from Holidoit domains and embeds Stripe.js. Therefore, when you visit a page containing the widget, your browser may communicate with domains controlled by Holidoit and Stripe and receive cookies or other storage technologies. Names and durations may change when providers update their services.',
+          'cookie-provider-links-intro': 'See the policies provided by',
+          'cookie-holidoit-link': 'Holidoit',
+          'cookie-stripe-privacy-link': 'Stripe',
+          'cookie-provider-links-and': 'and Stripe’s current',
+          'cookie-stripe-cookies-link': 'cookie list',
           'cookie-functional-title': 'Functional cookies',
-          'cookie-functional-copy': 'If enabled, they remember UI preferences and improve the experience without tracking.',
+          'cookie-functional-copy': 'If enabled, they remember interface preferences and improve the experience without profiling.',
           'cookie-analytics-title': 'Analytics cookies',
-          'cookie-analytics-copy': 'We do not use third-party analytics cookies. If enabled in the future, they will be anonymized and require consent.',
+          'cookie-analytics-copy': 'The site does not independently enable optional third-party analytics cookies. However, Holidoit and Stripe may process technical events and data related to the operation, security and performance of their respective services under their own policies. Optional analytics will only be enabled with consent where required.',
           'cookie-marketing-title': 'Marketing cookies',
-          'cookie-marketing-copy': 'We do not use marketing or profiling cookies.',
+          'cookie-marketing-copy': 'The site does not configure marketing or profiling cookies through the booking widget. Any optional technologies of this kind will only be enabled after consent has been collected where required.',
           'cookie-manage-title': 'Manage preferences',
           'cookie-manage-copy': 'You can update preferences anytime via the “Manage cookies” link in the footer.',
           'footer-title': 'Albatros Tropea Noleggio',
